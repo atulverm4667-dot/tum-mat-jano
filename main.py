@@ -5,6 +5,8 @@ import time
 import json
 import random
 import urllib.parse
+import urllib.request
+import re
 import yt_dlp
 from concurrent.futures import ThreadPoolExecutor
 from pyrogram import Client, filters, idle
@@ -155,7 +157,7 @@ async def delayed_delete(message, delay=5):
 
 
 # ==========================================
-# 🖼️ UNO CARDS IMAGE AUTO-UPLOADER (SAFE)
+# 🖼️ UNO CARDS IMAGE AUTO-UPLOADER
 # ==========================================
 def card_to_filename(card):
     if "Wild +4" in card: return "Wild_Card_Draw_4"
@@ -288,7 +290,7 @@ async def set_position_cmd(client, message):
 
 
 # ==========================================
-# 🎵 MUSIC ENGINE UTILS
+# 🎵 MUSIC ENGINE UTILS (🔥 YT-DLP BYPASS ADDED)
 # ==========================================
 async def get_fresh_url(song_dict):
     url = song_dict.get("url", "")
@@ -314,13 +316,24 @@ def get_yt_info(query, is_video=False):
         'no_warnings': True, 
         'ignoreerrors': True, 
         'simulate': True,
-        'geo_bypass': True,
-        'http_headers': {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-        },
-        'extractor_args': {'youtube': {'player_client': ['ios', 'web']}}
+        'extractor_args': {'youtube': {'player_client': ['android', 'web']}}
     }
-    search_query = query if "youtube.com" in query or "youtu.be" in query else f"ytsearch1:{query}"
+    
+    search_query = query
+    # 🔥 YOUTUBE SEARCH BYPASS: Agar Render IP block hui hai, toh yeh code seedha link uthayega!
+    if "youtube.com" not in query and "youtu.be" not in query:
+        try:
+            url = f"https://www.youtube.com/results?search_query={urllib.parse.quote(query)}"
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            html = urllib.request.urlopen(req).read().decode()
+            video_ids = re.findall(r"watch\?v=([a-zA-Z0-9_-]{11})", html)
+            if video_ids:
+                search_query = f"https://www.youtube.com/watch?v={video_ids[0]}"
+            else:
+                search_query = f"ytsearch:{query}"
+        except Exception:
+            search_query = f"ytsearch:{query}"
+
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         try:
             info = ydl.extract_info(search_query, download=False)
