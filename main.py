@@ -5,6 +5,8 @@ import time
 import json
 import random
 import urllib.parse
+import urllib.request
+import re
 import yt_dlp
 import imageio_ffmpeg
 from concurrent.futures import ThreadPoolExecutor
@@ -20,7 +22,7 @@ from flask import Flask
 import threading
 
 # ==========================================
-# 🚨 FFMPEG PATH FIX (AUDIO/VIDEO DECODER)
+# 🚨 FFMPEG PATH FIX (AUDIO/VIDEO DECODER KO BINA ERROR CHALANE KE LIYE)
 # ==========================================
 try:
     ffmpeg_dir = os.path.dirname(imageio_ffmpeg.get_ffmpeg_exe())
@@ -37,7 +39,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "<h1>🤖 Music + UNO Bot is Alive! 🚀</h1>"
+    return "<h1>🤖 Music + UNO Bot is Alive and Rocking! 🚀</h1>"
 
 def run_web():
     port = int(os.environ.get("PORT", 8080))
@@ -253,20 +255,24 @@ async def set_position_cmd(client, message):
 
 
 # ==========================================
-# 🎵 MUSIC ENGINE UTILS (🔥 100% SOUNDCLOUD BYPASS)
+# 🎵 MUSIC ENGINE UTILS (🔥 COOKIES BYPASS + M4A STRICT AUDIO)
 # ==========================================
 async def get_fresh_url(song_dict):
     url = song_dict.get("url", "")
-    if "sndcdn.com" in url or "googlevideo.com" in url:
-        # Puraana url agar kaam na kare toh dobara nikal lega
-        loop = asyncio.get_event_loop()
-        fresh_data = await loop.run_in_executor(thread_pool, get_yt_info, song_dict["title"], song_dict.get("is_video", False))
-        if fresh_data: return fresh_data["url"]
+    if "googlevideo.com" in url:
+        try:
+            parsed = urllib.parse.urlparse(url)
+            qs = urllib.parse.parse_qs(parsed.query)
+            if 'expire' in qs and time.time() > (int(qs['expire'][0]) - 600): 
+                loop = asyncio.get_event_loop()
+                fresh_data = await loop.run_in_executor(thread_pool, get_yt_info, song_dict["title"], song_dict.get("is_video", False))
+                if fresh_data: return fresh_data["url"]
+        except: pass
     return url
 
 def get_yt_info(query, is_video=False):
-    # SoundCloud Audio ke liye best quality, Video link aayi toh mp4
-    fmt = 'best[height<=720][ext=mp4]/best' if is_video else 'bestaudio/best'
+    # Strictly force audio format to prevent PyTgCalls robotic/static sound
+    fmt = 'best[height<=720][ext=mp4]/best' if is_video else 'bestaudio[ext=m4a]/bestaudio/best'
     
     ydl_opts = {
         'format': fmt, 
@@ -274,11 +280,24 @@ def get_yt_info(query, is_video=False):
         'quiet': True, 
         'no_warnings': True, 
         'ignoreerrors': True, 
-        'simulate': True
+        'simulate': True, # No downloading, pure direct stream
+        'cookiefile': 'cookies.txt', # 🔥 100% BYPASS FOR RENDER IP BLOCK
+        'extractor_args': {'youtube': {'player_client': ['android', 'ios']}}, # Prevents 50kbps speed throttling
+        'http_headers': {'User-Agent': 'Mozilla/5.0 (Android 13; Mobile; rv:109.0) Gecko/115.0 Firefox/115.0'}
     }
 
-    def process_extracted(info):
-        if not info or not info.get('url'): return None
+    # Fast Search via Normal YouTube (ytsearch1:)
+    search_query = query if ("http://" in query or "https://" in query) else f"ytsearch1:{query}"
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(search_query, download=False)
+        
+        if info and 'entries' in info and info['entries']:
+            info = info['entries'][0]
+
+        if not info or not info.get('url'):
+            return None
+
         duration_sec = int(info.get('duration', 0) or 0)
         m, s = divmod(duration_sec, 60); h, m = divmod(m, 60)
         dur_str = f"{h:02d}:{m:02d}:{s:02d}" if h else f"{m:02d}:{s:02d}"
@@ -295,20 +314,6 @@ def get_yt_info(query, is_video=False):
             "duration_sec": duration_sec,
             "is_video": is_video
         }
-
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        if "http://" in query or "https://" in query:
-            # Agar tune exact YT ya SC link di hai, toh link to hamesha yt-dlp hi kholta hai
-            info = ydl.extract_info(query, download=False)
-            if info: return process_extracted(info)
-        else:
-            # 🔥 THE MAGIC: Agar tu gaane ka naam likhega, toh bot sidha SoundCloud me dhoondhega!
-            # Render IP yaha kabhi block nahi hogi.
-            info = ydl.extract_info(f"scsearch1:{query}", download=False)
-            if info and 'entries' in info and info['entries']:
-                return process_extracted(info['entries'][0])
-
-    return None
 
 def get_music_panel(title, duration_str, requester, is_queue=False, pos=0, played_sec=0, total_sec=0):
     title_caps = to_small_caps(title)
@@ -763,7 +768,7 @@ async def process_play(client, message, is_video=False, force_play=False):
             yt_data = await asyncio.get_event_loop().run_in_executor(thread_pool, get_yt_info, query, is_video)
 
         if not yt_data or not yt_data.get("url"):
-            return await m.edit("❌ **Gaana nahi mila!** Please link provide karein ya clear naam likhein.")
+            return await m.edit("❌ **Gaana nahi mila!** Ensure cookies.txt is updated or try another song.")
 
         yt_data["is_video"] = is_video; yt_data["requester"] = requester
         if chat_id not in chat_queue: chat_queue[chat_id] = []
