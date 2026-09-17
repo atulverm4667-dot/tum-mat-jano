@@ -22,13 +22,12 @@ from flask import Flask
 import threading
 
 # ==========================================
-# 🚨 FFMPEG PATH FIX (FOR RENDER AUDIO/VIDEO)
+# 🚨 FFMPEG PATH FIX 
 # ==========================================
 try:
     ffmpeg_path = os.path.dirname(imageio_ffmpeg.get_ffmpeg_exe())
     if ffmpeg_path not in os.environ["PATH"]:
         os.environ["PATH"] += os.pathsep + ffmpeg_path
-    print("✅ FFmpeg Path Set Successfully!")
 except Exception as e:
     print(f"⚠️ FFmpeg Path Error: {e}")
 
@@ -39,7 +38,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "<h1>🤖 Music + UNO Bot is Alive and Running Successfully! 🚀</h1>"
+    return "<h1>🤖 Music + UNO Bot is Alive! 🚀</h1>"
 
 def run_web():
     port = int(os.environ.get("PORT", 8080))
@@ -62,9 +61,8 @@ if MONGO_URL:
     playlist_col = db["user_playlists"]
     uno_stats_col = db["uno_stats"]  
     uno_cards_col = db["uno_cards"] 
-    print("✅ MongoDB Connected Successfully!")
 else: 
-    print("⚠️ MONGO_URL not found! Cloud features won't work.")
+    print("⚠️ MONGO_URL not found!")
 
 # ==========================================
 # 🤖 BOT CLIENTS & GLOBALS
@@ -79,6 +77,17 @@ uno_games = {}
 cards_cache = {} 
 DEFAULT_THUMB = "https://telegra.ph/file/b9e289456ceb4249a5b06.png" 
 BOT_USERNAME, ASSISTANT_ID = "", 0  
+
+# --- AUTO CLEAN DOWNLOADS (Saves Disk Space) ---
+def clean_downloads():
+    try:
+        os.makedirs("downloads", exist_ok=True)
+        for file in os.listdir("downloads"):
+            file_path = os.path.join("downloads", file)
+            # Delete files older than 1 hour
+            if os.path.isfile(file_path) and time.time() - os.path.getmtime(file_path) > 3600:
+                os.remove(file_path)
+    except: pass
 
 # --- DB FUNCTIONS ---
 async def add_to_db(user_id, song_dict):
@@ -104,16 +113,12 @@ async def clear_db_playlist(user_id):
 async def add_win(user_id, name):
     if not MONGO_URL: return
     stats = await uno_stats_col.find_one({"user_id": user_id})
-    if stats:
-        await uno_stats_col.update_one({"user_id": user_id}, {"$inc": {"wins": 1}, "$set": {"name": name}})
-    else:
-        await uno_stats_col.insert_one({"user_id": user_id, "name": name, "wins": 1})
+    if stats: await uno_stats_col.update_one({"user_id": user_id}, {"$inc": {"wins": 1}, "$set": {"name": name}})
+    else: await uno_stats_col.insert_one({"user_id": user_id, "name": name, "wins": 1})
 
 async def load_cards_to_cache():
     if not MONGO_URL: return
-    async for card in uno_cards_col.find():
-        cards_cache[card["card_name"]] = card["file_id"]
-    print(f"✅ Loaded {len(cards_cache)} UNO Cards from MongoDB to Cache!")
+    async for card in uno_cards_col.find(): cards_cache[card["card_name"]] = card["file_id"]
 
 def add_chat(chat_id):
     try:
@@ -129,7 +134,6 @@ def get_chats():
     except: return []
 
 START_CONFIG_FILE = "start_config.json"
-
 def load_start_config():
     if os.path.exists(START_CONFIG_FILE):
         try:
@@ -186,8 +190,7 @@ def card_to_filename(card):
 async def upload_cards_cmd(client, message):
     if not MONGO_URL: return await message.reply("⚠️ MongoDB connected nahi hai!")
     folder = "uno_images"
-    if not os.path.exists(folder):
-        return await message.reply(f"⚠️ `{folder}` naam ka folder nahi mila!")
+    if not os.path.exists(folder): return await message.reply(f"⚠️ `{folder}` folder nahi mila!")
     
     m = await message.reply("⏳ **Uploading cards safely...**")
     uploaded = 0
@@ -203,7 +206,7 @@ async def upload_cards_cmd(client, message):
                     await uno_cards_col.update_one({"card_name": name_without_ext}, {"$set": {"file_id": file_id}}, upsert=True)
                     uploaded += 1
                     await asyncio.sleep(1.2) 
-                except Exception as e: pass
+                except: pass
     await m.edit(f"✅ **Upload Complete!** Total: `{uploaded}` cards.")
 
 
@@ -215,8 +218,7 @@ async def top_players_cmd(client, message):
     if not MONGO_URL: return await message.reply("⚠️ Database is not connected!")
     m = await message.reply("🏆 Fetching Leaderboard...")
     top_players = await uno_stats_col.find().sort("wins", -1).limit(10).to_list(10)
-    if not top_players:
-        return await m.edit("😔 Abhi tak kisi ne UNO game nahi jeeta hai!")
+    if not top_players: return await m.edit("😔 Abhi tak kisi ne UNO game nahi jeeta hai!")
     text = "🔥 **UNO GLOBAL LEADERBOARD** 🔥\n\n"
     for i, p in enumerate(top_players, start=1):
         name = p.get("name", "Unknown Player")
@@ -238,18 +240,15 @@ async def groups_cmd(client, message):
             chat = await client.get_chat(int(chat_id))
             title = chat.title or chat.first_name or "Private/Unknown"
             username = f"@{chat.username}" if chat.username else f"ID: `{chat.id}`"
-            link = f"https://t.me/{chat.username}" if chat.username else "No Public Username"
-            text += f"• **{title}** ({username})\n  Link: {link}\n\n"
-        except Exception:
-            text += f"• ID: `{chat_id}` (Could not fetch details)\n\n"
+            text += f"• **{title}** ({username})\n\n"
+        except: text += f"• ID: `{chat_id}` (Details Failed)\n\n"
     if len(text) > 4000:
         with open("groups_list.txt", "w", encoding="utf-8") as f: f.write(text)
         await message.reply_document("groups_list.txt", caption="📂 List bohot badi thi, isliye file bhej di hai.")
         try: os.remove("groups_list.txt")
         except: pass
         await m.delete()
-    else:
-        await m.edit(text)
+    else: await m.edit(text)
 
 @app.on_message(filters.command("setposition") & filters.user(OWNER_ID))
 async def set_position_cmd(client, message):
@@ -258,51 +257,54 @@ async def set_position_cmd(client, message):
     if len(args) != 3: return await message.reply("⚠️ Sahi format use kar: `/setposition <user_id> <wins>`")
     try:
         user_id = int(args[1]); wins = int(args[2])
-        try:
-            user = await app.get_users(user_id)
-            name = user.first_name
+        try: user = await app.get_users(user_id); name = user.first_name
         except: name = "Hidden Player"
         await uno_stats_col.update_one({"user_id": user_id}, {"$set": {"wins": wins, "name": name}}, upsert=True)
         await message.reply(f"✅ Position Update Hogyi!\n👤 **Player:** {name}\n🏆 **Wins Set To:** `{wins}`")
-    except ValueError:
-        await message.reply("⚠️ User ID aur Wins numbers me hone chahiye!")
+    except ValueError: await message.reply("⚠️ User ID aur Wins numbers me hone chahiye!")
 
 
 # ==========================================
-# 🎵 MUSIC ENGINE UTILS (⚡ FAST SEARCH FIX)
+# 🎵 MUSIC ENGINE UTILS (🔥 LOCAL DOWNLOAD BYPASS FIX)
 # ==========================================
 async def get_fresh_url(song_dict):
     url = song_dict.get("url", "")
+    # Local downloaded files expire nahi hote, wahi stream honge
+    if "downloads/" in url or url.endswith((".m4a", ".mp4", ".webm")): return url
     if "googlevideo.com" in url:
         try:
             parsed = urllib.parse.urlparse(url)
             qs = urllib.parse.parse_qs(parsed.query)
-            if 'expire' in qs:
-                expire_time = int(qs['expire'][0])
-                if time.time() > (expire_time - 600): 
-                    loop = asyncio.get_event_loop()
-                    fresh_data = await loop.run_in_executor(thread_pool, get_yt_info, song_dict["title"], song_dict.get("is_video", False))
-                    if fresh_data: return fresh_data["url"]
+            if 'expire' in qs and time.time() > (int(qs['expire'][0]) - 600): 
+                loop = asyncio.get_event_loop()
+                fresh_data = await loop.run_in_executor(thread_pool, get_yt_info, song_dict["title"], song_dict.get("is_video", False))
+                if fresh_data: return fresh_data["url"]
         except: pass
     return url
 
 def get_yt_info(query, is_video=False):
-    fmt = 'best[height<=720][ext=mp4]/best' if is_video else 'bestaudio/best'
+    os.makedirs("downloads", exist_ok=True)
+    fmt = 'best[height<=720][ext=mp4]/best' if is_video else 'm4a/bestaudio/best'
     
-    # ⚡ SUPER FAST YT-DLP OPTIONS
+    # ⬇️ DOWNLOAD = TRUE lagaya hai taaki clear aawaz aaye!
     ydl_opts_yt = {
         'format': fmt, 'noplaylist': True, 'quiet': True, 'no_warnings': True, 
-        'ignoreerrors': True, 'simulate': True,
-        'extractor_args': {'youtube': {'player_client': ['android', 'ios']}} # Seedha mobile client
+        'ignoreerrors': True, 'outtmpl': 'downloads/%(id)s.%(ext)s',
+        'extractor_args': {'youtube': {'player_client': ['android', 'ios']}}
     }
     
     ydl_opts_sc = {
         'format': fmt, 'noplaylist': True, 'quiet': True, 'no_warnings': True, 
-        'ignoreerrors': True, 'simulate': True
+        'ignoreerrors': True, 'outtmpl': 'downloads/%(id)s.%(ext)s'
     }
 
-    def process_extracted(info):
-        if not info or not info.get('url'): return None
+    def process_extracted(info, ydl_instance):
+        if not info: return None
+        
+        # Stream link ki jagah hum local file ka rasta use kar rahe hain
+        try: file_path = ydl_instance.prepare_filename(info)
+        except: file_path = info.get('url')
+
         duration_sec = int(info.get('duration', 0) or 0)
         m, s = divmod(duration_sec, 60); h, m = divmod(m, 60)
         dur_str = f"{h:02d}:{m:02d}:{s:02d}" if h else f"{m:02d}:{s:02d}"
@@ -313,31 +315,30 @@ def get_yt_info(query, is_video=False):
             
         return {
             "title": info.get('title', 'Unknown Title'),
-            "url": info.get('url'),
+            "url": file_path, # 100% Buffering Free Local Path
             "thumbnail": thumb or DEFAULT_THUMB,
             "duration": dur_str,
             "duration_sec": duration_sec,
             "is_video": is_video
         }
 
-    # 1. Direct Link Aaya Toh (No Delay)
+    # 1. Direct Link Aaya Toh
     if "http://" in query or "https://" in query:
         with yt_dlp.YoutubeDL(ydl_opts_yt) as ydl:
-            info = ydl.extract_info(query, download=False)
-            if info: return process_extracted(info)
+            info = ydl.extract_info(query, download=True) # Download start
+            if info: return process_extracted(info, ydl)
 
-    # 2. Fast YouTube Search (ytsearch1 limit karega sirf 1 result par)
+    # 2. Fast YouTube Search
     with yt_dlp.YoutubeDL(ydl_opts_yt) as ydl:
-        info = ydl.extract_info(f"ytsearch1:{query}", download=False)
+        info = ydl.extract_info(f"ytsearch1:{query}", download=True) # Download start
         if info and 'entries' in info and info['entries']:
-            res = process_extracted(info['entries'][0])
-            if res: return res
+            return process_extracted(info['entries'][0], ydl)
 
-    # 3. Quick SoundCloud Fallback (Agar Render IP completely blocked hai)
+    # 3. SoundCloud Fallback Search
     with yt_dlp.YoutubeDL(ydl_opts_sc) as ydl:
-        info = ydl.extract_info(f"scsearch1:{query}", download=False)
+        info = ydl.extract_info(f"scsearch1:{query}", download=True) # Download start
         if info and 'entries' in info and info['entries']:
-            return process_extracted(info['entries'][0])
+            return process_extracted(info['entries'][0], ydl)
 
     return None
 
@@ -371,8 +372,7 @@ def get_uno_deck():
     deck = []
     for c in colors:
         for v in values:
-            deck.append(f"{c} {v}")
-            if v != "0": deck.append(f"{c} {v}")
+            deck.append(f"{c} {v}"); deck.append(f"{c} {v}") if v != "0" else None
     for w in wilds:
         for _ in range(4): deck.append(w)
     random.shuffle(deck)
@@ -392,19 +392,15 @@ def get_next_turn(game):
     game["turn_id"] = game.get("turn_id", 0) + 1  
     return game["turn_index"]
 
-# ⏳ 60-Second Auto-Draw Timer Logic
 async def uno_turn_timer(chat_id, turn_id):
     await asyncio.sleep(60)
     if chat_id not in uno_games: return
     game = uno_games.get(chat_id)
     if not game or game.get("turn_id") != turn_id: return
-    
     try:
         player = game["players"][game["turn_index"]]
-        
         if game["status"] == "waiting_color":
-            game["current_color"] = "🔴"
-            game["status"] = "playing"
+            game["current_color"] = "🔴"; game["status"] = "playing"
             if game.get("pending_effect") == "+4":
                 victim = game["players"][(game["turn_index"] + game["direction"]) % len(game["players"])]
                 for _ in range(4):
@@ -412,9 +408,7 @@ async def uno_turn_timer(chat_id, turn_id):
                     victim["cards"].append(game["deck"].pop())
             game["pending_effect"] = "none"
             await app.send_message(chat_id, f"⏳ **Time's up!** {player['name']} ne koi color nahi chuna. Default '🔴 Red' select ho gaya.")
-            get_next_turn(game)
-            asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
-            await send_uno_table(chat_id)
+            get_next_turn(game); asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"])); await send_uno_table(chat_id)
             return
             
         if game["status"] == "playing":
@@ -422,10 +416,8 @@ async def uno_turn_timer(chat_id, turn_id):
             drawn = game["deck"].pop()
             player["cards"].append(drawn)
             await app.send_message(chat_id, f"⏳ **Time's up!** [{player['name']}](tg://user?id={player['id']}) ne 60 sec me card nahi khela, isliye automatic ek card draw ho gaya.")
-            get_next_turn(game)
-            asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
-            await send_uno_table(chat_id)
-    except Exception as e: pass
+            get_next_turn(game); asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"])); await send_uno_table(chat_id)
+    except: pass
 
 async def send_uno_table(chat_id):
     game = uno_games.get(chat_id)
@@ -433,11 +425,8 @@ async def send_uno_table(chat_id):
     current_player = game["players"][game["turn_index"]]
     players_text = "\n".join([f"{'👉' if p['id'] == current_player['id'] else '👤'} {p['name']} - {len(p['cards'])} cards" for p in game["players"]])
     
-    text = (f"🃏 **UNO TABLE**\n\n"
-            f"🎨 **Current Color:** {game['current_color']}\n"
-            f"🎯 **Top Card:** {game['top_card']}\n\n"
-            f"👥 **Players:**\n{players_text}\n\n"
-            f"⏳ *You have 60 seconds to play!*")
+    text = (f"🃏 **UNO TABLE**\n\n🎨 **Current Color:** {game['current_color']}\n🎯 **Top Card:** {game['top_card']}\n\n"
+            f"👥 **Players:**\n{players_text}\n\n⏳ *You have 60 seconds to play!*")
             
     kb = InlineKeyboardMarkup([
         [InlineKeyboardButton("🃏 Play Card", switch_inline_query_current_chat="")],
@@ -448,29 +437,22 @@ async def send_uno_table(chat_id):
         try: await game["table_msg"].delete()
         except: pass
 
-    file_key = card_to_filename(game["top_card"])
-    file_id = cards_cache.get(file_key)
-
+    file_key = card_to_filename(game["top_card"]); file_id = cards_cache.get(file_key)
     try:
         if file_id: game["table_msg"] = await app.send_photo(chat_id, photo=file_id, caption=text, reply_markup=kb)
         else: game["table_msg"] = await app.send_message(chat_id, text, reply_markup=kb)
-    except Exception:
-        game["table_msg"] = await app.send_message(chat_id, text, reply_markup=kb)
+    except: game["table_msg"] = await app.send_message(chat_id, text, reply_markup=kb)
     
     ping = await app.send_message(chat_id, f"🎯 **Teri baari hai:** [{current_player['name']}](tg://user?id={current_player['id']})")
     asyncio.create_task(delayed_delete(ping, 7))
 
-
-# 🛑 FORCE END GAME COMMAND
 @app.on_message(filters.command("end") & filters.group)
 async def end_uno_game_cmd(client, message):
     chat_id = message.chat.id
     if chat_id in uno_games:
         uno_games.pop(chat_id, None)
         await message.reply("🛑 **UNO Game forcefully ended!**")
-    else:
-        await message.reply("⚠️ Koi active UNO game nahi chal raha hai!")
-
+    else: await message.reply("⚠️ Koi active UNO game nahi chal raha hai!")
 
 @app.on_message(filters.command("startgame") & filters.group)
 async def start_uno_game(client, message):
@@ -486,8 +468,7 @@ async def start_uno_game(client, message):
 
 @app.on_callback_query(filters.regex("^join_uno$"))
 async def join_uno_cb(client, callback_query):
-    chat_id = callback_query.message.chat.id
-    user = callback_query.from_user
+    chat_id = callback_query.message.chat.id; user = callback_query.from_user
     if chat_id not in uno_games or uno_games[chat_id]["status"] != "lobby":
         return await callback_query.answer("⚠️ Lobby band ho chuki hai!", show_alert=True)
     players = uno_games[chat_id]["players"]
@@ -501,45 +482,33 @@ async def join_uno_cb(client, callback_query):
 
 async def uno_lobby_timer(chat_id):
     await asyncio.sleep(10)
-    if chat_id in uno_games and uno_games[chat_id]["status"] == "lobby":
-        rem = await app.send_message(chat_id, "⏳ **20 seconds left!** Join fast!")
+    if chat_id in uno_games and uno_games[chat_id]["status"] == "lobby": rem = await app.send_message(chat_id, "⏳ **20 seconds left!** Join fast!")
     await asyncio.sleep(20)
     if chat_id in uno_games and uno_games[chat_id]["status"] == "lobby":
         game = uno_games[chat_id]
         try: await rem.delete()
         except: pass
         if len(game["players"]) < 2:
-            uno_games.pop(chat_id, None)
-            return await app.send_message(chat_id, "⚠️ Kam se kam 2 players chahiye. **Game Cancelled!**")
+            uno_games.pop(chat_id, None); return await app.send_message(chat_id, "⚠️ Kam se kam 2 players chahiye. **Game Cancelled!**")
         
-        game["status"] = "playing"
-        deck = get_uno_deck()
+        game["status"] = "playing"; deck = get_uno_deck()
         for p in game["players"]: p["cards"] = [deck.pop() for _ in range(7)]
         top_card = deck.pop()
         while "Wild" in top_card or "Reverse" in top_card or "Skip" in top_card or "➕2" in top_card:
-            deck.append(top_card)
-            random.shuffle(deck)
-            top_card = deck.pop()
+            deck.append(top_card); random.shuffle(deck); top_card = deck.pop()
         
-        game["deck"] = deck
-        game["top_card"] = top_card
-        game["current_color"] = top_card.split(" ")[1]
-        game["turn_index"] = 0
-        game["direction"] = 1
-        game["turn_id"] = 1  
+        game["deck"] = deck; game["top_card"] = top_card; game["current_color"] = top_card.split(" ")[1]
+        game["turn_index"] = 0; game["direction"] = 1; game["turn_id"] = 1  
         
-        asyncio.create_task(uno_turn_timer(chat_id, 1))
-        await send_uno_table(chat_id)
+        asyncio.create_task(uno_turn_timer(chat_id, 1)); await send_uno_table(chat_id)
 
 @app.on_callback_query(filters.regex("^show_uno_cards$"))
 async def show_uno_cards_cb(client, cb):
     chat_id = cb.message.chat.id
-    if chat_id not in uno_games or uno_games[chat_id]["status"] != "playing":
-        return await cb.answer("Game active nahi hai!", show_alert=True)
+    if chat_id not in uno_games or uno_games[chat_id]["status"] != "playing": return await cb.answer("Game active nahi hai!", show_alert=True)
     player = next((p for p in uno_games[chat_id]["players"] if p["id"] == cb.from_user.id), None)
     if not player: return await cb.answer("Tu is game me nahi khel raha bhai!", show_alert=True)
-    cards_text = "\n".join(player["cards"])
-    await cb.answer(f"🃏 TERE CARDS:\n\n{cards_text}", show_alert=True)
+    cards_text = "\n".join(player["cards"]); await cb.answer(f"🃏 TERE CARDS:\n\n{cards_text}", show_alert=True)
 
 @app.on_inline_query()
 async def inline_uno_cards(client, query):
@@ -548,40 +517,25 @@ async def inline_uno_cards(client, query):
     for chat_id, game in uno_games.items():
         if game["status"] in ["playing", "waiting_color"]:
             for p in game["players"]:
-                if p["id"] == user_id:
-                    active_chat, player_data = chat_id, p
-                    break
+                if p["id"] == user_id: active_chat, player_data = chat_id, p; break
         if active_chat: break
 
     if not active_chat:
-        results.append(InlineQueryResultArticle(
-            id="not_in_game", title="Not playing UNO!", 
-            input_message_content=InputTextMessageContent("I tried to play but I'm not in a game!")
-        ))
+        results.append(InlineQueryResultArticle(id="not_in_game", title="Not playing UNO!", input_message_content=InputTextMessageContent("I tried to play but I'm not in a game!")))
         return await query.answer(results, cache_time=0, is_personal=True)
 
-    game = uno_games[active_chat]
-    is_my_turn = game["players"][game["turn_index"]]["id"] == user_id
-    
+    game = uno_games[active_chat]; is_my_turn = game["players"][game["turn_index"]]["id"] == user_id
     for i, card in enumerate(player_data["cards"]):
         playable = is_playable(card, game["top_card"], game["current_color"])
         title = f"{'✅ Play' if playable and is_my_turn else '❌ Cannot play'} {card}"
         payload = f"🃏 [UNO] Played: {card}\n\nChatID: {active_chat}\nCardIndex: {i}"
         if not playable or not is_my_turn: payload = f"I tried to cheat and play {card}! 🤡"
-        
         file_key, file_id = card_to_filename(card), cards_cache.get(card_to_filename(card))
+        
         if file_id:
-            results.append(InlineQueryResultCachedPhoto(
-                photo_file_id=file_id, id=f"card_{i}_{time.time()}", title=title,
-                description="Tap to play this card!" if playable and is_my_turn else "Invalid move",
-                input_message_content=InputTextMessageContent(payload)
-            ))
+            results.append(InlineQueryResultCachedPhoto(photo_file_id=file_id, id=f"card_{i}_{time.time()}", title=title, description="Tap to play this card!" if playable and is_my_turn else "Invalid move", input_message_content=InputTextMessageContent(payload)))
         else:
-            results.append(InlineQueryResultArticle(
-                id=f"card_{i}_{time.time()}", title=title, 
-                description="Tap to play!" if playable and is_my_turn else "Not your turn or invalid card.", 
-                input_message_content=InputTextMessageContent(payload)
-            ))
+            results.append(InlineQueryResultArticle(id=f"card_{i}_{time.time()}", title=title, description="Tap to play!" if playable and is_my_turn else "Not your turn or invalid card.", input_message_content=InputTextMessageContent(payload)))
     await query.answer(results, cache_time=0, is_personal=True)
 
 @app.on_message(filters.regex(r"I tried to cheat and play (.*)! 🤡"))
@@ -595,8 +549,7 @@ async def catch_cheat(client, message):
 async def catch_uno_play(client, message):
     try: await message.delete()
     except: pass
-    match = message.matches[0]
-    card, chat_id, card_index = match.group(1), int(match.group(2)), int(match.group(3))
+    match = message.matches[0]; card, chat_id, card_index = match.group(1), int(match.group(2)), int(match.group(3))
     user_id = message.from_user.id
 
     if chat_id not in uno_games or uno_games[chat_id]["status"] != "playing": return
@@ -609,23 +562,19 @@ async def catch_uno_play(client, message):
     player = game["players"][game["turn_index"]]
     if card_index >= len(player["cards"]) or player["cards"][card_index] != card: return
 
-    player["cards"].pop(card_index)
-    game["top_card"] = card
+    player["cards"].pop(card_index); game["top_card"] = card
 
     if "Wild" in card:
         kb = InlineKeyboardMarkup([
             [InlineKeyboardButton("🔴 Red", callback_data="unocolor_🔴 Red"), InlineKeyboardButton("🔵 Blue", callback_data="unocolor_🔵 Blue")],
             [InlineKeyboardButton("🟢 Green", callback_data="unocolor_🟢 Green"), InlineKeyboardButton("🟡 Yellow", callback_data="unocolor_🟡 Yellow")]
         ])
-        game["status"] = "waiting_color"
-        game["pending_effect"] = "+4" if "+4" in card else "none"
+        game["status"] = "waiting_color"; game["pending_effect"] = "+4" if "+4" in card else "none"
         if "table_msg" in game:
             try: await game["table_msg"].delete()
             except: pass
             
-        game["turn_id"] += 1  
-        asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
-        
+        game["turn_id"] += 1; asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
         game["table_msg"] = await app.send_message(chat_id, f"🌈 **WILD CARD PLAYED by {player['name']}!**\nChoose a new color quickly (60s):", reply_markup=kb)
         return
 
@@ -642,22 +591,17 @@ async def catch_uno_play(client, message):
         get_next_turn(game)
 
     if len(player["cards"]) == 0:
-        winner_name, winner_id = player['name'], player['id']
-        uno_games.pop(chat_id, None)
-        await add_win(winner_id, winner_name) 
+        winner_name, winner_id = player['name'], player['id']; uno_games.pop(chat_id, None); await add_win(winner_id, winner_name) 
         return await app.send_message(chat_id, f"🎉 **[{winner_name}](tg://user?id={winner_id}) HAS WON UNO!** 🏆")
 
-    get_next_turn(game)
-    asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
-    await send_uno_table(chat_id)
+    get_next_turn(game); asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"])); await send_uno_table(chat_id)
 
 @app.on_callback_query(filters.regex(r"^unocolor_(.*)$"))
 async def choose_color_cb(client, cb):
     chat_id = cb.message.chat.id
     if chat_id not in uno_games or uno_games[chat_id]["status"] != "waiting_color": return
     game = uno_games[chat_id]
-    if game["players"][game["turn_index"]]["id"] != cb.from_user.id:
-        return await cb.answer("Wait!", show_alert=True)
+    if game["players"][game["turn_index"]]["id"] != cb.from_user.id: return await cb.answer("Wait!", show_alert=True)
         
     game["current_color"] = cb.data.split("_")[1].split(" ")[1]
     if game["pending_effect"] == "+4":
@@ -667,35 +611,26 @@ async def choose_color_cb(client, cb):
             victim["cards"].append(game["deck"].pop())
         get_next_turn(game)
 
-    game["status"] = "playing"
-    game["pending_effect"] = "none"
+    game["status"] = "playing"; game["pending_effect"] = "none"
     
     if len(game["players"][game["turn_index"]]["cards"]) == 0:
         winner_name, winner_id = game["players"][game["turn_index"]]["name"], game["players"][game["turn_index"]]["id"]
-        uno_games.pop(chat_id, None)
-        await add_win(winner_id, winner_name) 
+        uno_games.pop(chat_id, None); await add_win(winner_id, winner_name) 
         return await app.send_message(chat_id, f"🎉 **{winner_name} HAS WON UNO!** 🏆")
         
-    get_next_turn(game)
-    await cb.message.delete()
-    asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
-    await send_uno_table(chat_id)
+    get_next_turn(game); await cb.message.delete(); asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"])); await send_uno_table(chat_id)
 
 @app.on_callback_query(filters.regex("^uno_draw$"))
 async def uno_draw_cb(client, cb):
     chat_id = cb.message.chat.id
     if chat_id not in uno_games or uno_games[chat_id]["status"] != "playing": return
     game = uno_games[chat_id]
-    if game["players"][game["turn_index"]]["id"] != cb.from_user.id:
-        return await cb.answer("Wait for your turn!", show_alert=True)
+    if game["players"][game["turn_index"]]["id"] != cb.from_user.id: return await cb.answer("Wait for your turn!", show_alert=True)
         
     if not game["deck"]: game["deck"] = get_uno_deck()
-    drawn = game["deck"].pop()
-    game["players"][game["turn_index"]]["cards"].append(drawn)
+    drawn = game["deck"].pop(); game["players"][game["turn_index"]]["cards"].append(drawn)
     await cb.answer(f"📥 You drew a card!", show_alert=True)
-    get_next_turn(game)
-    asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
-    await send_uno_table(chat_id)
+    get_next_turn(game); asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"])); await send_uno_table(chat_id)
 
 
 # ==========================================
@@ -707,9 +642,8 @@ async def save_song(client, message):
     if len(message.command) < 2: return await message.reply("⚠️ Kisko save karu bhai? Aise likh: `/save Faded`")
     query = " ".join(message.command[1:])
     m = await message.reply("🔍 Searching to save in your playlist...")
-    loop = asyncio.get_event_loop()
     try:
-        yt_data = await loop.run_in_executor(thread_pool, get_yt_info, query, False)
+        yt_data = await asyncio.get_event_loop().run_in_executor(thread_pool, get_yt_info, query, False)
         if not yt_data or not yt_data.get("url"): return await m.edit("❌ **Gaana nahi mila!**")
         song_dict = {"title": yt_data["title"], "url": yt_data["url"], "thumbnail": yt_data["thumbnail"], "duration": yt_data["duration"], "duration_sec": yt_data["duration_sec"], "is_video": False}
         await add_to_db(message.from_user.id, song_dict)
@@ -729,8 +663,7 @@ async def show_playlist(client, message):
 
 @app.on_callback_query(filters.regex(r"^(manage_pl|back_pl|clear_pl|delpl_\d+)$"))
 async def playlist_callbacks(client, callback_query):
-    data = callback_query.data
-    user_id = callback_query.from_user.id
+    data = callback_query.data; user_id = callback_query.from_user.id
     if data in ["manage_pl", "back_pl"]:
         songs = await get_db_playlist(user_id)
         if not songs: return await callback_query.answer("Playlist is empty!", show_alert=True)
@@ -738,11 +671,9 @@ async def playlist_callbacks(client, callback_query):
         kb.append([InlineKeyboardButton("🔙 Close", callback_data="close_msg"), InlineKeyboardButton("🗑️ Clear All", callback_data="clear_pl")])
         await callback_query.message.edit("🗑️ **Select a song to delete from your playlist:**", reply_markup=InlineKeyboardMarkup(kb))
     elif data == "clear_pl":
-        await clear_db_playlist(user_id)
-        await callback_query.message.edit("✅ Teri puri playlist delete kar di gayi hai!")
+        await clear_db_playlist(user_id); await callback_query.message.edit("✅ Teri puri playlist delete kar di gayi hai!")
     elif data.startswith("delpl_"):
-        await remove_from_db(user_id, int(data.split("_")[1]))
-        await callback_query.answer("✅ Song deleted from playlist!", show_alert=False)
+        await remove_from_db(user_id, int(data.split("_")[1])); await callback_query.answer("✅ Song deleted from playlist!", show_alert=False)
         callback_query.data = "manage_pl"; await playlist_callbacks(client, callback_query)
 
 
@@ -753,15 +684,13 @@ async def playlist_callbacks(client, callback_query):
 async def set_start_cmd(client, message):
     replied = message.reply_to_message
     if not replied or not replied.photo: return await message.reply("⚠️ **Galat Format!**\nEk Photo bhejo jisme caption likha ho aur us message ko reply karke `/setstart` likho.")
-    file_id = replied.photo.file_id
-    text = replied.caption.markdown if replied.caption else "Hello {mention}! Bot is ready. 🤖"
+    file_id = replied.photo.file_id; text = replied.caption.markdown if replied.caption else "Hello {mention}! Bot is ready. 🤖"
     raw_btns = []
     if replied.reply_markup and replied.reply_markup.inline_keyboard:
         for row in replied.reply_markup.inline_keyboard:
             for btn in row:
                 if btn.url: raw_btns.append({"name": btn.text, "url": btn.url})
-    config_data = {"text": text, "photo": file_id, "buttons": raw_btns}
-    save_start_config(config_data)
+    save_start_config({"text": text, "photo": file_id, "buttons": raw_btns})
     await message.reply("✅ **Naya Start Message Set Ho Gaya Hai!**")
 
 @app.on_message(filters.command("id"))
@@ -827,6 +756,8 @@ async def process_play(client, message, is_video=False, force_play=False):
             m = await message.reply(f"❌ **Make Bot Admin to add Assistant!**\n`{e}`")
             return asyncio.create_task(delayed_delete(m, 10))
 
+    clean_downloads() # Clear old files before playing new ones
+    
     replied = message.reply_to_message
     is_tg_media = bool(replied and (replied.audio or replied.video or replied.document or replied.voice))
     query = " ".join(message.command[1:])
@@ -841,10 +772,8 @@ async def process_play(client, message, is_video=False, force_play=False):
         if chat_id not in chat_queue: chat_queue[chat_id] = []
         for song in songs: song["requester"] = requester; chat_queue[chat_id].append(song)
         if not is_playing.get(chat_id):
-            is_playing[chat_id] = True
-            first_song = chat_queue[chat_id].pop(0)
-            fresh_url = await get_fresh_url(first_song)
-            first_song["url"] = fresh_url
+            is_playing[chat_id] = True; first_song = chat_queue[chat_id].pop(0)
+            fresh_url = await get_fresh_url(first_song); first_song["url"] = fresh_url
             stream = MediaStream(fresh_url) if first_song.get('is_video') else MediaStream(fresh_url, video_flags=MediaStream.Flags.IGNORE)
             await call_py.play(chat_id, stream)
             cap, rm = get_music_panel(first_song['title'], first_song['duration'], requester, played_sec=0, total_sec=first_song['duration_sec'])
@@ -864,7 +793,7 @@ async def process_play(client, message, is_video=False, force_play=False):
             dur_str = f"{h_:02d}:{m_:02d}:{s_:02d}" if h_ else f"{m_:02d}:{s_:02d}"
             yt_data = {"title": getattr(obj, 'title', None) or getattr(obj, 'file_name', "Telegram Media"), "url": file_path, "thumbnail": DEFAULT_THUMB, "duration": dur_str, "duration_sec": dur}
         else:
-            m = await message.reply("🔍 Searching...")
+            m = await message.reply("📥 **Downloading in Background (No Buffering)...**")
             yt_data = await asyncio.get_event_loop().run_in_executor(thread_pool, get_yt_info, query, is_video)
 
         if not yt_data or not yt_data.get("url"):
@@ -902,8 +831,7 @@ async def skip_cmd(client, message):
     except: pass
     chat_id = message.chat.id
     if chat_id in chat_queue and chat_queue[chat_id]:
-        next_song = chat_queue[chat_id].pop(0)
-        fresh_url = await get_fresh_url(next_song)
+        next_song = chat_queue[chat_id].pop(0); fresh_url = await get_fresh_url(next_song)
         stream = MediaStream(fresh_url) if next_song.get('is_video') else MediaStream(fresh_url, video_flags=MediaStream.Flags.IGNORE)
         await call_py.play(chat_id, stream)
         cap, rm = get_music_panel(next_song['title'], next_song['duration'], next_song['requester'], played_sec=0, total_sec=next_song['duration_sec'])
@@ -975,8 +903,7 @@ async def panel_callbacks(client, cb):
         if chat_id in current_playing: await cb.answer("🔄 Panel Synced!", show_alert=False)
         else: await cb.answer("ℹ️ No stream.", show_alert=True)
     elif data == "reload_cb":
-        count = await reload_admins(chat_id)
-        await cb.answer(f"⚡ Admin cache updated! ({count} admins)", show_alert=False)
+        count = await reload_admins(chat_id); await cb.answer(f"⚡ Admin cache updated! ({count} admins)", show_alert=False)
     elif data == "pause_cb":
         await call_py.pause(chat_id)
         if chat_id in current_playing: current_playing[chat_id].update({'is_paused': True, 'pause_time': time.time()})
@@ -1004,8 +931,7 @@ async def panel_callbacks(client, cb):
             await cb.answer("↻ Replaying!", show_alert=False)
     elif data == "skip_cb":
         if chat_id in chat_queue and chat_queue[chat_id]:
-            next_song = chat_queue[chat_id].pop(0)
-            fresh_url = await get_fresh_url(next_song)
+            next_song = chat_queue[chat_id].pop(0); fresh_url = await get_fresh_url(next_song)
             stream = MediaStream(fresh_url) if next_song.get('is_video') else MediaStream(fresh_url, video_flags=MediaStream.Flags.IGNORE)
             await call_py.play(chat_id, stream)
             cap, rm = get_music_panel(next_song['title'], next_song['duration'], next_song['requester'], played_sec=0, total_sec=next_song['duration_sec'])
@@ -1020,8 +946,7 @@ async def panel_callbacks(client, cb):
 async def on_stream_end_handler(client: PyTgCalls, update: Update):
     chat_id = update.chat_id
     if chat_id in chat_queue and chat_queue[chat_id]:
-        next_song = chat_queue[chat_id].pop(0)
-        fresh_url = await get_fresh_url(next_song)
+        next_song = chat_queue[chat_id].pop(0); fresh_url = await get_fresh_url(next_song)
         stream = MediaStream(fresh_url) if next_song.get('is_video') else MediaStream(fresh_url, video_flags=MediaStream.Flags.IGNORE)
         await client.play(chat_id, stream)
         cap, rm = get_music_panel(next_song['title'], next_song['duration'], next_song['requester'], played_sec=0, total_sec=next_song['duration_sec'])
@@ -1089,7 +1014,7 @@ async def main():
     except: pass
     
     print("=========================================")
-    print("✅ FULL CLOUD (DB + CACHE) UNO ENGINE IS LIVE!")
+    print("✅ FULL CLOUD UNO ENGINE IS LIVE!")
     print("=========================================")
     await idle()
 
