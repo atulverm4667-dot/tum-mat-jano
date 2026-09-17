@@ -155,7 +155,7 @@ async def delayed_delete(message, delay=5):
 
 
 # ==========================================
-# 🖼️ UNO CARDS IMAGE AUTO-UPLOADER (FIXED)
+# 🖼️ UNO CARDS IMAGE AUTO-UPLOADER (SAFE)
 # ==========================================
 def card_to_filename(card):
     if "Wild +4" in card: return "Wild_Card_Draw_4"
@@ -173,14 +173,11 @@ async def upload_cards_cmd(client, message):
     if not MONGO_URL: return await message.reply("⚠️ MongoDB connected nahi hai!")
     folder = "uno_images"
     if not os.path.exists(folder):
-        return await message.reply(f"⚠️ `{folder}` naam ka folder nahi mila! Usko bana kar images usme daal do.")
+        return await message.reply(f"⚠️ `{folder}` naam ka folder nahi mila!")
     
-    m = await message.reply("⏳ **Purana data clear karke fresh cards upload kar raha hu... Rukiye!**")
-    
-    await uno_cards_col.delete_many({})
-    cards_cache.clear()
-    
+    m = await message.reply("⏳ **Uploading cards safely...**")
     uploaded = 0
+    
     for root_dir, sub_dirs, files in os.walk(folder):
         for file in files:
             name_without_ext = os.path.splitext(file)[0]
@@ -189,20 +186,18 @@ async def upload_cards_cmd(client, message):
                 try:
                     msg = await client.send_photo(message.chat.id, file_path)
                     file_id = msg.photo.file_id
-                    
                     cards_cache[name_without_ext] = file_id
                     await uno_cards_col.update_one(
                         {"card_name": name_without_ext}, 
                         {"$set": {"file_id": file_id}}, 
                         upsert=True
                     )
-                    
                     uploaded += 1
                     await asyncio.sleep(1.2) 
                 except Exception as e:
                     print(f"Error uploading {file_path}: {e}")
                     
-    await m.edit(f"✅ **Upload Complete & Fixed!**\nTotal Fresh Cards Uploaded: `{uploaded}`\nAb game makkhan chalega! 🚀")
+    await m.edit(f"✅ **Upload Complete!** Total: `{uploaded}` cards.")
 
 
 # ==========================================
@@ -306,7 +301,7 @@ async def get_fresh_url(song_dict):
                 if time.time() > (expire_time - 600): 
                     loop = asyncio.get_event_loop()
                     fresh_data = await loop.run_in_executor(thread_pool, get_yt_info, song_dict["title"], song_dict.get("is_video", False))
-                    return fresh_data["url"]
+                    if fresh_data: return fresh_data["url"]
         except: pass
     return url
 
@@ -315,13 +310,20 @@ def get_yt_info(query, is_video=False):
     ydl_opts = {'format': fmt, 'noplaylist': True, 'quiet': True, 'no_warnings': True, 'ignoreerrors': True, 'simulate': True, 'extractor_args': {'youtube': {'player_client': ['android', 'web']}}}
     search_query = query if "youtube.com" in query or "youtu.be" in query else f"ytsearch:{query}"
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(search_query, download=False)
-        if 'entries' in info: info = info['entries'][0]
-        duration_sec = int(info.get('duration', 0) or 0)
-        m, s = divmod(duration_sec, 60)
-        h, m = divmod(m, 60)
-        duration_str = f"{h:02d}:{m:02d}:{s:02d}" if h else f"{m:02d}:{s:02d}"
-        return {"title": info.get('title', 'Unknown Title'), "url": info.get('url'), "thumbnail": f"https://img.youtube.com/vi/{info.get('id')}/hqdefault.jpg" if info.get('id') else DEFAULT_THUMB, "duration": duration_str, "duration_sec": duration_sec, "is_video": is_video}
+        try:
+            info = ydl.extract_info(search_query, download=False)
+            if not info: return None
+            if 'entries' in info: 
+                entries = info.get('entries')
+                if not entries: return None
+                info = entries[0]
+            duration_sec = int(info.get('duration', 0) or 0)
+            m, s = divmod(duration_sec, 60)
+            h, m = divmod(m, 60)
+            duration_str = f"{h:02d}:{m:02d}:{s:02d}" if h else f"{m:02d}:{s:02d}"
+            return {"title": info.get('title', 'Unknown Title'), "url": info.get('url'), "thumbnail": f"https://img.youtube.com/vi/{info.get('id')}/hqdefault.jpg" if info.get('id') else DEFAULT_THUMB, "duration": duration_str, "duration_sec": duration_sec, "is_video": is_video}
+        except:
+            return None
 
 def get_music_panel(title, duration_str, requester, is_queue=False, pos=0, played_sec=0, total_sec=0):
     title_caps = to_small_caps(title)
@@ -401,8 +403,7 @@ async def send_uno_table(chat_id):
             game["table_msg"] = await app.send_photo(chat_id, photo=file_id, caption=text, reply_markup=kb)
         else:
             game["table_msg"] = await app.send_message(chat_id, text, reply_markup=kb)
-    except Exception as e:
-        print(f"Photo send error (Fallback to text): {e}")
+    except Exception:
         game["table_msg"] = await app.send_message(chat_id, text, reply_markup=kb)
     
     ping = await app.send_message(chat_id, f"🎯 **Teri baari hai:** [{current_player['name']}](tg://user?id={current_player['id']})")
@@ -648,6 +649,8 @@ async def save_song(client, message):
     loop = asyncio.get_event_loop()
     try:
         yt_data = await loop.run_in_executor(thread_pool, get_yt_info, query, False)
+        if not yt_data or not yt_data.get("url"):
+            return await m.edit("❌ **Gaana nahi mila!**")
         song_dict = {"title": yt_data["title"], "url": yt_data["url"], "thumbnail": yt_data["thumbnail"], "duration": yt_data["duration"], "duration_sec": yt_data["duration_sec"], "is_video": False}
         await add_to_db(message.from_user.id, song_dict)
         await m.edit(f"✅ **{yt_data['title']}** teri Cloud Playlist me save ho gaya!\n\nCheck karne ke liye `/mypl` daba.")
@@ -813,6 +816,9 @@ async def process_play(client, message, is_video=False, force_play=False):
         else:
             m = await message.reply("🔍 Searching...")
             yt_data = await asyncio.get_event_loop().run_in_executor(thread_pool, get_yt_info, query, is_video)
+
+        if not yt_data or not yt_data.get("url"):
+            return await m.edit("❌ **Gaana nahi mila!** YouTube search fail ho gaya.")
 
         yt_data["is_video"] = is_video; yt_data["requester"] = requester
         if chat_id not in chat_queue: chat_queue[chat_id] = []
