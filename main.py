@@ -15,6 +15,21 @@ from pytgcalls import PyTgCalls
 from pytgcalls import filters as ptc_filters
 from pytgcalls.types import MediaStream, Update
 from motor.motor_asyncio import AsyncIOMotorClient
+from flask import Flask
+import threading
+
+# ==========================================
+# 🌐 DUMMY WEB PAGE / KEEP-ALIVE SERVER (FOR RENDER)
+# ==========================================
+web_app = Flask(__name__)
+
+@web_app.route('/')
+def home():
+    return "<h1>🤖 Music + UNO Bot is Alive and Running Successfully! 🚀</h1>"
+
+def run_web():
+    port = int(os.environ.get("PORT", 8080))
+    web_app.run(host="0.0.0.0", port=port)
 
 # ==========================================
 # ⚙️ CONFIG & MONGODB SETUP
@@ -140,7 +155,7 @@ async def delayed_delete(message, delay=5):
 
 
 # ==========================================
-# 🖼️ UNO CARDS IMAGE AUTO-UPLOADER
+# 🖼️ UNO CARDS IMAGE AUTO-UPLOADER (FIXED)
 # ==========================================
 def card_to_filename(card):
     if "Wild +4" in card: return "Wild_Card_Draw_4"
@@ -160,13 +175,16 @@ async def upload_cards_cmd(client, message):
     if not os.path.exists(folder):
         return await message.reply(f"⚠️ `{folder}` naam ka folder nahi mila! Usko bana kar images usme daal do.")
     
-    m = await message.reply("⏳ **Cards ko MongoDB me secure kar raha hu... Kripya 1-2 minute rukiye.**")
-    uploaded = 0
+    m = await message.reply("⏳ **Purana data clear karke fresh cards upload kar raha hu... Rukiye!**")
     
+    await uno_cards_col.delete_many({})
+    cards_cache.clear()
+    
+    uploaded = 0
     for root_dir, sub_dirs, files in os.walk(folder):
         for file in files:
             name_without_ext = os.path.splitext(file)[0]
-            if name_without_ext not in cards_cache and file.lower().endswith((".png", ".jpg", ".jpeg")):
+            if file.lower().endswith((".png", ".jpg", ".jpeg")):
                 file_path = os.path.join(root_dir, file)
                 try:
                     msg = await client.send_photo(message.chat.id, file_path)
@@ -180,15 +198,15 @@ async def upload_cards_cmd(client, message):
                     )
                     
                     uploaded += 1
-                    await asyncio.sleep(1.5) 
+                    await asyncio.sleep(1.2) 
                 except Exception as e:
                     print(f"Error uploading {file_path}: {e}")
                     
-    await m.edit(f"✅ **Upload Complete!**\nNaye images Cloud me add hue: `{uploaded}`\nTotal Database Cards: `{len(cards_cache)}`")
+    await m.edit(f"✅ **Upload Complete & Fixed!**\nTotal Fresh Cards Uploaded: `{uploaded}`\nAb game makkhan chalega! 🚀")
 
 
 # ==========================================
-# 🏆 UNO LEADERBOARD COMMANDS
+# 🏆 UNO LEADERBOARD & OWNER COMMANDS
 # ==========================================
 @app.on_message(filters.command("topplayers"))
 async def top_players_cmd(client, message):
@@ -215,6 +233,35 @@ async def top_players_cmd(client, message):
             text += f"{i}. 🔰 **[Beginner Pro - {name}](tg://user?id={user_id})** ➣ `{wins}` Wins\n"
             
     await m.edit(text)
+
+@app.on_message(filters.command("groups") & filters.user(OWNER_ID))
+async def groups_cmd(client, message):
+    chats = get_chats()
+    if not chats:
+        return await message.reply("❌ Abhi tak kisi bhi group ya chat ka data save nahi hua hai!")
+    
+    m = await message.reply(f"📂 Fetching details for {len(chats)} chats...")
+    text = "📋 **Connected Groups & Chats List:**\n\n"
+    
+    for chat_id in chats:
+        try:
+            chat = await client.get_chat(int(chat_id))
+            title = chat.title or chat.first_name or "Private/Unknown"
+            username = f"@{chat.username}" if chat.username else f"ID: `{chat.id}`"
+            link = f"https://t.me/{chat.username}" if chat.username else "No Public Username"
+            text += f"• **{title}** ({username})\n  Link: {link}\n\n"
+        except Exception as e:
+            text += f"• ID: `{chat_id}` (Could not fetch details)\n\n"
+            
+    if len(text) > 4000:
+        with open("groups_list.txt", "w", encoding="utf-8") as f:
+            f.write(text)
+        await message.reply_document("groups_list.txt", caption="📂 List bohot badi thi, isliye file bhej di hai.")
+        try: os.remove("groups_list.txt")
+        except: pass
+        await m.delete()
+    else:
+        await m.edit(text)
 
 @app.on_message(filters.command("setposition") & filters.user(OWNER_ID))
 async def set_position_cmd(client, message):
@@ -349,9 +396,13 @@ async def send_uno_table(chat_id):
     file_key = card_to_filename(game["top_card"])
     file_id = cards_cache.get(file_key)
 
-    if file_id:
-        game["table_msg"] = await app.send_photo(chat_id, photo=file_id, caption=text, reply_markup=kb)
-    else:
+    try:
+        if file_id:
+            game["table_msg"] = await app.send_photo(chat_id, photo=file_id, caption=text, reply_markup=kb)
+        else:
+            game["table_msg"] = await app.send_message(chat_id, text, reply_markup=kb)
+    except Exception as e:
+        print(f"Photo send error (Fallback to text): {e}")
         game["table_msg"] = await app.send_message(chat_id, text, reply_markup=kb)
     
     ping = await app.send_message(chat_id, f"🎯 **Teri baari hai:** [{current_player['name']}](tg://user?id={current_player['id']})")
@@ -563,7 +614,7 @@ async def choose_color_cb(client, cb):
         winner_id = game["players"][game["turn_index"]]["id"]
         uno_games.pop(chat_id, None)
         await add_win(winner_id, winner) 
-        return await app.send_message(chat_id, f"🎉 **[{winner}](tg://user?id={winner_id}) HAS WON UNO!** 🏆")
+        return await app.send_message(chat_id, f"🎉 **{winner} HAS WON UNO!** 🏆")
         
     get_next_turn(game)
     await cb.message.delete()
@@ -949,6 +1000,9 @@ async def start_cmd(client, message):
 # 🚀 MAIN LOOP
 # ==========================================
 async def main():
+    print("⏳ Starting Web Server (Keep-Alive)...")
+    threading.Thread(target=run_web, daemon=True).start()
+    
     print("⏳ Connecting Bot and Assistant...")
     await app.start()
     await call_py.start() 
