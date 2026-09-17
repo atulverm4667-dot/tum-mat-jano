@@ -22,12 +22,13 @@ from flask import Flask
 import threading
 
 # ==========================================
-# 🚨 FFMPEG PATH FIX 
+# 🚨 FFMPEG PATH FIX (AUDIO/VIDEO DECODER)
 # ==========================================
 try:
-    ffmpeg_path = os.path.dirname(imageio_ffmpeg.get_ffmpeg_exe())
-    if ffmpeg_path not in os.environ["PATH"]:
-        os.environ["PATH"] += os.pathsep + ffmpeg_path
+    ffmpeg_dir = os.path.dirname(imageio_ffmpeg.get_ffmpeg_exe())
+    if ffmpeg_dir not in os.environ.get("PATH", ""):
+        os.environ["PATH"] = ffmpeg_dir + os.pathsep + os.environ.get("PATH", "")
+    print("✅ FFmpeg Path Set Successfully!")
 except Exception as e:
     print(f"⚠️ FFmpeg Path Error: {e}")
 
@@ -77,17 +78,6 @@ uno_games = {}
 cards_cache = {} 
 DEFAULT_THUMB = "https://telegra.ph/file/b9e289456ceb4249a5b06.png" 
 BOT_USERNAME, ASSISTANT_ID = "", 0  
-
-# --- AUTO CLEAN DOWNLOADS (Saves Disk Space) ---
-def clean_downloads():
-    try:
-        os.makedirs("downloads", exist_ok=True)
-        for file in os.listdir("downloads"):
-            file_path = os.path.join("downloads", file)
-            # Delete files older than 1 hour
-            if os.path.isfile(file_path) and time.time() - os.path.getmtime(file_path) > 3600:
-                os.remove(file_path)
-    except: pass
 
 # --- DB FUNCTIONS ---
 async def add_to_db(user_id, song_dict):
@@ -265,12 +255,10 @@ async def set_position_cmd(client, message):
 
 
 # ==========================================
-# 🎵 MUSIC ENGINE UTILS (🔥 LOCAL DOWNLOAD BYPASS FIX)
+# 🎵 MUSIC ENGINE UTILS (🔥 100% PURE AUDIO FIX)
 # ==========================================
 async def get_fresh_url(song_dict):
     url = song_dict.get("url", "")
-    # Local downloaded files expire nahi hote, wahi stream honge
-    if "downloads/" in url or url.endswith((".m4a", ".mp4", ".webm")): return url
     if "googlevideo.com" in url:
         try:
             parsed = urllib.parse.urlparse(url)
@@ -283,27 +271,37 @@ async def get_fresh_url(song_dict):
     return url
 
 def get_yt_info(query, is_video=False):
-    os.makedirs("downloads", exist_ok=True)
-    fmt = 'best[height<=720][ext=mp4]/best' if is_video else 'm4a/bestaudio/best'
+    # 🔥 STRICTLY force m4a audio so PyTgCalls doesn't glitch and play weird noise
+    fmt = 'best[height<=720][ext=mp4]/best' if is_video else 'bestaudio[ext=m4a]/bestaudio/best'
     
-    # ⬇️ DOWNLOAD = TRUE lagaya hai taaki clear aawaz aaye!
-    ydl_opts_yt = {
-        'format': fmt, 'noplaylist': True, 'quiet': True, 'no_warnings': True, 
-        'ignoreerrors': True, 'outtmpl': 'downloads/%(id)s.%(ext)s',
-        'extractor_args': {'youtube': {'player_client': ['android', 'ios']}}
-    }
-    
-    ydl_opts_sc = {
-        'format': fmt, 'noplaylist': True, 'quiet': True, 'no_warnings': True, 
-        'ignoreerrors': True, 'outtmpl': 'downloads/%(id)s.%(ext)s'
+    ydl_opts = {
+        'format': fmt, 
+        'noplaylist': True, 
+        'quiet': True, 
+        'no_warnings': True, 
+        'ignoreerrors': True, 
+        'simulate': True,
+        'extractor_args': {'youtube': {'player_client': ['android', 'ios']}},
+        'http_headers': {'User-Agent': 'Mozilla/5.0 (Android 13; Mobile; rv:109.0) Gecko/115.0 Firefox/115.0'}
     }
 
-    def process_extracted(info, ydl_instance):
-        if not info: return None
+    # 🔥 YTMUSIC SEARCH: Use YouTube Music (ytmsearch1) which gets 100% accurate songs and avoids IP bans
+    search_query = query if ("http://" in query or "https://" in query) else f"ytmsearch1:{query}"
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(search_query, download=False)
         
-        # Stream link ki jagah hum local file ka rasta use kar rahe hain
-        try: file_path = ydl_instance.prepare_filename(info)
-        except: file_path = info.get('url')
+        if info and 'entries' in info and info['entries']:
+            info = info['entries'][0]
+            
+        # Fallback to normal youtube search if YT Music misses
+        if (not info or not info.get('url')) and "http" not in query:
+            info = ydl.extract_info(f"ytsearch1:{query}", download=False)
+            if info and 'entries' in info and info['entries']:
+                info = info['entries'][0]
+
+        if not info or not info.get('url'):
+            return None
 
         duration_sec = int(info.get('duration', 0) or 0)
         m, s = divmod(duration_sec, 60); h, m = divmod(m, 60)
@@ -315,32 +313,12 @@ def get_yt_info(query, is_video=False):
             
         return {
             "title": info.get('title', 'Unknown Title'),
-            "url": file_path, # 100% Buffering Free Local Path
+            "url": info.get('url'),
             "thumbnail": thumb or DEFAULT_THUMB,
             "duration": dur_str,
             "duration_sec": duration_sec,
             "is_video": is_video
         }
-
-    # 1. Direct Link Aaya Toh
-    if "http://" in query or "https://" in query:
-        with yt_dlp.YoutubeDL(ydl_opts_yt) as ydl:
-            info = ydl.extract_info(query, download=True) # Download start
-            if info: return process_extracted(info, ydl)
-
-    # 2. Fast YouTube Search
-    with yt_dlp.YoutubeDL(ydl_opts_yt) as ydl:
-        info = ydl.extract_info(f"ytsearch1:{query}", download=True) # Download start
-        if info and 'entries' in info and info['entries']:
-            return process_extracted(info['entries'][0], ydl)
-
-    # 3. SoundCloud Fallback Search
-    with yt_dlp.YoutubeDL(ydl_opts_sc) as ydl:
-        info = ydl.extract_info(f"scsearch1:{query}", download=True) # Download start
-        if info and 'entries' in info and info['entries']:
-            return process_extracted(info['entries'][0], ydl)
-
-    return None
 
 def get_music_panel(title, duration_str, requester, is_queue=False, pos=0, played_sec=0, total_sec=0):
     title_caps = to_small_caps(title)
@@ -756,8 +734,6 @@ async def process_play(client, message, is_video=False, force_play=False):
             m = await message.reply(f"❌ **Make Bot Admin to add Assistant!**\n`{e}`")
             return asyncio.create_task(delayed_delete(m, 10))
 
-    clean_downloads() # Clear old files before playing new ones
-    
     replied = message.reply_to_message
     is_tg_media = bool(replied and (replied.audio or replied.video or replied.document or replied.voice))
     query = " ".join(message.command[1:])
@@ -793,11 +769,11 @@ async def process_play(client, message, is_video=False, force_play=False):
             dur_str = f"{h_:02d}:{m_:02d}:{s_:02d}" if h_ else f"{m_:02d}:{s_:02d}"
             yt_data = {"title": getattr(obj, 'title', None) or getattr(obj, 'file_name', "Telegram Media"), "url": file_path, "thumbnail": DEFAULT_THUMB, "duration": dur_str, "duration_sec": dur}
         else:
-            m = await message.reply("📥 **Downloading in Background (No Buffering)...**")
+            m = await message.reply("🔍 Searching in YouTube Music...")
             yt_data = await asyncio.get_event_loop().run_in_executor(thread_pool, get_yt_info, query, is_video)
 
         if not yt_data or not yt_data.get("url"):
-            return await m.edit("❌ **Gaana nahi mila!** Try with a different search term or provide a direct link.")
+            return await m.edit("❌ **Gaana nahi mila!** Please link provide karein ya clear naam likhein.")
 
         yt_data["is_video"] = is_video; yt_data["requester"] = requester
         if chat_id not in chat_queue: chat_queue[chat_id] = []
