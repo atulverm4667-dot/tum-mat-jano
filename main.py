@@ -290,7 +290,7 @@ async def set_position_cmd(client, message):
 
 
 # ==========================================
-# 🎵 MUSIC ENGINE UTILS (🔥 YT-DLP BYPASS ADDED)
+# 🎵 MUSIC ENGINE UTILS (🔥 IOS MOBILE BYPASS ADDED)
 # ==========================================
 async def get_fresh_url(song_dict):
     url = song_dict.get("url", "")
@@ -316,11 +316,15 @@ def get_yt_info(query, is_video=False):
         'no_warnings': True, 
         'ignoreerrors': True, 
         'simulate': True,
-        'extractor_args': {'youtube': {'player_client': ['android', 'web']}}
+        'geo_bypass': True,
+        # 📱 Yahan humne strictly Mobile client set kiya hai taki block na ho
+        'extractor_args': {'youtube': {'player_client': ['ios', 'android', 'mweb']}},
+        'http_headers': {
+            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1'
+        }
     }
     
     search_query = query
-    # 🔥 YOUTUBE SEARCH BYPASS: Agar Render IP block hui hai, toh yeh code seedha link uthayega!
     if "youtube.com" not in query and "youtu.be" not in query:
         try:
             url = f"https://www.youtube.com/results?search_query={urllib.parse.quote(query)}"
@@ -692,7 +696,6 @@ async def show_playlist(client, message):
     kb = [[InlineKeyboardButton("🗑️ Manage/Delete Songs", callback_data="manage_pl")]]
     await message.reply(text, reply_markup=InlineKeyboardMarkup(kb))
 
-# 🛡️ YAHAN SE PIPE SYMBOL HATA DIYA HAI! AB KOI ERROR NAHI AAYEGA
 @app.on_callback_query(filters.regex(r"^(manage_pl|back_pl|clear_pl|delpl_\d+)$"))
 async def playlist_callbacks(client, callback_query):
     data = callback_query.data
