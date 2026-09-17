@@ -307,8 +307,20 @@ async def get_fresh_url(song_dict):
 
 def get_yt_info(query, is_video=False):
     fmt = 'best[height=720][ext=mp4]/best[height<=720][ext=mp4]/best' if is_video else 'bestaudio/best'
-    ydl_opts = {'format': fmt, 'noplaylist': True, 'quiet': True, 'no_warnings': True, 'ignoreerrors': True, 'simulate': True, 'extractor_args': {'youtube': {'player_client': ['android', 'web']}}}
-    search_query = query if "youtube.com" in query or "youtu.be" in query else f"ytsearch:{query}"
+    ydl_opts = {
+        'format': fmt, 
+        'noplaylist': True, 
+        'quiet': True, 
+        'no_warnings': True, 
+        'ignoreerrors': True, 
+        'simulate': True,
+        'geo_bypass': True,
+        'http_headers': {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        },
+        'extractor_args': {'youtube': {'player_client': ['ios', 'web']}}
+    }
+    search_query = query if "youtube.com" in query or "youtu.be" in query else f"ytsearch1:{query}"
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         try:
             info = ydl.extract_info(search_query, download=False)
@@ -327,7 +339,7 @@ def get_yt_info(query, is_video=False):
 
 def get_music_panel(title, duration_str, requester, is_queue=False, pos=0, played_sec=0, total_sec=0):
     title_caps = to_small_caps(title)
-    caption = f"> ➲ {'ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ #' + str(pos) if is_queue else 'ꜱᴛᴀʀᴛᴇᴅ ꜱᴛʀᴇᴀᴍɪɴɢ'} | ❞\n>\n> ▶ ᴛɪᴛʟᴇ : [{title_caps}](https://t.me/{BOT_USERNAME})\n> ▶ ᴅᴜʀᴀᴛɪᴏɴ : {duration_str} ᴍɪɴᴜᴛᴇꜱ\n> ▶ ʀᴇǫᴜᴇꜱᴛᴇᴅ ʙʏ : {requester}"
+    caption = f"> ➲ {'ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ #' + str(pos) if is_queue else 'ꜱᴛᴀʀᴛᴇᴅ ꜱᴛʀᴇᴀᴍɪɴɢ'} | ❞\n>\n> ▶ ᴛɪᴛʟᴇ : [{title_caps}](https://t.me/{BOT_USERNAME})\n> ▶ ᴅᴜʀᴀᴛɪᴏɴ : {duration_str} ᴍinutes\n> ▶ ʀᴇǫᴜᴇꜱᴛᴇᴅ ʙʏ : {requester}"
     
     bar, played_str = "◉───────────", "00:00"
     if total_sec > 0:
@@ -667,7 +679,7 @@ async def show_playlist(client, message):
     kb = [[InlineKeyboardButton("🗑️ Manage/Delete Songs", callback_data="manage_pl")]]
     await message.reply(text, reply_markup=InlineKeyboardMarkup(kb))
 
-@app.on_callback_query(filters.regex("^(manage_pl|back_pl|clear_pl)$") | filters.regex(r"^delpl_(\d+)$"))
+@app.on_callback_query(filters.regex("^(manage_pl|back_pl|clear_pl)$") \vert{} filters.regex(r"^delpl_(\d+)$"))
 async def playlist_callbacks(client, callback_query):
     data = callback_query.data
     user_id = callback_query.from_user.id
