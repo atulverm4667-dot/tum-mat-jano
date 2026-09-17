@@ -339,7 +339,7 @@ def get_yt_info(query, is_video=False):
 
 def get_music_panel(title, duration_str, requester, is_queue=False, pos=0, played_sec=0, total_sec=0):
     title_caps = to_small_caps(title)
-    caption = f"> ➲ {'ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ #' + str(pos) if is_queue else 'ꜱᴛᴀʀᴛᴇᴅ ꜱᴛʀᴇᴀᴍɪɴɢ'} | ❞\n>\n> ▶ ᴛɪᴛʟᴇ : [{title_caps}](https://t.me/{BOT_USERNAME})\n> ▶ ᴅᴜʀᴀᴛɪᴏɴ : {duration_str} ᴍinutes\n> ▶ ʀᴇǫᴜᴇꜱᴛᴇᴅ ʙʏ : {requester}"
+    caption = f"> ➲ {'ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ #' + str(pos) if is_queue else 'ꜱᴛᴀʀᴛᴇᴅ ꜱᴛʀᴇᴀᴍɪɴɢ'} | ❞\n>\n> ▶ ᴛɪᴛʟᴇ : [{title_caps}](https://t.me/{BOT_USERNAME})\n> ▶ ᴅᴜʀᴀᴛɪᴏɴ : {duration_str} ᴍɪɴᴜᴛᴇꜱ\n> ▶ ʀᴇǫᴜᴇꜱᴛᴇᴅ ʙʏ : {requester}"
     
     bar, played_str = "◉───────────", "00:00"
     if total_sec > 0:
@@ -679,8 +679,7 @@ async def show_playlist(client, message):
     kb = [[InlineKeyboardButton("🗑️ Manage/Delete Songs", callback_data="manage_pl")]]
     await message.reply(text, reply_markup=InlineKeyboardMarkup(kb))
 
-@app.on_callback_query(filters.regex("^(manage_pl|back_pl|clear_pl)$") | filters.regex(r"^delpl_(\d+)$"))
-
+@app.on_callback_query(filters.regex("^(manage_pl|back_pl|clear_pl)$") \vert{} filters.regex(r"^delpl_(\d+)$"))
 async def playlist_callbacks(client, callback_query):
     data = callback_query.data
     user_id = callback_query.from_user.id
