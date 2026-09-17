@@ -5,8 +5,6 @@ import time
 import json
 import random
 import urllib.parse
-import urllib.request
-import re
 import yt_dlp
 from concurrent.futures import ThreadPoolExecutor
 from pyrogram import Client, filters, idle
@@ -257,7 +255,7 @@ async def set_position_cmd(client, message):
 
 
 # ==========================================
-# 🎵 MUSIC ENGINE UTILS (🔥 THE ULTIMATE BYPASS)
+# 🎵 MUSIC ENGINE UTILS (🔥 YOUTUBE TO SOUNDCLOUD FALLBACK)
 # ==========================================
 async def get_fresh_url(song_dict):
     url = song_dict.get("url", "")
@@ -275,74 +273,61 @@ async def get_fresh_url(song_dict):
     return url
 
 def get_yt_info(query, is_video=False):
-    search_query = query
-    # 🔥 STEP 1: Search Bypass via APIs (Blocks Render IP ban for searches)
-    if "youtube.com" not in query and "youtu.be" not in query:
-        video_id = None
-        instances = [
-            "https://vid.puffyan.us",
-            "https://invidious.jing.rocks",
-            "https://iv.ggtyler.dev"
-        ]
-        for inst in instances:
-            try:
-                url = f"{inst}/api/v1/search?q={urllib.parse.quote(query)}&type=video"
-                req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-                res = urllib.request.urlopen(req, timeout=4).read().decode()
-                data = json.loads(res)
-                if data and len(data) > 0:
-                    video_id = data[0].get('videoId')
-                    if video_id: break
-            except: continue
-            
-        if video_id:
-            search_query = f"https://www.youtube.com/watch?v={video_id}"
-        else:
-            search_query = f"ytsearch:{query}"
-
-    # 🔥 STEP 2: Extraction Fallback Loop (Bypasses Sign-in / Bot blocks)
     fmt = 'best[height=720][ext=mp4]/best[height<=720][ext=mp4]/best' if is_video else 'bestaudio/best'
-    base_opts = {
+    
+    # 1. YouTube Configuration (Fails on Render sometimes due to IP Ban)
+    ydl_opts_yt = {
         'format': fmt, 'noplaylist': True, 'quiet': True, 'no_warnings': True, 
-        'ignoreerrors': True, 'simulate': True, 'geo_bypass': True, 'nocheckcertificate': True
+        'ignoreerrors': True, 'simulate': True,
+        'extractor_args': {'youtube': {'player_client': ['ios', 'android']}}
     }
     
-    # Ye loop alag-alag device clients ban kar try karega jab tak song na mil jaye
-    client_configs = [
-        {'youtube': {'player_client': ['tv', 'web']}},      # Smart TV Client
-        {'youtube': {'player_client': ['android', 'ios']}}, # Mobile Client
-        {'youtube': {'player_client': ['web_creator']}},    # Creator Studio Client
-        {} # Default
-    ]
-    
-    info = None
-    for clients in client_configs:
-        ydl_opts = base_opts.copy()
-        if clients: ydl_opts['extractor_args'] = clients
-        
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            try:
-                extracted = ydl.extract_info(search_query, download=False)
-                if extracted:
-                    if 'entries' in extracted and extracted['entries']: info = extracted['entries'][0]
-                    else: info = extracted
-                    
-                    if info and info.get('url'): break # 🎯 SUCCESS! Exit loop
-            except Exception:
-                continue # Agar yeh client block hua, toh agla try karo
-                
-    if not info or not info.get("url"):
-        return None
+    # 2. SoundCloud Configuration (NEVER gets blocked by Cloud IPs)
+    ydl_opts_sc = {
+        'format': fmt, 'noplaylist': True, 'quiet': True, 'no_warnings': True, 
+        'ignoreerrors': True, 'simulate': True
+    }
 
-    duration_sec = int(info.get('duration', 0) or 0)
-    m, s = divmod(duration_sec, 60)
-    h, m = divmod(m, 60)
-    duration_str = f"{h:02d}:{m:02d}:{s:02d}" if h else f"{m:02d}:{s:02d}"
-    return {
-        "title": info.get('title', 'Unknown Title'), "url": info.get('url'), 
-        "thumbnail": f"https://img.youtube.com/vi/{info.get('id')}/hqdefault.jpg" if info.get('id') else DEFAULT_THUMB, 
-        "duration": duration_str, "duration_sec": duration_sec, "is_video": is_video
-    }
+    def process_extracted(info):
+        if not info or not info.get('url'): return None
+        duration_sec = int(info.get('duration', 0) or 0)
+        m, s = divmod(duration_sec, 60); h, m = divmod(m, 60)
+        dur_str = f"{h:02d}:{m:02d}:{s:02d}" if h else f"{m:02d}:{s:02d}"
+        
+        thumb = info.get('thumbnail')
+        if not thumb and info.get('id') and "youtube" in info.get('webpage_url', ''):
+            thumb = f"https://img.youtube.com/vi/{info['id']}/hqdefault.jpg"
+            
+        return {
+            "title": info.get('title', 'Unknown Title'),
+            "url": info.get('url'),
+            "thumbnail": thumb or DEFAULT_THUMB,
+            "duration": dur_str,
+            "duration_sec": duration_sec,
+            "is_video": is_video
+        }
+
+    # CASE A: Agar direct URL aaya ho
+    if "http://" in query or "https://" in query:
+        with yt_dlp.YoutubeDL(ydl_opts_yt) as ydl:
+            info = ydl.extract_info(query, download=False)
+            if info: return process_extracted(info)
+
+    # CASE B: Pehle YouTube par search try karte hain
+    with yt_dlp.YoutubeDL(ydl_opts_yt) as ydl:
+        info = ydl.extract_info(f"ytsearch:{query}", download=False)
+        if info and 'entries' in info and info['entries']:
+            res = process_extracted(info['entries'][0])
+            if res: return res
+
+    # 🚨 CASE C: AGAR YOUTUBE NE RENDER IP KO BLOCK MAR DIYA TOH CHUPCHAP SOUNDCLOUD SE GANA UTHA LO 🚨
+    with yt_dlp.YoutubeDL(ydl_opts_sc) as ydl:
+        info = ydl.extract_info(f"scsearch:{query}", download=False)
+        if info and 'entries' in info and info['entries']:
+            return process_extracted(info['entries'][0])
+
+    # Dono jagah se na mile tabhi None return karega
+    return None
 
 def get_music_panel(title, duration_str, requester, is_queue=False, pos=0, played_sec=0, total_sec=0):
     title_caps = to_small_caps(title)
@@ -362,6 +347,7 @@ def get_music_panel(title, duration_str, requester, is_queue=False, pos=0, playe
         [InlineKeyboardButton("❌ Close", callback_data="close_msg")]
     ])
     return caption, buttons
+
 
 # ==========================================
 # 🃏 UNO ENGINE (MAU MAU STYLE) & ⏱️ TIMERS
@@ -391,7 +377,7 @@ def is_playable(card, top_card, current_color):
 
 def get_next_turn(game):
     game["turn_index"] = (game["turn_index"] + game["direction"]) % len(game["players"])
-    game["turn_id"] = game.get("turn_id", 0) + 1  # 🔥 Track turn iteration for 60s timer
+    game["turn_id"] = game.get("turn_id", 0) + 1  
     return game["turn_index"]
 
 # ⏳ 60-Second Auto-Draw Timer Logic
