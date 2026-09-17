@@ -179,7 +179,6 @@ async def upload_cards_cmd(client, message):
     
     m = await message.reply("⏳ **Uploading cards safely...**")
     uploaded = 0
-    
     for root_dir, sub_dirs, files in os.walk(folder):
         for file in files:
             name_without_ext = os.path.splitext(file)[0]
@@ -189,16 +188,10 @@ async def upload_cards_cmd(client, message):
                     msg = await client.send_photo(message.chat.id, file_path)
                     file_id = msg.photo.file_id
                     cards_cache[name_without_ext] = file_id
-                    await uno_cards_col.update_one(
-                        {"card_name": name_without_ext}, 
-                        {"$set": {"file_id": file_id}}, 
-                        upsert=True
-                    )
+                    await uno_cards_col.update_one({"card_name": name_without_ext}, {"$set": {"file_id": file_id}}, upsert=True)
                     uploaded += 1
                     await asyncio.sleep(1.2) 
-                except Exception as e:
-                    print(f"Error uploading {file_path}: {e}")
-                    
+                except Exception as e: pass
     await m.edit(f"✅ **Upload Complete!** Total: `{uploaded}` cards.")
 
 
@@ -264,7 +257,7 @@ async def set_position_cmd(client, message):
 
 
 # ==========================================
-# 🎵 MUSIC ENGINE UTILS (🔥 100% YOUTUBE BYPASS)
+# 🎵 MUSIC ENGINE UTILS (🔥 THE ULTIMATE BYPASS)
 # ==========================================
 async def get_fresh_url(song_dict):
     url = song_dict.get("url", "")
@@ -282,44 +275,74 @@ async def get_fresh_url(song_dict):
     return url
 
 def get_yt_info(query, is_video=False):
-    fmt = 'best[height=720][ext=mp4]/best[height<=720][ext=mp4]/best' if is_video else 'bestaudio/best'
-    ydl_opts = {
-        'format': fmt, 'noplaylist': True, 'quiet': True, 'no_warnings': True, 
-        'ignoreerrors': True, 'simulate': True, 'geo_bypass': True,
-        'extractor_args': {'youtube': {'player_client': ['ios', 'android', 'mweb']}},
-        'http_headers': {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1'}
-    }
-    
     search_query = query
-    # 🔥 YOUTUBE SEARCH BYPASS: HTML request to bypass IP Blocks completely
+    # 🔥 STEP 1: Search Bypass via APIs (Blocks Render IP ban for searches)
     if "youtube.com" not in query and "youtu.be" not in query:
-        try:
-            url = f"https://www.youtube.com/results?search_query={urllib.parse.quote(query)}"
-            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
-            html = urllib.request.urlopen(req).read().decode()
-            video_ids = re.findall(r"watch\?v=([a-zA-Z0-9_-]{11})", html)
-            if video_ids:
-                search_query = f"https://www.youtube.com/watch?v={video_ids[0]}"
-            else:
-                search_query = f"ytsearch:{query}"
-        except Exception as e:
+        video_id = None
+        instances = [
+            "https://vid.puffyan.us",
+            "https://invidious.jing.rocks",
+            "https://iv.ggtyler.dev"
+        ]
+        for inst in instances:
+            try:
+                url = f"{inst}/api/v1/search?q={urllib.parse.quote(query)}&type=video"
+                req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+                res = urllib.request.urlopen(req, timeout=4).read().decode()
+                data = json.loads(res)
+                if data and len(data) > 0:
+                    video_id = data[0].get('videoId')
+                    if video_id: break
+            except: continue
+            
+        if video_id:
+            search_query = f"https://www.youtube.com/watch?v={video_id}"
+        else:
             search_query = f"ytsearch:{query}"
 
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        try:
-            info = ydl.extract_info(search_query, download=False)
-            if not info: return None
-            if 'entries' in info: 
-                entries = info.get('entries')
-                if not entries: return None
-                info = entries[0]
-            duration_sec = int(info.get('duration', 0) or 0)
-            m, s = divmod(duration_sec, 60)
-            h, m = divmod(m, 60)
-            duration_str = f"{h:02d}:{m:02d}:{s:02d}" if h else f"{m:02d}:{s:02d}"
-            return {"title": info.get('title', 'Unknown Title'), "url": info.get('url'), "thumbnail": f"https://img.youtube.com/vi/{info.get('id')}/hqdefault.jpg" if info.get('id') else DEFAULT_THUMB, "duration": duration_str, "duration_sec": duration_sec, "is_video": is_video}
-        except:
-            return None
+    # 🔥 STEP 2: Extraction Fallback Loop (Bypasses Sign-in / Bot blocks)
+    fmt = 'best[height=720][ext=mp4]/best[height<=720][ext=mp4]/best' if is_video else 'bestaudio/best'
+    base_opts = {
+        'format': fmt, 'noplaylist': True, 'quiet': True, 'no_warnings': True, 
+        'ignoreerrors': True, 'simulate': True, 'geo_bypass': True, 'nocheckcertificate': True
+    }
+    
+    # Ye loop alag-alag device clients ban kar try karega jab tak song na mil jaye
+    client_configs = [
+        {'youtube': {'player_client': ['tv', 'web']}},      # Smart TV Client
+        {'youtube': {'player_client': ['android', 'ios']}}, # Mobile Client
+        {'youtube': {'player_client': ['web_creator']}},    # Creator Studio Client
+        {} # Default
+    ]
+    
+    info = None
+    for clients in client_configs:
+        ydl_opts = base_opts.copy()
+        if clients: ydl_opts['extractor_args'] = clients
+        
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            try:
+                extracted = ydl.extract_info(search_query, download=False)
+                if extracted:
+                    if 'entries' in extracted and extracted['entries']: info = extracted['entries'][0]
+                    else: info = extracted
+                    
+                    if info and info.get('url'): break # 🎯 SUCCESS! Exit loop
+            except Exception:
+                continue # Agar yeh client block hua, toh agla try karo
+                
+    if not info or not info.get("url"):
+        return None
+
+    duration_sec = int(info.get('duration', 0) or 0)
+    m, s = divmod(duration_sec, 60)
+    h, m = divmod(m, 60)
+    duration_str = f"{h:02d}:{m:02d}:{s:02d}" if h else f"{m:02d}:{s:02d}"
+    return {
+        "title": info.get('title', 'Unknown Title'), "url": info.get('url'), 
+        "thumbnail": f"https://img.youtube.com/vi/{info.get('id')}/hqdefault.jpg" if info.get('id') else DEFAULT_THUMB, 
+        "duration": duration_str, "duration_sec": duration_sec, "is_video": is_video
+    }
 
 def get_music_panel(title, duration_str, requester, is_queue=False, pos=0, played_sec=0, total_sec=0):
     title_caps = to_small_caps(title)
@@ -381,7 +404,6 @@ async def uno_turn_timer(chat_id, turn_id):
     try:
         player = game["players"][game["turn_index"]]
         
-        # Agar color chunn ne ka wait ho raha tha
         if game["status"] == "waiting_color":
             game["current_color"] = "🔴"
             game["status"] = "playing"
@@ -397,7 +419,6 @@ async def uno_turn_timer(chat_id, turn_id):
             await send_uno_table(chat_id)
             return
             
-        # Normal play timeout -> Auto Draw Card
         if game["status"] == "playing":
             if not game["deck"]: game["deck"] = get_uno_deck()
             drawn = game["deck"].pop()
@@ -406,8 +427,7 @@ async def uno_turn_timer(chat_id, turn_id):
             get_next_turn(game)
             asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
             await send_uno_table(chat_id)
-    except Exception as e:
-        print("UNO Timer Error:", e)
+    except Exception as e: pass
 
 async def send_uno_table(chat_id):
     game = uno_games.get(chat_id)
@@ -449,7 +469,7 @@ async def end_uno_game_cmd(client, message):
     chat_id = message.chat.id
     if chat_id in uno_games:
         uno_games.pop(chat_id, None)
-        await message.reply("🛑 **UNO Game forcefully ended by user!**")
+        await message.reply("🛑 **UNO Game forcefully ended!**")
     else:
         await message.reply("⚠️ Koi active UNO game nahi chal raha hai!")
 
@@ -508,9 +528,8 @@ async def uno_lobby_timer(chat_id):
         game["current_color"] = top_card.split(" ")[1]
         game["turn_index"] = 0
         game["direction"] = 1
-        game["turn_id"] = 1  # Set first turn ID
+        game["turn_id"] = 1  
         
-        # Start Timer for First Turn
         asyncio.create_task(uno_turn_timer(chat_id, 1))
         await send_uno_table(chat_id)
 
@@ -606,7 +625,7 @@ async def catch_uno_play(client, message):
             try: await game["table_msg"].delete()
             except: pass
             
-        game["turn_id"] += 1  # Increment turn ID so new timer begins for color picking
+        game["turn_id"] += 1  
         asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
         
         game["table_msg"] = await app.send_message(chat_id, f"🌈 **WILD CARD PLAYED by {player['name']}!**\nChoose a new color quickly (60s):", reply_markup=kb)
@@ -851,7 +870,7 @@ async def process_play(client, message, is_video=False, force_play=False):
             yt_data = await asyncio.get_event_loop().run_in_executor(thread_pool, get_yt_info, query, is_video)
 
         if not yt_data or not yt_data.get("url"):
-            return await m.edit("❌ **Gaana nahi mila!** YouTube server ne search ko block kar diya hai.")
+            return await m.edit("❌ **Gaana nahi mila!** YouTube ne request block kar di thi, kripya thodi der me try karein ya dusra song search karein.")
 
         yt_data["is_video"] = is_video; yt_data["requester"] = requester
         if chat_id not in chat_queue: chat_queue[chat_id] = []
