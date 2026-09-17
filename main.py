@@ -255,7 +255,7 @@ async def set_position_cmd(client, message):
 
 
 # ==========================================
-# 🎵 MUSIC ENGINE UTILS (🔥 100% PURE AUDIO FIX)
+# 🎵 MUSIC ENGINE UTILS (🔥 100% PURE AUDIO FIX - NO YT MUSIC BUG)
 # ==========================================
 async def get_fresh_url(song_dict):
     url = song_dict.get("url", "")
@@ -271,7 +271,7 @@ async def get_fresh_url(song_dict):
     return url
 
 def get_yt_info(query, is_video=False):
-    # 🔥 STRICTLY force m4a audio so PyTgCalls doesn't glitch and play weird noise
+    # 🚨 STRICTLY force mp4 audio/video stream properly to fix distorted voices
     fmt = 'best[height<=720][ext=mp4]/best' if is_video else 'bestaudio[ext=m4a]/bestaudio/best'
     
     ydl_opts = {
@@ -280,25 +280,20 @@ def get_yt_info(query, is_video=False):
         'quiet': True, 
         'no_warnings': True, 
         'ignoreerrors': True, 
-        'simulate': True,
+        'simulate': True, # No downloading, direct fast stream
+        # Mobile client prevents IP bans and 50kbps speed throttling
         'extractor_args': {'youtube': {'player_client': ['android', 'ios']}},
-        'http_headers': {'User-Agent': 'Mozilla/5.0 (Android 13; Mobile; rv:109.0) Gecko/115.0 Firefox/115.0'}
+        'http_headers': {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1'}
     }
 
-    # 🔥 YTMUSIC SEARCH: Use YouTube Music (ytmsearch1) which gets 100% accurate songs and avoids IP bans
-    search_query = query if ("http://" in query or "https://" in query) else f"ytmsearch1:{query}"
+    # 🔥 FIX: Use standard ytsearch1: (merse ytmsearch1: me galti ho gayi thi, wo command nahi hoti yt-dlp me)
+    search_query = query if ("http://" in query or "https://" in query) else f"ytsearch1:{query}"
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(search_query, download=False)
         
         if info and 'entries' in info and info['entries']:
             info = info['entries'][0]
-            
-        # Fallback to normal youtube search if YT Music misses
-        if (not info or not info.get('url')) and "http" not in query:
-            info = ydl.extract_info(f"ytsearch1:{query}", download=False)
-            if info and 'entries' in info and info['entries']:
-                info = info['entries'][0]
 
         if not info or not info.get('url'):
             return None
@@ -769,7 +764,7 @@ async def process_play(client, message, is_video=False, force_play=False):
             dur_str = f"{h_:02d}:{m_:02d}:{s_:02d}" if h_ else f"{m_:02d}:{s_:02d}"
             yt_data = {"title": getattr(obj, 'title', None) or getattr(obj, 'file_name', "Telegram Media"), "url": file_path, "thumbnail": DEFAULT_THUMB, "duration": dur_str, "duration_sec": dur}
         else:
-            m = await message.reply("🔍 Searching in YouTube Music...")
+            m = await message.reply("🔍 Searching...")
             yt_data = await asyncio.get_event_loop().run_in_executor(thread_pool, get_yt_info, query, is_video)
 
         if not yt_data or not yt_data.get("url"):
