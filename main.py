@@ -208,38 +208,26 @@ async def upload_cards_cmd(client, message):
 @app.on_message(filters.command("topplayers"))
 async def top_players_cmd(client, message):
     if not MONGO_URL: return await message.reply("⚠️ Database is not connected!")
-    
     m = await message.reply("🏆 Fetching Leaderboard...")
     top_players = await uno_stats_col.find().sort("wins", -1).limit(10).to_list(10)
-    
     if not top_players:
         return await m.edit("😔 Abhi tak kisi ne UNO game nahi jeeta hai!")
-        
     text = "🔥 **UNO GLOBAL LEADERBOARD** 🔥\n\n"
-    
     for i, p in enumerate(top_players, start=1):
         name = p.get("name", "Unknown Player")
         wins = p.get("wins", 0)
         user_id = p.get("user_id")
-        
-        if i <= 3:
-            text += f"{i}. 🌟 **[Ultra Pro Player - {name}](tg://user?id={user_id})** ➣ `{wins}` Wins 👑\n"
-        elif i <= 6:
-            text += f"{i}. 🎖 **[Pro Player - {name}](tg://user?id={user_id})** ➣ `{wins}` Wins\n"
-        else:
-            text += f"{i}. 🔰 **[Beginner Pro - {name}](tg://user?id={user_id})** ➣ `{wins}` Wins\n"
-            
+        if i <= 3: text += f"{i}. 🌟 **[Ultra Pro Player - {name}](tg://user?id={user_id})** ➣ `{wins}` Wins 👑\n"
+        elif i <= 6: text += f"{i}. 🎖 **[Pro Player - {name}](tg://user?id={user_id})** ➣ `{wins}` Wins\n"
+        else: text += f"{i}. 🔰 **[Beginner Pro - {name}](tg://user?id={user_id})** ➣ `{wins}` Wins\n"
     await m.edit(text)
 
 @app.on_message(filters.command("groups") & filters.user(OWNER_ID))
 async def groups_cmd(client, message):
     chats = get_chats()
-    if not chats:
-        return await message.reply("❌ Abhi tak kisi bhi group ya chat ka data save nahi hua hai!")
-    
+    if not chats: return await message.reply("❌ Abhi tak kisi bhi group ya chat ka data save nahi hua hai!")
     m = await message.reply(f"📂 Fetching details for {len(chats)} chats...")
     text = "📋 **Connected Groups & Chats List:**\n\n"
-    
     for chat_id in chats:
         try:
             chat = await client.get_chat(int(chat_id))
@@ -247,12 +235,10 @@ async def groups_cmd(client, message):
             username = f"@{chat.username}" if chat.username else f"ID: `{chat.id}`"
             link = f"https://t.me/{chat.username}" if chat.username else "No Public Username"
             text += f"• **{title}** ({username})\n  Link: {link}\n\n"
-        except Exception as e:
+        except Exception:
             text += f"• ID: `{chat_id}` (Could not fetch details)\n\n"
-            
     if len(text) > 4000:
-        with open("groups_list.txt", "w", encoding="utf-8") as f:
-            f.write(text)
+        with open("groups_list.txt", "w", encoding="utf-8") as f: f.write(text)
         await message.reply_document("groups_list.txt", caption="📂 List bohot badi thi, isliye file bhej di hai.")
         try: os.remove("groups_list.txt")
         except: pass
@@ -263,34 +249,22 @@ async def groups_cmd(client, message):
 @app.on_message(filters.command("setposition") & filters.user(OWNER_ID))
 async def set_position_cmd(client, message):
     if not MONGO_URL: return await message.reply("⚠️ Database connected nahi hai!")
-    
     args = message.command
-    if len(args) != 3:
-        return await message.reply("⚠️ Sahi format use kar: `/setposition <user_id> <wins>`")
-        
+    if len(args) != 3: return await message.reply("⚠️ Sahi format use kar: `/setposition <user_id> <wins>`")
     try:
-        user_id = int(args[1])
-        wins = int(args[2])
-        
+        user_id = int(args[1]); wins = int(args[2])
         try:
             user = await app.get_users(user_id)
             name = user.first_name
-        except:
-            name = "Hidden Player"
-            
-        await uno_stats_col.update_one(
-            {"user_id": user_id},
-            {"$set": {"wins": wins, "name": name}},
-            upsert=True
-        )
+        except: name = "Hidden Player"
+        await uno_stats_col.update_one({"user_id": user_id}, {"$set": {"wins": wins, "name": name}}, upsert=True)
         await message.reply(f"✅ Position Update Hogyi!\n👤 **Player:** {name}\n🏆 **Wins Set To:** `{wins}`")
-        
     except ValueError:
         await message.reply("⚠️ User ID aur Wins numbers me hone chahiye!")
 
 
 # ==========================================
-# 🎵 MUSIC ENGINE UTILS (🔥 IOS MOBILE BYPASS ADDED)
+# 🎵 MUSIC ENGINE UTILS (🔥 100% YOUTUBE BYPASS)
 # ==========================================
 async def get_fresh_url(song_dict):
     url = song_dict.get("url", "")
@@ -310,32 +284,25 @@ async def get_fresh_url(song_dict):
 def get_yt_info(query, is_video=False):
     fmt = 'best[height=720][ext=mp4]/best[height<=720][ext=mp4]/best' if is_video else 'bestaudio/best'
     ydl_opts = {
-        'format': fmt, 
-        'noplaylist': True, 
-        'quiet': True, 
-        'no_warnings': True, 
-        'ignoreerrors': True, 
-        'simulate': True,
-        'geo_bypass': True,
-        # 📱 Yahan humne strictly Mobile client set kiya hai taki block na ho
+        'format': fmt, 'noplaylist': True, 'quiet': True, 'no_warnings': True, 
+        'ignoreerrors': True, 'simulate': True, 'geo_bypass': True,
         'extractor_args': {'youtube': {'player_client': ['ios', 'android', 'mweb']}},
-        'http_headers': {
-            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1'
-        }
+        'http_headers': {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1'}
     }
     
     search_query = query
+    # 🔥 YOUTUBE SEARCH BYPASS: HTML request to bypass IP Blocks completely
     if "youtube.com" not in query and "youtu.be" not in query:
         try:
             url = f"https://www.youtube.com/results?search_query={urllib.parse.quote(query)}"
-            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'})
             html = urllib.request.urlopen(req).read().decode()
             video_ids = re.findall(r"watch\?v=([a-zA-Z0-9_-]{11})", html)
             if video_ids:
                 search_query = f"https://www.youtube.com/watch?v={video_ids[0]}"
             else:
                 search_query = f"ytsearch:{query}"
-        except Exception:
+        except Exception as e:
             search_query = f"ytsearch:{query}"
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -357,7 +324,6 @@ def get_yt_info(query, is_video=False):
 def get_music_panel(title, duration_str, requester, is_queue=False, pos=0, played_sec=0, total_sec=0):
     title_caps = to_small_caps(title)
     caption = f"> ➲ {'ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ ᴀᴛ #' + str(pos) if is_queue else 'ꜱᴛᴀʀᴛᴇᴅ ꜱᴛʀᴇᴀᴍɪɴɢ'} | ❞\n>\n> ▶ ᴛɪᴛʟᴇ : [{title_caps}](https://t.me/{BOT_USERNAME})\n> ▶ ᴅᴜʀᴀᴛɪᴏɴ : {duration_str} ᴍɪɴᴜᴛᴇꜱ\n> ▶ ʀᴇǫᴜᴇꜱᴛᴇᴅ ʙʏ : {requester}"
-    
     bar, played_str = "◉───────────", "00:00"
     if total_sec > 0:
         percentage = max(0.0, min(1.0, played_sec / total_sec))
@@ -375,7 +341,7 @@ def get_music_panel(title, duration_str, requester, is_queue=False, pos=0, playe
     return caption, buttons
 
 # ==========================================
-# 🃏 UNO ENGINE (MAU MAU STYLE)
+# 🃏 UNO ENGINE (MAU MAU STYLE) & ⏱️ TIMERS
 # ==========================================
 def get_uno_deck():
     colors = ["🔴 Red", "🔵 Blue", "🟢 Green", "🟡 Yellow"]
@@ -402,7 +368,46 @@ def is_playable(card, top_card, current_color):
 
 def get_next_turn(game):
     game["turn_index"] = (game["turn_index"] + game["direction"]) % len(game["players"])
+    game["turn_id"] = game.get("turn_id", 0) + 1  # 🔥 Track turn iteration for 60s timer
     return game["turn_index"]
+
+# ⏳ 60-Second Auto-Draw Timer Logic
+async def uno_turn_timer(chat_id, turn_id):
+    await asyncio.sleep(60)
+    if chat_id not in uno_games: return
+    game = uno_games.get(chat_id)
+    if not game or game.get("turn_id") != turn_id: return
+    
+    try:
+        player = game["players"][game["turn_index"]]
+        
+        # Agar color chunn ne ka wait ho raha tha
+        if game["status"] == "waiting_color":
+            game["current_color"] = "🔴"
+            game["status"] = "playing"
+            if game.get("pending_effect") == "+4":
+                victim = game["players"][(game["turn_index"] + game["direction"]) % len(game["players"])]
+                for _ in range(4):
+                    if not game["deck"]: game["deck"] = get_uno_deck()
+                    victim["cards"].append(game["deck"].pop())
+            game["pending_effect"] = "none"
+            await app.send_message(chat_id, f"⏳ **Time's up!** {player['name']} ne koi color nahi chuna. Default '🔴 Red' select ho gaya.")
+            get_next_turn(game)
+            asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
+            await send_uno_table(chat_id)
+            return
+            
+        # Normal play timeout -> Auto Draw Card
+        if game["status"] == "playing":
+            if not game["deck"]: game["deck"] = get_uno_deck()
+            drawn = game["deck"].pop()
+            player["cards"].append(drawn)
+            await app.send_message(chat_id, f"⏳ **Time's up!** [{player['name']}](tg://user?id={player['id']}) ne 60 sec me card nahi khela, isliye automatic ek card draw ho gaya.")
+            get_next_turn(game)
+            asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
+            await send_uno_table(chat_id)
+    except Exception as e:
+        print("UNO Timer Error:", e)
 
 async def send_uno_table(chat_id):
     game = uno_games.get(chat_id)
@@ -413,7 +418,8 @@ async def send_uno_table(chat_id):
     text = (f"🃏 **UNO TABLE**\n\n"
             f"🎨 **Current Color:** {game['current_color']}\n"
             f"🎯 **Top Card:** {game['top_card']}\n\n"
-            f"👥 **Players:**\n{players_text}\n")
+            f"👥 **Players:**\n{players_text}\n\n"
+            f"⏳ *You have 60 seconds to play!*")
             
     kb = InlineKeyboardMarkup([
         [InlineKeyboardButton("🃏 Play Card", switch_inline_query_current_chat="")],
@@ -428,21 +434,31 @@ async def send_uno_table(chat_id):
     file_id = cards_cache.get(file_key)
 
     try:
-        if file_id:
-            game["table_msg"] = await app.send_photo(chat_id, photo=file_id, caption=text, reply_markup=kb)
-        else:
-            game["table_msg"] = await app.send_message(chat_id, text, reply_markup=kb)
+        if file_id: game["table_msg"] = await app.send_photo(chat_id, photo=file_id, caption=text, reply_markup=kb)
+        else: game["table_msg"] = await app.send_message(chat_id, text, reply_markup=kb)
     except Exception:
         game["table_msg"] = await app.send_message(chat_id, text, reply_markup=kb)
     
     ping = await app.send_message(chat_id, f"🎯 **Teri baari hai:** [{current_player['name']}](tg://user?id={current_player['id']})")
     asyncio.create_task(delayed_delete(ping, 7))
 
+
+# 🛑 FORCE END GAME COMMAND
+@app.on_message(filters.command("end") & filters.group)
+async def end_uno_game_cmd(client, message):
+    chat_id = message.chat.id
+    if chat_id in uno_games:
+        uno_games.pop(chat_id, None)
+        await message.reply("🛑 **UNO Game forcefully ended by user!**")
+    else:
+        await message.reply("⚠️ Koi active UNO game nahi chal raha hai!")
+
+
 @app.on_message(filters.command("startgame") & filters.group)
 async def start_uno_game(client, message):
     chat_id = message.chat.id
     if chat_id in uno_games and uno_games[chat_id]['status'] != 'finished':
-        return await message.reply("⚠️ Ek game pehle se active hai ya lobby open hai!")
+        return await message.reply("⚠️ Ek game pehle se active hai ya lobby open hai! (To stop: `/end`)")
     player = {"id": message.from_user.id, "name": message.from_user.first_name, "cards": []}
     uno_games[chat_id] = {"status": "lobby", "players": [player], "lobby_msg": None}
     kb = InlineKeyboardMarkup([[InlineKeyboardButton("🎮 Join Game", callback_data="join_uno")]])
@@ -492,6 +508,10 @@ async def uno_lobby_timer(chat_id):
         game["current_color"] = top_card.split(" ")[1]
         game["turn_index"] = 0
         game["direction"] = 1
+        game["turn_id"] = 1  # Set first turn ID
+        
+        # Start Timer for First Turn
+        asyncio.create_task(uno_turn_timer(chat_id, 1))
         await send_uno_table(chat_id)
 
 @app.on_callback_query(filters.regex("^show_uno_cards$"))
@@ -500,19 +520,16 @@ async def show_uno_cards_cb(client, cb):
     if chat_id not in uno_games or uno_games[chat_id]["status"] != "playing":
         return await cb.answer("Game active nahi hai!", show_alert=True)
     player = next((p for p in uno_games[chat_id]["players"] if p["id"] == cb.from_user.id), None)
-    if not player: 
-        return await cb.answer("Tu is game me nahi khel raha bhai!", show_alert=True)
+    if not player: return await cb.answer("Tu is game me nahi khel raha bhai!", show_alert=True)
     cards_text = "\n".join(player["cards"])
     await cb.answer(f"🃏 TERE CARDS:\n\n{cards_text}", show_alert=True)
 
 @app.on_inline_query()
 async def inline_uno_cards(client, query):
     user_id = query.from_user.id
-    results = []
-    
-    active_chat, player_data = None, None
+    results, active_chat, player_data = [], None, None
     for chat_id, game in uno_games.items():
-        if game["status"] == "playing":
+        if game["status"] in ["playing", "waiting_color"]:
             for p in game["players"]:
                 if p["id"] == user_id:
                     active_chat, player_data = chat_id, p
@@ -521,8 +538,7 @@ async def inline_uno_cards(client, query):
 
     if not active_chat:
         results.append(InlineQueryResultArticle(
-            id="not_in_game",
-            title="Not playing UNO!", 
+            id="not_in_game", title="Not playing UNO!", 
             input_message_content=InputTextMessageContent("I tried to play but I'm not in a game!")
         ))
         return await query.answer(results, cache_time=0, is_personal=True)
@@ -536,25 +552,19 @@ async def inline_uno_cards(client, query):
         payload = f"🃏 [UNO] Played: {card}\n\nChatID: {active_chat}\nCardIndex: {i}"
         if not playable or not is_my_turn: payload = f"I tried to cheat and play {card}! 🤡"
         
-        file_key = card_to_filename(card)
-        file_id = cards_cache.get(file_key) 
-        
+        file_key, file_id = card_to_filename(card), cards_cache.get(card_to_filename(card))
         if file_id:
             results.append(InlineQueryResultCachedPhoto(
-                photo_file_id=file_id,
-                id=f"card_{i}_{time.time()}",
-                title=title,
+                photo_file_id=file_id, id=f"card_{i}_{time.time()}", title=title,
                 description="Tap to play this card!" if playable and is_my_turn else "Invalid move",
                 input_message_content=InputTextMessageContent(payload)
             ))
         else:
             results.append(InlineQueryResultArticle(
-                id=f"card_{i}_{time.time()}",
-                title=title, 
+                id=f"card_{i}_{time.time()}", title=title, 
                 description="Tap to play!" if playable and is_my_turn else "Not your turn or invalid card.", 
                 input_message_content=InputTextMessageContent(payload)
             ))
-            
     await query.answer(results, cache_time=0, is_personal=True)
 
 @app.on_message(filters.regex(r"I tried to cheat and play (.*)! 🤡"))
@@ -595,7 +605,11 @@ async def catch_uno_play(client, message):
         if "table_msg" in game:
             try: await game["table_msg"].delete()
             except: pass
-        game["table_msg"] = await app.send_message(chat_id, f"🌈 **WILD CARD PLAYED by {player['name']}!**\nChoose a new color:", reply_markup=kb)
+            
+        game["turn_id"] += 1  # Increment turn ID so new timer begins for color picking
+        asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
+        
+        game["table_msg"] = await app.send_message(chat_id, f"🌈 **WILD CARD PLAYED by {player['name']}!**\nChoose a new color quickly (60s):", reply_markup=kb)
         return
 
     game["current_color"] = card.split(" ")[1] if card.startswith(("🔴", "🔵", "🟢", "🟡")) else game["current_color"]
@@ -611,13 +625,13 @@ async def catch_uno_play(client, message):
         get_next_turn(game)
 
     if len(player["cards"]) == 0:
-        winner_name = player['name']
-        winner_id = player['id']
+        winner_name, winner_id = player['name'], player['id']
         uno_games.pop(chat_id, None)
         await add_win(winner_id, winner_name) 
         return await app.send_message(chat_id, f"🎉 **[{winner_name}](tg://user?id={winner_id}) HAS WON UNO!** 🏆")
 
     get_next_turn(game)
+    asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
     await send_uno_table(chat_id)
 
 @app.on_callback_query(filters.regex(r"^unocolor_(.*)$"))
@@ -640,14 +654,14 @@ async def choose_color_cb(client, cb):
     game["pending_effect"] = "none"
     
     if len(game["players"][game["turn_index"]]["cards"]) == 0:
-        winner = game["players"][game["turn_index"]]["name"]
-        winner_id = game["players"][game["turn_index"]]["id"]
+        winner_name, winner_id = game["players"][game["turn_index"]]["name"], game["players"][game["turn_index"]]["id"]
         uno_games.pop(chat_id, None)
-        await add_win(winner_id, winner) 
-        return await app.send_message(chat_id, f"🎉 **{winner} HAS WON UNO!** 🏆")
+        await add_win(winner_id, winner_name) 
+        return await app.send_message(chat_id, f"🎉 **{winner_name} HAS WON UNO!** 🏆")
         
     get_next_turn(game)
     await cb.message.delete()
+    asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
     await send_uno_table(chat_id)
 
 @app.on_callback_query(filters.regex("^uno_draw$"))
@@ -663,6 +677,7 @@ async def uno_draw_cb(client, cb):
     game["players"][game["turn_index"]]["cards"].append(drawn)
     await cb.answer(f"📥 You drew a card!", show_alert=True)
     get_next_turn(game)
+    asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
     await send_uno_table(chat_id)
 
 
@@ -678,8 +693,7 @@ async def save_song(client, message):
     loop = asyncio.get_event_loop()
     try:
         yt_data = await loop.run_in_executor(thread_pool, get_yt_info, query, False)
-        if not yt_data or not yt_data.get("url"):
-            return await m.edit("❌ **Gaana nahi mila!**")
+        if not yt_data or not yt_data.get("url"): return await m.edit("❌ **Gaana nahi mila!**")
         song_dict = {"title": yt_data["title"], "url": yt_data["url"], "thumbnail": yt_data["thumbnail"], "duration": yt_data["duration"], "duration_sec": yt_data["duration_sec"], "is_video": False}
         await add_to_db(message.from_user.id, song_dict)
         await m.edit(f"✅ **{yt_data['title']}** teri Cloud Playlist me save ho gaya!\n\nCheck karne ke liye `/mypl` daba.")
@@ -721,27 +735,17 @@ async def playlist_callbacks(client, callback_query):
 @app.on_message(filters.command("setstart") & filters.user(OWNER_ID))
 async def set_start_cmd(client, message):
     replied = message.reply_to_message
-    if not replied or not replied.photo:
-        return await message.reply("⚠️ **Galat Format!**\nEk Photo bhejo jisme caption likha ho (buttons bhi laga sakte ho), aur us message ko reply karke `/setstart` likho.")
-    
+    if not replied or not replied.photo: return await message.reply("⚠️ **Galat Format!**\nEk Photo bhejo jisme caption likha ho aur us message ko reply karke `/setstart` likho.")
     file_id = replied.photo.file_id
     text = replied.caption.markdown if replied.caption else "Hello {mention}! Bot is ready. 🤖"
-    
     raw_btns = []
     if replied.reply_markup and replied.reply_markup.inline_keyboard:
         for row in replied.reply_markup.inline_keyboard:
             for btn in row:
-                if btn.url:
-                    raw_btns.append({"name": btn.text, "url": btn.url})
-                    
-    config_data = {
-        "text": text,
-        "photo": file_id,
-        "buttons": raw_btns
-    }
-    
+                if btn.url: raw_btns.append({"name": btn.text, "url": btn.url})
+    config_data = {"text": text, "photo": file_id, "buttons": raw_btns}
     save_start_config(config_data)
-    await message.reply("✅ **Naya Start Message Set Ho Gaya Hai!**\n\nAb koi bhi `/start` dabayega toh yahi mast photo aur text aayega.")
+    await message.reply("✅ **Naya Start Message Set Ho Gaya Hai!**")
 
 @app.on_message(filters.command("id"))
 async def get_id(client, message):
@@ -847,7 +851,7 @@ async def process_play(client, message, is_video=False, force_play=False):
             yt_data = await asyncio.get_event_loop().run_in_executor(thread_pool, get_yt_info, query, is_video)
 
         if not yt_data or not yt_data.get("url"):
-            return await m.edit("❌ **Gaana nahi mila!** YouTube search fail ho gaya.")
+            return await m.edit("❌ **Gaana nahi mila!** YouTube server ne search ko block kar diya hai.")
 
         yt_data["is_video"] = is_video; yt_data["requester"] = requester
         if chat_id not in chat_queue: chat_queue[chat_id] = []
@@ -1027,7 +1031,7 @@ async def start_cmd(client, message):
         f"Hello {message.from_user.mention}! Music + UNO Bot is ready. 🤖\n\n"
         "**🎶 MUSIC:** `/play`, `/vplay`, `/pause`, `/resume`, `/skip`, `/stop`\n"
         "**☁️ PLAYLIST:** `/save`, `/mypl`\n"
-        "**🃏 UNO:** `/startgame`, `/topplayers`\n"
+        "**🃏 UNO:** `/startgame`, `/end`, `/topplayers`\n"
         "**⚡ UTILS:** `/refresh`, `/reload`"
     )
 
@@ -1053,6 +1057,7 @@ async def main():
             BotCommand("play", "Play Audio"),
             BotCommand("vplay", "Play Video"),
             BotCommand("startgame", "Start UNO lobby"),
+            BotCommand("end", "End UNO Game"),
             BotCommand("topplayers", "UNO Leaderboard"),
             BotCommand("save", "Save song to Playlist"),
             BotCommand("mypl", "Manage Playlist"),
