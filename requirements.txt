@@ -1,0 +1,5 @@
+pyrogram
+tgcrypto
+pytgcalls
+motor
+yt-dlp
