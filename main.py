@@ -1,10 +1,13 @@
 import logging
 import asyncio
 import os
+import stat
 import time
 import json
 import random
 import urllib.parse
+import urllib.request
+import re
 import yt_dlp
 from concurrent.futures import ThreadPoolExecutor
 from pyrogram import Client, filters, idle
@@ -17,6 +20,26 @@ from pytgcalls.types import MediaStream, Update
 from motor.motor_asyncio import AsyncIOMotorClient
 from flask import Flask
 import threading
+
+# ==========================================
+# 🚨 RENDER FFMPEG AUTO-INSTALLER (CRITICAL FIX FOR AUDIO/VIDEO)
+# ==========================================
+if not os.path.exists("ffmpeg") and "linux" in os.sys.platform:
+    print("⏳ Missing FFmpeg! Downloading static binaries for Render...")
+    os.system("wget -q https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz")
+    os.system("tar -xf ffmpeg-release-amd64-static.tar.xz")
+    os.system("cp ffmpeg-*-static/ffmpeg .")
+    os.system("cp ffmpeg-*-static/ffprobe .")
+    try:
+        os.chmod("ffmpeg", os.stat("ffmpeg").st_mode | stat.S_IEXEC)
+        os.chmod("ffprobe", os.stat("ffprobe").st_mode | stat.S_IEXEC)
+    except Exception as e:
+        print("Chmod Error:", e)
+    print("✅ FFmpeg Installed Successfully!")
+
+# Add current directory to PATH so PyTgCalls can easily find ffmpeg
+if os.getcwd() not in os.environ["PATH"]:
+    os.environ["PATH"] += os.pathsep + os.getcwd()
 
 # ==========================================
 # 🌐 DUMMY WEB PAGE / KEEP-ALIVE SERVER (FOR RENDER)
@@ -255,7 +278,7 @@ async def set_position_cmd(client, message):
 
 
 # ==========================================
-# 🎵 MUSIC ENGINE UTILS (🔥 YOUTUBE TO SOUNDCLOUD FALLBACK)
+# 🎵 MUSIC ENGINE UTILS
 # ==========================================
 async def get_fresh_url(song_dict):
     url = song_dict.get("url", "")
@@ -273,16 +296,14 @@ async def get_fresh_url(song_dict):
     return url
 
 def get_yt_info(query, is_video=False):
-    fmt = 'best[height=720][ext=mp4]/best[height<=720][ext=mp4]/best' if is_video else 'bestaudio/best'
+    fmt = 'best[height<=720][ext=mp4]/best' if is_video else 'bestaudio/best'
     
-    # 1. YouTube Configuration (Fails on Render sometimes due to IP Ban)
     ydl_opts_yt = {
         'format': fmt, 'noplaylist': True, 'quiet': True, 'no_warnings': True, 
         'ignoreerrors': True, 'simulate': True,
         'extractor_args': {'youtube': {'player_client': ['ios', 'android']}}
     }
     
-    # 2. SoundCloud Configuration (NEVER gets blocked by Cloud IPs)
     ydl_opts_sc = {
         'format': fmt, 'noplaylist': True, 'quiet': True, 'no_warnings': True, 
         'ignoreerrors': True, 'simulate': True
@@ -307,26 +328,25 @@ def get_yt_info(query, is_video=False):
             "is_video": is_video
         }
 
-    # CASE A: Agar direct URL aaya ho
+    # Case A: URL Search
     if "http://" in query or "https://" in query:
         with yt_dlp.YoutubeDL(ydl_opts_yt) as ydl:
             info = ydl.extract_info(query, download=False)
             if info: return process_extracted(info)
 
-    # CASE B: Pehle YouTube par search try karte hain
+    # Case B: YouTube Search Fallback Loop
     with yt_dlp.YoutubeDL(ydl_opts_yt) as ydl:
         info = ydl.extract_info(f"ytsearch:{query}", download=False)
         if info and 'entries' in info and info['entries']:
             res = process_extracted(info['entries'][0])
             if res: return res
 
-    # 🚨 CASE C: AGAR YOUTUBE NE RENDER IP KO BLOCK MAR DIYA TOH CHUPCHAP SOUNDCLOUD SE GANA UTHA LO 🚨
+    # Case C: ULTIMATE SOUNDCLOUD FALLBACK (Bypasses Render Block)
     with yt_dlp.YoutubeDL(ydl_opts_sc) as ydl:
         info = ydl.extract_info(f"scsearch:{query}", download=False)
         if info and 'entries' in info and info['entries']:
             return process_extracted(info['entries'][0])
 
-    # Dono jagah se na mile tabhi None return karega
     return None
 
 def get_music_panel(title, duration_str, requester, is_queue=False, pos=0, played_sec=0, total_sec=0):
@@ -856,7 +876,7 @@ async def process_play(client, message, is_video=False, force_play=False):
             yt_data = await asyncio.get_event_loop().run_in_executor(thread_pool, get_yt_info, query, is_video)
 
         if not yt_data or not yt_data.get("url"):
-            return await m.edit("❌ **Gaana nahi mila!** YouTube ne request block kar di thi, kripya thodi der me try karein ya dusra song search karein.")
+            return await m.edit("❌ **Gaana nahi mila!** Try with a different search term or provide a direct link.")
 
         yt_data["is_video"] = is_video; yt_data["requester"] = requester
         if chat_id not in chat_queue: chat_queue[chat_id] = []
@@ -879,8 +899,10 @@ async def process_play(client, message, is_video=False, force_play=False):
 
 @app.on_message(filters.command(["play", "vplay", "fplay", "fvplay"]) & filters.group)
 async def music_cmds(client, message):
-    cmd = message.command[0]
-    await process_play(client, message, is_video=("vplay" in cmd), force_play=("fplay" in cmd))
+    cmd = message.command[0].lower()
+    is_vid = "v" in cmd
+    force = cmd.startswith("f")
+    await process_play(client, message, is_video=is_vid, force_play=force)
 
 @app.on_message(filters.command("skip") & filters.group)
 async def skip_cmd(client, message):
