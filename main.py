@@ -5,8 +5,6 @@ import time
 import json
 import random
 import urllib.parse
-import urllib.request
-import re
 import yt_dlp
 import imageio_ffmpeg
 from concurrent.futures import ThreadPoolExecutor
@@ -255,24 +253,20 @@ async def set_position_cmd(client, message):
 
 
 # ==========================================
-# 🎵 MUSIC ENGINE UTILS (🔥 100% PURE AUDIO FIX - NO YT MUSIC BUG)
+# 🎵 MUSIC ENGINE UTILS (🔥 100% SOUNDCLOUD BYPASS)
 # ==========================================
 async def get_fresh_url(song_dict):
     url = song_dict.get("url", "")
-    if "googlevideo.com" in url:
-        try:
-            parsed = urllib.parse.urlparse(url)
-            qs = urllib.parse.parse_qs(parsed.query)
-            if 'expire' in qs and time.time() > (int(qs['expire'][0]) - 600): 
-                loop = asyncio.get_event_loop()
-                fresh_data = await loop.run_in_executor(thread_pool, get_yt_info, song_dict["title"], song_dict.get("is_video", False))
-                if fresh_data: return fresh_data["url"]
-        except: pass
+    if "sndcdn.com" in url or "googlevideo.com" in url:
+        # Puraana url agar kaam na kare toh dobara nikal lega
+        loop = asyncio.get_event_loop()
+        fresh_data = await loop.run_in_executor(thread_pool, get_yt_info, song_dict["title"], song_dict.get("is_video", False))
+        if fresh_data: return fresh_data["url"]
     return url
 
 def get_yt_info(query, is_video=False):
-    # 🚨 STRICTLY force mp4 audio/video stream properly to fix distorted voices
-    fmt = 'best[height<=720][ext=mp4]/best' if is_video else 'bestaudio[ext=m4a]/bestaudio/best'
+    # SoundCloud Audio ke liye best quality, Video link aayi toh mp4
+    fmt = 'best[height<=720][ext=mp4]/best' if is_video else 'bestaudio/best'
     
     ydl_opts = {
         'format': fmt, 
@@ -280,24 +274,11 @@ def get_yt_info(query, is_video=False):
         'quiet': True, 
         'no_warnings': True, 
         'ignoreerrors': True, 
-        'simulate': True, # No downloading, direct fast stream
-        # Mobile client prevents IP bans and 50kbps speed throttling
-        'extractor_args': {'youtube': {'player_client': ['android', 'ios']}},
-        'http_headers': {'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1'}
+        'simulate': True
     }
 
-    # 🔥 FIX: Use standard ytsearch1: (merse ytmsearch1: me galti ho gayi thi, wo command nahi hoti yt-dlp me)
-    search_query = query if ("http://" in query or "https://" in query) else f"ytsearch1:{query}"
-
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(search_query, download=False)
-        
-        if info and 'entries' in info and info['entries']:
-            info = info['entries'][0]
-
-        if not info or not info.get('url'):
-            return None
-
+    def process_extracted(info):
+        if not info or not info.get('url'): return None
         duration_sec = int(info.get('duration', 0) or 0)
         m, s = divmod(duration_sec, 60); h, m = divmod(m, 60)
         dur_str = f"{h:02d}:{m:02d}:{s:02d}" if h else f"{m:02d}:{s:02d}"
@@ -314,6 +295,20 @@ def get_yt_info(query, is_video=False):
             "duration_sec": duration_sec,
             "is_video": is_video
         }
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        if "http://" in query or "https://" in query:
+            # Agar tune exact YT ya SC link di hai, toh link to hamesha yt-dlp hi kholta hai
+            info = ydl.extract_info(query, download=False)
+            if info: return process_extracted(info)
+        else:
+            # 🔥 THE MAGIC: Agar tu gaane ka naam likhega, toh bot sidha SoundCloud me dhoondhega!
+            # Render IP yaha kabhi block nahi hogi.
+            info = ydl.extract_info(f"scsearch1:{query}", download=False)
+            if info and 'entries' in info and info['entries']:
+                return process_extracted(info['entries'][0])
+
+    return None
 
 def get_music_panel(title, duration_str, requester, is_queue=False, pos=0, played_sec=0, total_sec=0):
     title_caps = to_small_caps(title)
