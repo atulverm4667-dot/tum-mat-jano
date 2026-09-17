@@ -1,7 +1,6 @@
 import logging
 import asyncio
 import os
-import stat
 import time
 import json
 import random
@@ -9,6 +8,7 @@ import urllib.parse
 import urllib.request
 import re
 import yt_dlp
+import imageio_ffmpeg
 from concurrent.futures import ThreadPoolExecutor
 from pyrogram import Client, filters, idle
 from pyrogram.types import (InlineKeyboardMarkup, InlineKeyboardButton, BotCommand, 
@@ -22,24 +22,15 @@ from flask import Flask
 import threading
 
 # ==========================================
-# 🚨 RENDER FFMPEG AUTO-INSTALLER (CRITICAL FIX FOR AUDIO/VIDEO)
+# 🚨 FFMPEG PATH FIX (FOR RENDER AUDIO/VIDEO)
 # ==========================================
-if not os.path.exists("ffmpeg") and "linux" in os.sys.platform:
-    print("⏳ Missing FFmpeg! Downloading static binaries for Render...")
-    os.system("wget -q https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz")
-    os.system("tar -xf ffmpeg-release-amd64-static.tar.xz")
-    os.system("cp ffmpeg-*-static/ffmpeg .")
-    os.system("cp ffmpeg-*-static/ffprobe .")
-    try:
-        os.chmod("ffmpeg", os.stat("ffmpeg").st_mode | stat.S_IEXEC)
-        os.chmod("ffprobe", os.stat("ffprobe").st_mode | stat.S_IEXEC)
-    except Exception as e:
-        print("Chmod Error:", e)
-    print("✅ FFmpeg Installed Successfully!")
-
-# Add current directory to PATH so PyTgCalls can easily find ffmpeg
-if os.getcwd() not in os.environ["PATH"]:
-    os.environ["PATH"] += os.pathsep + os.getcwd()
+try:
+    ffmpeg_path = os.path.dirname(imageio_ffmpeg.get_ffmpeg_exe())
+    if ffmpeg_path not in os.environ["PATH"]:
+        os.environ["PATH"] += os.pathsep + ffmpeg_path
+    print("✅ FFmpeg Path Set Successfully!")
+except Exception as e:
+    print(f"⚠️ FFmpeg Path Error: {e}")
 
 # ==========================================
 # 🌐 DUMMY WEB PAGE / KEEP-ALIVE SERVER (FOR RENDER)
@@ -278,7 +269,7 @@ async def set_position_cmd(client, message):
 
 
 # ==========================================
-# 🎵 MUSIC ENGINE UTILS
+# 🎵 MUSIC ENGINE UTILS (⚡ FAST SEARCH FIX)
 # ==========================================
 async def get_fresh_url(song_dict):
     url = song_dict.get("url", "")
@@ -298,10 +289,11 @@ async def get_fresh_url(song_dict):
 def get_yt_info(query, is_video=False):
     fmt = 'best[height<=720][ext=mp4]/best' if is_video else 'bestaudio/best'
     
+    # ⚡ SUPER FAST YT-DLP OPTIONS
     ydl_opts_yt = {
         'format': fmt, 'noplaylist': True, 'quiet': True, 'no_warnings': True, 
         'ignoreerrors': True, 'simulate': True,
-        'extractor_args': {'youtube': {'player_client': ['ios', 'android']}}
+        'extractor_args': {'youtube': {'player_client': ['android', 'ios']}} # Seedha mobile client
     }
     
     ydl_opts_sc = {
@@ -328,22 +320,22 @@ def get_yt_info(query, is_video=False):
             "is_video": is_video
         }
 
-    # Case A: URL Search
+    # 1. Direct Link Aaya Toh (No Delay)
     if "http://" in query or "https://" in query:
         with yt_dlp.YoutubeDL(ydl_opts_yt) as ydl:
             info = ydl.extract_info(query, download=False)
             if info: return process_extracted(info)
 
-    # Case B: YouTube Search Fallback Loop
+    # 2. Fast YouTube Search (ytsearch1 limit karega sirf 1 result par)
     with yt_dlp.YoutubeDL(ydl_opts_yt) as ydl:
-        info = ydl.extract_info(f"ytsearch:{query}", download=False)
+        info = ydl.extract_info(f"ytsearch1:{query}", download=False)
         if info and 'entries' in info and info['entries']:
             res = process_extracted(info['entries'][0])
             if res: return res
 
-    # Case C: ULTIMATE SOUNDCLOUD FALLBACK (Bypasses Render Block)
+    # 3. Quick SoundCloud Fallback (Agar Render IP completely blocked hai)
     with yt_dlp.YoutubeDL(ydl_opts_sc) as ydl:
-        info = ydl.extract_info(f"scsearch:{query}", download=False)
+        info = ydl.extract_info(f"scsearch1:{query}", download=False)
         if info and 'entries' in info and info['entries']:
             return process_extracted(info['entries'][0])
 
