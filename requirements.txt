@@ -1,6 +1,6 @@
 pyrogram==2.3.69
 tgcrypto==1.2.5
-pytgcalls==3.0.0rc3
+pytgcalls==2.3.3
 motor==3.5.1
-yt-dlp==2024.8.6
-flask==3.0.3
+yt-dlp
+flask
