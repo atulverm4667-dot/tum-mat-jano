@@ -679,7 +679,8 @@ async def show_playlist(client, message):
     kb = [[InlineKeyboardButton("🗑️ Manage/Delete Songs", callback_data="manage_pl")]]
     await message.reply(text, reply_markup=InlineKeyboardMarkup(kb))
 
-@app.on_callback_query(filters.regex("^(manage_pl|back_pl|clear_pl)$") \vert{} filters.regex(r"^delpl_(\d+)$"))
+@app.on_callback_query(filters.regex("^(manage_pl|back_pl|clear_pl)$") | filters.regex(r"^delpl_(\d+)$"))
+
 async def playlist_callbacks(client, callback_query):
     data = callback_query.data
     user_id = callback_query.from_user.id
