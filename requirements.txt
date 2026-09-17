@@ -16,7 +16,6 @@ motor==3.7.1
 multidict==6.8.0
 ntgcalls==2.2.5
 packaging==26.3
-pip==26.2.1
 propcache==0.5.4
 py-tgcalls==2.3.3
 pyaes==1.6.1
@@ -28,4 +27,4 @@ typing_extensions==4.16.0
 Werkzeug==3.1.8
 yarl==1.25.1
 yt-dlp @ git+https://github.com/yt-dlp/yt-dlp.git
-
+imageio-ffmpeg
