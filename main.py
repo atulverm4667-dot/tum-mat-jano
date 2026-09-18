@@ -19,7 +19,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "<h1>🤖 PRO UNO Bot is Alive with Multi-Lang & Rules! 🚀</h1>"
+    return "<h1>🤖 PRO UNO Bot is Alive (Premium UI Update)! 🚀</h1>"
 
 def run_web():
     port = int(os.environ.get("PORT", 8080))
@@ -53,86 +53,86 @@ user_langs_cache = {}
 BOT_USERNAME = ""
 
 # ==========================================
-# 🌍 TRANSLATION ENGINE (MULTI-LANG DICTIONARY)
+# 🌍 TRANSLATION ENGINE (PREMIUM UI DICTIONARY)
 # ==========================================
 TRANSLATIONS = {
     "en_US": {
-        "help": "Follow these steps:\n\n1. Add this bot to a group\n2. In the group, start a new game with /new or join an already running game with /join\n3. After at least two players have joined, start the game with /start\n4. Type @{bot} into your chat box and hit **space**. You will see your cards (greyed out = invalid).\nPlayers can join at any time. To leave, use /leave. If a player takes too long, use /skip.\n\n**Explanation of game modes**: /modes\n**Language and other settings**: /settings",
-        "modes_text": "🃏 **UNO Game Rules & Modes:**\n\n**Classic UNO:**\n- Match the top card by color or number.\n- Play special cards (Skip, Reverse, Draw 2) to disrupt opponents.\n- Wild cards can change the current color.\n- Wild +4 changes the color AND forces the next player to draw 4 cards.\n- If you can't play any card, you must click 'Draw' to pick a card.\n- The first player to get rid of all their cards wins!\n\n*(More custom modes coming soon!)*",
-        "settings": "⚙️ **Settings:**\nChoose an option below to update your preferences.",
-        "stats_disabled": "You did not enable statistics. Use /settings in a private chat with the bot to enable them.",
-        "stats_msg": "**{name}'s UNO Stats:**\n\n{wins} games won\n{wins} first places ({percent}%)\n{cards} cards played",
-        "db_error": "⚠️ Database not connected.",
-        "enabled_stats": "✅ Enabled statistics!",
-        "lang_saved": "✅ Language preferences saved to English (US).",
-        "already_playing": "⚠️ A game is already in progress or lobby is open! Join with /join or /kill it.",
-        "new_lobby": "🃏 **A new UNO game has been created!**\n\nPress /join to enter the game.\nWhen everyone is ready, the creator can type /start.",
-        "no_lobby": "⚠️ No open lobby available. Use /new to start one.",
-        "lobby_closed_err": "⚠️ The lobby is closed by the creator.",
-        "already_joined": "⚠️ You have already joined!",
-        "joined_success": "✅ {name} has joined the game! Total players: {count}",
-        "not_in_game": "⚠️ You are not in the game.",
-        "left_game": "👋 {name} left the game.",
-        "not_enough_players": "⚠️ Not enough players left. Game terminated.",
-        "lobby_closed": "🔒 The game lobby is now closed. No one else can join.",
-        "lobby_opened": "🔓 The game lobby is now open. Players can /join.",
-        "start_error": "⚠️ No lobby exists or game is already playing.",
-        "need_2_players": "⚠️ Need at least 2 players to start!",
-        "game_started": "🎮 **The game has started!**",
-        "game_killed": "🛑 **The game has been terminated!**",
-        "no_kill": "⚠️ No active game to kill.",
-        "only_creator_kick": "⚠️ Only the game creator can kick players.",
-        "reply_to_kick": "⚠️ Please reply to the user you want to kick.",
-        "kicked": "👢 {name} has been kicked from the game.",
-        "skipped": "⏭️ {name} took too long and was skipped! (Forced draw)",
-        "not_active": "⚠️ Game is not active!",
-        "ur_cards_title": "🃏 YOUR CARDS:\n\n{cards}",
-        "cant_play_cheat": "🚫 {name}, you cannot play that card right now!",
-        "not_ur_turn": "⚠️ It's not your turn {name}!",
-        "wild_played": "🌈 **WILD CARD PLAYED by {name}!**\nChoose a new color:",
-        "won_game": "🎉 **{name} HAS WON UNO!** 🏆",
-        "drew_card": "📥 You drew a card!",
-        "wait_turn": "⚠️ Wait for your turn!",
-        "table_text": "🃏 **UNO TABLE**\n\n🎨 **Current Color:** {color}\n🎯 **Top Card:** {card}\n\n👥 **Players:**\n{players}\n\n⏳ *You have 90 seconds to play!*"
+        "help": "> 💡 **ᴜɴᴏ ʙᴏᴛ ɢᴜɪᴅᴇ:**\n>\n> 1️⃣ ᴀᴅᴅ ᴛʜɪꜱ ʙᴏᴛ ᴛᴏ ᴀ ɢʀᴏᴜᴘ.\n> 2️⃣ ꜱᴛᴀʀᴛ ᴀ ɴᴇᴡ ɢᴀᴍᴇ ᴡɪᴛʜ /new ᴏʀ ᴊᴏɪɴ ᴀɴ ᴀᴄᴛɪᴠᴇ ɢᴀᴍᴇ ᴡɪᴛʜ /join.\n> 3️⃣ ᴀꜰᴛᴇʀ 2+ ᴘʟᴀʏᴇʀꜱ ᴊᴏɪɴ, ꜱᴛᴀʀᴛ ɪᴛ ᴡɪᴛʜ /start.\n> 4️⃣ ᴛʏᴘᴇ @{bot} ɪɴᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ ʙᴏx ᴀɴᴅ ʜɪᴛ ꜱᴘᴀᴄᴇ. ʏᴏᴜ ᴡɪʟʟ ꜱᴇᴇ ʏᴏᴜʀ ᴄᴀʀᴅꜱ. (ɢʀᴇʏᴇᴅ ᴏᴜᴛ = ᴄᴀɴɴᴏᴛ ᴘʟᴀʏ).\n>\n> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ ᴀɴᴅ ʀᴜʟᴇꜱ:**\n> ➥ /rules : ᴇxᴘʟᴀɴᴀᴛɪᴏɴ ᴏꜰ ɢᴀᴍᴇ ʀᴜʟᴇꜱ\n> ➥ /settings : ʟᴀɴɢᴜᴀɢᴇ ᴀɴᴅ ꜱᴛᴀᴛꜱ ꜱᴇᴛᴛɪɴɢꜱ",
+        "rules_text": "> 🃏 **ᴜɴᴏ ɢᴀᴍᴇ ʀᴜʟᴇꜱ & ᴍᴏᴅᴇꜱ:**\n>\n> 🔴 **ᴄʟᴀꜱꜱɪᴄ ᴜɴᴏ:**\n> ➥ ᴍᴀᴛᴄʜ ᴛʜᴇ ᴛᴏᴘ ᴄᴀʀᴅ ʙʏ ᴄᴏʟᴏʀ ᴏʀ ɴᴜᴍʙᴇʀ.\n> ➥ ᴘʟᴀʏ ꜱᴘᴇᴄɪᴀʟ ᴄᴀʀᴅꜱ (ꜱᴋɪᴘ, ʀᴇᴠᴇʀꜱᴇ, ᴅʀᴀᴡ 2) ᴛᴏ ᴅɪꜱʀᴜᴘᴛ ᴏᴘᴘᴏɴᴇɴᴛꜱ.\n> 🌈 ᴡɪʟᴅ ᴄᴀʀᴅꜱ ᴄᴀɴ ᴄʜᴀɴɢᴇ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ.\n> 💥 ᴡɪʟᴅ +4 ᴄʜᴀɴɢᴇꜱ ᴛʜᴇ ᴄᴏʟᴏʀ ᴀɴᴅ ꜰᴏʀᴄᴇꜱ ᴛʜᴇ ɴᴇxᴛ ᴘʟᴀʏᴇʀ ᴛᴏ ᴅʀᴀᴡ 4 ᴄᴀʀᴅꜱ.\n> 📥 ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ᴘʟᴀʏ ᴀɴʏ ᴄᴀʀᴅ, ʏᴏᴜ ᴍᴜꜱᴛ ᴄʟɪᴄᴋ 'ᴅʀᴀᴡ' ᴛᴏ ᴘɪᴄᴋ ᴀ ᴄᴀʀᴅ.\n> 🏆 ᴛʜᴇ ꜰɪʀꜱᴛ ᴘʟᴀʏᴇʀ ᴛᴏ ɢᴇᴛ ʀɪᴅ ᴏꜰ ᴀʟʟ ᴛʜᴇɪʀ ᴄᴀʀᴅꜱ ᴡɪɴꜱ!",
+        "settings": "> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ:**\n> ᴄʜᴏᴏꜱᴇ ᴀɴ ᴏᴘᴛɪᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ᴜᴘᴅᴀᴛᴇ ʏᴏᴜʀ ᴘʀᴇꜰᴇʀᴇɴᴄᴇꜱ.",
+        "stats_disabled": "> ⚠️ ʏᴏᴜ ᴅɪᴅ ɴᴏᴛ ᴇɴᴀʙʟᴇ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ. ᴜꜱᴇ /settings ɪɴ ᴀ ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ ᴛᴏ ᴇɴᴀʙʟᴇ ᴛʜᴇᴍ.",
+        "stats_msg": "> 📊 **{name}'ꜱ ᴜɴᴏ ꜱᴛᴀᴛꜱ:**\n>\n> 🏆 ɢᴀᴍᴇꜱ ᴡᴏɴ : `{wins}`\n> 🥇 ꜰɪʀꜱᴛ ᴘʟᴀᴄᴇꜱ : `{percent}%`\n> 🃏 ᴄᴀʀᴅꜱ ᴘʟᴀʏᴇᴅ : `{cards}`",
+        "db_error": "> ⚠️ ᴅᴀᴛᴀʙᴀꜱᴇ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ.",
+        "enabled_stats": "> ✅ ᴇɴᴀʙʟᴇᴅ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ!",
+        "lang_saved": "> ✅ ʟᴀɴɢᴜᴀɢᴇ ᴘʀᴇꜰᴇʀᴇɴᴄᴇꜱ ꜱᴀᴠᴇᴅ ᴛᴏ ᴇɴɢʟɪꜱʜ.",
+        "already_playing": "> ⚠️ ᴀ ɢᴀᴍᴇ ɪꜱ ᴀʟʀᴇᴀᴅʏ ɪɴ ᴘʀᴏɢʀᴇꜱꜱ! ᴊᴏɪɴ ᴡɪᴛʜ /join ᴏʀ /kill ɪᴛ.",
+        "new_lobby": "> 🃏 **ᴀ ɴᴇᴡ ᴜɴᴏ ɢᴀᴍᴇ ʜᴀꜱ ʙᴇᴇɴ ᴄʀᴇᴀᴛᴇᴅ!**\n>\n> ᴘʀᴇꜱꜱ /join ᴛᴏ ᴇɴᴛᴇʀ ᴛʜᴇ ɢᴀᴍᴇ.\n> ᴡʜᴇɴ ᴇᴠᴇʀʏᴏɴᴇ ɪꜱ ʀᴇᴀᴅʏ, ᴛʜᴇ ᴄʀᴇᴀᴛᴏʀ ᴄᴀɴ ᴛʏᴘᴇ /start.",
+        "no_lobby": "> ⚠️ ɴᴏ ᴏᴘᴇɴ ʟᴏʙʙʏ ᴀᴠᴀɪʟᴀʙʟᴇ. ᴜꜱᴇ /new ᴛᴏ ꜱᴛᴀʀᴛ ᴏɴᴇ.",
+        "lobby_closed_err": "> ⚠️ ᴛʜᴇ ʟᴏʙʙʏ ɪꜱ ᴄʟᴏꜱᴇᴅ ʙʏ ᴛʜᴇ ᴄʀᴇᴀᴛᴏʀ.",
+        "already_joined": "> ⚠️ ʏᴏᴜ ʜᴀᴠᴇ ᴀʟʀᴇᴀᴅʏ ᴊᴏɪɴᴇᴅ!",
+        "joined_success": "> ✅ {name} ʜᴀꜱ ᴊᴏɪɴᴇᴅ ᴛʜᴇ ɢᴀᴍᴇ! ᴛᴏᴛᴀʟ ᴘʟᴀʏᴇʀꜱ: {count}",
+        "not_in_game": "> ⚠️ ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ɪɴ ᴛʜᴇ ɢᴀᴍᴇ.",
+        "left_game": "> 👋 {name} ʟᴇꜰᴛ ᴛʜᴇ ɢᴀᴍᴇ.",
+        "not_enough_players": "> ⚠️ ɴᴏᴛ ᴇɴᴏᴜɢʜ ᴘʟᴀʏᴇʀꜱ ʟᴇꜰᴛ. ɢᴀᴍᴇ ᴛᴇʀᴍɪɴᴀᴛᴇᴅ.",
+        "lobby_closed": "> 🔒 ᴛʜᴇ ɢᴀᴍᴇ ʟᴏʙʙʏ ɪꜱ ɴᴏᴡ ᴄʟᴏꜱᴇᴅ. ɴᴏ ᴏɴᴇ ᴇʟꜱᴇ ᴄᴀɴ ᴊᴏɪɴ.",
+        "lobby_opened": "> 🔓 ᴛʜᴇ ɢᴀᴍᴇ ʟᴏʙʙʏ ɪꜱ ɴᴏᴡ ᴏᴘᴇɴ. ᴘʟᴀʏᴇʀꜱ ᴄᴀɴ /join.",
+        "start_error": "> ⚠️ ɴᴏ ʟᴏʙʙʏ ᴇxɪꜱᴛꜱ ᴏʀ ɢᴀᴍᴇ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴘʟᴀʏɪɴɢ.",
+        "need_2_players": "> ⚠️ ɴᴇᴇᴅ ᴀᴛ ʟᴇᴀꜱᴛ 2 ᴘʟᴀʏᴇʀꜱ ᴛᴏ ꜱᴛᴀʀᴛ!",
+        "game_started": "> 🎮 **ᴛʜᴇ ɢᴀᴍᴇ ʜᴀꜱ ꜱᴛᴀʀᴛᴇᴅ!**",
+        "game_killed": "> 🛑 **ᴛʜᴇ ɢᴀᴍᴇ ʜᴀꜱ ʙᴇᴇɴ ᴛᴇʀᴍɪɴᴀᴛᴇᴅ!**",
+        "no_kill": "> ⚠️ ɴᴏ ᴀᴄᴛɪᴠᴇ ɢᴀᴍᴇ ᴛᴏ ᴋɪʟʟ.",
+        "only_creator_kick": "> ⚠️ ᴏɴʟʏ ᴛʜᴇ ɢᴀᴍᴇ ᴄʀᴇᴀᴛᴏʀ ᴄᴀɴ ᴋɪᴄᴋ ᴘʟᴀʏᴇʀꜱ.",
+        "reply_to_kick": "> ⚠️ ᴘʟᴇᴀꜱᴇ ʀᴇᴘʟʏ ᴛᴏ ᴛʜᴇ ᴜꜱᴇʀ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴋɪᴄᴋ.",
+        "kicked": "> 👢 {name} ʜᴀꜱ ʙᴇᴇɴ ᴋɪᴄᴋᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ɢᴀᴍᴇ.",
+        "skipped": "> ⏭️ {name} ᴛᴏᴏᴋ ᴛᴏᴏ ʟᴏɴɢ ᴀɴᴅ ᴡᴀꜱ ꜱᴋɪᴘᴘᴇᴅ! (ꜰᴏʀᴄᴇᴅ ᴅʀᴀᴡ)",
+        "not_active": "⚠️ ɢᴀᴍᴇ ɪꜱ ɴᴏᴛ ᴀᴄᴛɪᴠᴇ!",
+        "ur_cards_title": "🃏 ʏᴏᴜʀ ᴄᴀʀᴅꜱ:\n\n{cards}",
+        "cant_play_cheat": "🚫 {name}, ʏᴏᴜ ᴄᴀɴɴᴏᴛ ᴘʟᴀʏ ᴛʜᴀᴛ ᴄᴀʀᴅ ʀɪɢʜᴛ ɴᴏᴡ!",
+        "not_ur_turn": "⚠️ ɪᴛ'ꜱ ɴᴏᴛ ʏᴏᴜʀ ᴛᴜʀɴ {name}!",
+        "wild_played": "> 🌈 **WILD CARD PLAYED by {name}!**\n> ᴄʜᴏᴏꜱᴇ ᴀ ɴᴇᴡ ᴄᴏʟᴏʀ:",
+        "won_game": "> 🎉 **{name} HAS WON UNO!** 🏆",
+        "drew_card": "📥 ʏᴏᴜ ᴅʀᴇᴡ ᴀ ᴄᴀʀᴅ!",
+        "wait_turn": "⚠️ ᴡᴀɪᴛ ꜰᴏʀ ʏᴏᴜʀ ᴛᴜʀɴ!",
+        "table_text": "> 🃏 **ᴜɴᴏ ᴛᴀʙʟᴇ**\n>\n> 🎨 **ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ:** {color}\n> 🎯 **ᴛᴏᴘ ᴄᴀʀᴅ:** {card}\n>\n> 👥 **ᴘʟᴀʏᴇʀꜱ:**\n> {players}\n>\n> ⏳ *ʏᴏᴜ ʜᴀᴠᴇ 90 ꜱᴇᴄᴏɴᴅꜱ ᴛᴏ ᴘʟᴀʏ!*"
     },
     "hi_IN": {
-        "help": "Bot ko use karne ke steps:\n\n1. Is bot ko kisi group me add karein.\n2. Group me naya game banane ke liye /new bhejein, ya chalte game me /join karein.\n3. Jab 2 ya zyada log aa jayein, toh game shuru karne ke liye /start bhejein.\n4. Apne chat box me @{bot} likh kar **space** dabayein. Aapko apne cards dikh jayenge (jo card grey hai wo aap abhi nahi khel sakte).\nKoi bhi kabhi bhi join kar sakta hai. Game chhodne ke liye /leave use karein. Agar koi der lagaye, toh /skip use karein.\n\n**Rules padhne ke liye**: /modes\n**Language aur settings ke liye**: /settings",
-        "modes_text": "🃏 **UNO Game Rules & Modes (Niyam):**\n\n**Classic UNO:**\n- Top card ke color ya number se match karta hua card khelein.\n- Opponents ko rokne ke liye special cards (Skip, Reverse, Draw 2) ka use karein.\n- Wild card khel kar aap color change kar sakte hain.\n- Wild +4 color bhi change karta hai aur agle player ko 4 cards nikalne padte hain.\n- Agar aapke paas khelne ke liye koi valid card nahi hai, toh aapko 'Draw' par click karke naya card nikalna padega.\n- Jo player sabse pehle apne saare cards khatam kar dega, wo jeetega!\n\n*(Aur custom modes jaldi add honge!)*",
-        "settings": "⚙️ **Settings (सेटिंग्स):**\nNiche diye gaye options se apni pasand chunein.",
-        "stats_disabled": "Aapne statistics on nahi kiya hai. Bot ki private chat me /settings bhej kar on karein.",
-        "stats_msg": "**{name} ke UNO Stats:**\n\n{wins} games jeete\n{wins} first places ({percent}%)\n{cards} cards khele gaye",
-        "db_error": "⚠️ Database connected nahi hai.",
-        "enabled_stats": "✅ Statistics on kar diye gaye hain!",
-        "lang_saved": "✅ Aapki bhasha Hindi (Hinglish) me set kar di gayi hai.",
-        "already_playing": "⚠️ Ek game pehle se chal raha hai ya lobby open hai! /join se join karein ya /kill se band karein.",
-        "new_lobby": "🃏 **Ek naya UNO game ban gaya hai!**\n\nGame me aane ke liye /join dabayein.\nJab sab ready ho jayein, toh creator /start daba kar game shuru kare.",
-        "no_lobby": "⚠️ Koi open lobby nahi mili. Nayi lobby banane ke liye /new dabayein.",
-        "lobby_closed_err": "⚠️ Creator ne lobby close kar di hai.",
-        "already_joined": "⚠️ Aap pehle se game me hain!",
-        "joined_success": "✅ {name} ne game join kar liya hai! Total players: {count}",
-        "not_in_game": "⚠️ Aap is game me nahi hain.",
-        "left_game": "👋 {name} game chhod kar chala gaya.",
-        "not_enough_players": "⚠️ Khelne ke liye log kam hain. Game khatam kar diya gaya.",
-        "lobby_closed": "🔒 Game lobby ab band ho chuki hai. Koi naya banda join nahi kar sakta.",
-        "lobby_opened": "🔓 Game lobby open ho chuki hai. Ab koi bhi /join kar sakta hai.",
-        "start_error": "⚠️ Koi lobby open nahi hai ya game pehle se chal raha hai.",
-        "need_2_players": "⚠️ Game shuru karne ke liye kam se kam 2 players chahiye!",
-        "game_started": "🎮 **Game shuru ho gaya hai! Khelna start karein!**",
-        "game_killed": "🛑 **Game forcefully band kar diya gaya hai!**",
-        "no_kill": "⚠️ Kill karne ke liye koi game chal hi nahi raha.",
-        "only_creator_kick": "⚠️ Sirf game banane wala hi kisi ko nikaal (kick) sakta hai.",
-        "reply_to_kick": "⚠️ Jise nikalna hai uske message par reply karein.",
-        "kicked": "👢 {name} ko game se nikaal diya gaya hai.",
-        "skipped": "⏭️ {name} ne bahut time lagaya isliye uski baari skip kar di gayi! (Forced draw)",
-        "not_active": "⚠️ Game abhi chal nahi raha hai!",
-        "ur_cards_title": "🃏 AAPKE CARDS:\n\n{cards}",
-        "cant_play_cheat": "🚫 {name}, aap ye card abhi nahi khel sakte!",
-        "not_ur_turn": "⚠️ Ye aapki baari nahi hai {name}!",
-        "wild_played": "🌈 **{name} ne WILD CARD khela hai!**\nNaya color chunein:",
-        "won_game": "🎉 **{name} UNO JEET GAYA HAI!** 🏆",
-        "drew_card": "📥 Aapne ek naya card nikala!",
-        "wait_turn": "⚠️ Apni baari ka intezaar karein!",
-        "table_text": "🃏 **UNO TABLE**\n\n🎨 **Current Color:** {color}\n🎯 **Top Card:** {card}\n\n👥 **Players:**\n{players}\n\n⏳ *Aapke paas khelne ke liye 90 seconds hain!*"
+        "help": "> 💡 **ᴜɴᴏ ʙᴏᴛ ɢᴜɪᴅᴇ:**\n>\n> 1️⃣ ɪꜱ ʙᴏᴛ ᴋᴏ ᴋɪꜱɪ ɢʀᴏᴜᴘ ᴍᴇ ᴀᴅᴅ ᴋᴀʀᴇɪɴ.\n> 2️⃣ ɴᴀʏᴀ ɢᴀᴍᴇ ʙᴀɴᴀɴᴇ ᴋᴇ ʟɪʏᴇ /new ʙʜᴇᴊᴇɪɴ, ʏᴀ ᴄʜᴀʟᴛᴇ ɢᴀᴍᴇ ᴍᴇ /join ᴋᴀʀᴇɪɴ.\n> 3️⃣ ᴊᴀʙ 2 ʏᴀ ᴢʏᴀᴅᴀ ʟᴏɢ ᴀᴀ ᴊᴀʏᴇɪɴ, ᴛᴏʜ ɢᴀᴍᴇ ꜱʜᴜʀᴜ ᴋᴀʀɴᴇ ᴋᴇ ʟɪʏᴇ /start ʙʜᴇᴊᴇɪɴ.\n> 4️⃣ ᴀᴘɴᴇ ᴄʜᴀᴛ ʙᴏx ᴍᴇ @{bot} ʟɪᴋʜ ᴋᴀʀ ꜱᴘᴀᴄᴇ ᴅᴀʙᴀʏᴇɪɴ. ᴀᴀᴘᴋᴏ ᴀᴘɴᴇ ᴄᴀʀᴅꜱ ᴅɪᴋʜ ᴊᴀʏᴇɴɢᴇ. (ɢʀᴇʏ ᴄᴀʀᴅꜱ ɴᴀʜɪ ᴋʜᴇʟ ꜱᴀᴋᴛᴇ).\n>\n> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ ᴀᴜʀ ʀᴜʟᴇꜱ:**\n> ➥ /rules : ᴜɴᴏ ᴋʜᴇʟɴᴇ ᴋᴇ ɴɪʏᴀᴍ\n> ➥ /settings : ʟᴀɴɢᴜᴀɢᴇ ᴀᴜʀ ꜱᴛᴀᴛꜱ ꜱᴇᴛᴛɪɴɢꜱ",
+        "rules_text": "> 🃏 **ᴜɴᴏ ɢᴀᴍᴇ ʀᴜʟᴇꜱ (ɴɪʏᴀᴍ):**\n>\n> 🔴 **ᴄʟᴀꜱꜱɪᴄ ᴜɴᴏ:**\n> ➥ ᴛᴏᴘ ᴄᴀʀᴅ ᴋᴇ ᴄᴏʟᴏʀ ʏᴀ ɴᴜᴍʙᴇʀ ꜱᴇ ᴍᴀᴛᴄʜ ᴋᴀʀᴛᴀ ʜᴜᴀ ᴄᴀʀᴅ ᴋʜᴇʟᴇɪɴ.\n> ➥ ᴏᴘᴘᴏɴᴇɴᴛꜱ ᴋᴏ ʀᴏᴋɴᴇ ᴋᴇ ʟɪʏᴇ ꜱᴘᴇᴄɪᴀʟ ᴄᴀʀᴅꜱ (ꜱᴋɪᴘ, ʀᴇᴠᴇʀꜱᴇ, ᴅʀᴀᴡ 2) ᴋᴀ ᴜꜱᴇ ᴋᴀʀᴇɪɴ.\n> 🌈 ᴡɪʟᴅ ᴄᴀʀᴅ ᴋʜᴇʟ ᴋᴀʀ ᴀᴀᴘ ᴄᴏʟᴏʀ ᴄʜᴀɴɢᴇ ᴋᴀʀ ꜱᴀᴋᴛᴇ ʜᴀɪɴ.\n> 💥 ᴡɪʟᴅ +4 ᴄᴏʟᴏʀ ʙʜɪ ᴄʜᴀɴɢᴇ ᴋᴀʀᴛᴀ ʜᴀɪ ᴀᴜʀ ᴀɢʟᴇ ᴘʟᴀʏᴇʀ ᴋᴏ 4 ᴄᴀʀᴅꜱ ɴɪᴋᴀʟɴᴇ ᴘᴀᴅᴛᴇ ʜᴀɪɴ.\n> 📥 ᴀɢᴀʀ ᴀᴀᴘᴋᴇ ᴘᴀᴀꜱ ᴋʜᴇʟɴᴇ ᴋᴇ ʟɪʏᴇ ᴋᴏɪ ᴠᴀʟɪᴅ ᴄᴀʀᴅ ɴᴀʜɪ ʜᴀɪ, ᴛᴏʜ 'ᴅʀᴀᴡ' ᴘᴀʀ ᴄʟɪᴄᴋ ᴋᴀʀᴋᴇ ɴᴀʏᴀ ᴄᴀʀᴅ ɴɪᴋᴀʟᴇɪɴ.\n> 🏆 ᴊᴏ ᴘʟᴀʏᴇʀ ꜱᴀʙꜱᴇ ᴘᴇʜʟᴇ ᴀᴘɴᴇ ꜱᴀᴀʀᴇ ᴄᴀʀᴅꜱ ᴋʜᴀᴛᴀᴍ ᴋᴀʀᴇɢᴀ, ᴡᴏ ᴊᴇᴇᴛᴇɢᴀ!",
+        "settings": "> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ (ꜱᴇᴛɪɴɢꜱ):**\n> ɴɪᴄʜᴇ ᴅɪʏᴇ ɢᴀʏᴇ ᴏᴘᴛɪᴏɴꜱ ꜱᴇ ᴀᴘɴɪ ᴘᴀꜱᴀɴᴅ ᴄʜᴜɴᴇɪɴ.",
+        "stats_disabled": "> ⚠️ ᴀᴀᴘɴᴇ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ ᴏɴ ɴᴀʜɪ ᴋɪʏᴀ ʜᴀɪ. ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ ᴍᴇ /settings ʙʜᴇᴊ ᴋᴀʀ ᴏɴ ᴋᴀʀᴇɪɴ.",
+        "stats_msg": "> 📊 **{name} ᴋᴇ ᴜɴᴏ ꜱᴛᴀᴛꜱ:**\n>\n> 🏆 ɢᴀᴍᴇꜱ ᴊᴇᴇᴛᴇ : `{wins}`\n> 🥇 ꜰɪʀꜱᴛ ᴘʟᴀᴄᴇꜱ : `{percent}%`\n> 🃏 ᴄᴀʀᴅꜱ ᴋʜᴇʟᴇ : `{cards}`",
+        "db_error": "> ⚠️ ᴅᴀᴛᴀʙᴀꜱᴇ ᴄᴏɴɴᴇᴄᴛᴇᴅ ɴᴀʜɪ ʜᴀɪ.",
+        "enabled_stats": "> ✅ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ ᴏɴ ᴋᴀʀ ᴅɪʏᴇ ɢᴀʏᴇ ʜᴀɪɴ!",
+        "lang_saved": "> ✅ ᴀᴀᴘᴋɪ ʙʜᴀꜱʜᴀ ʜɪɴᴅɪ ᴍᴇ ꜱᴇᴛ ᴋᴀʀ ᴅɪ ɢᴀʏɪ ʜᴀɪ.",
+        "already_playing": "> ⚠️ ᴇᴋ ɢᴀᴍᴇ ᴘᴇʜʟᴇ ꜱᴇ ᴄʜᴀʟ ʀᴀʜᴀ ʜᴀɪ! /join ꜱᴇ ᴊᴏɪɴ ᴋᴀʀᴇɪɴ ʏᴀ /kill ᴋᴀʀᴇɪɴ.",
+        "new_lobby": "> 🃏 **ᴇᴋ ɴᴀʏᴀ ᴜɴᴏ ɢᴀᴍᴇ ʙᴀɴ ɢᴀʏᴀ ʜᴀɪ!**\n>\n> ɢᴀᴍᴇ ᴍᴇ ᴀᴀɴᴇ ᴋᴇ ʟɪʏᴇ /join ᴅᴀʙᴀʏᴇɪɴ.\n> ᴊᴀʙ ꜱᴀʙ ʀᴇᴀᴅʏ ʜᴏ ᴊᴀʏᴇɪɴ, ᴛᴏʜ ᴄʀᴇᴀᴛᴏʀ /start ᴅᴀʙᴀ ᴋᴀʀ ɢᴀᴍᴇ ꜱʜᴜʀᴜ ᴋᴀʀᴇ.",
+        "no_lobby": "> ⚠️ ᴋᴏɪ ᴏᴘᴇɴ ʟᴏʙʙʏ ɴᴀʜɪ ᴍɪʟɪ. /new ᴅᴀʙᴀʏᴇɪɴ.",
+        "lobby_closed_err": "> ⚠️ ᴄʀᴇᴀᴛᴏʀ ɴᴇ ʟᴏʙʙʏ ᴄʟᴏꜱᴇ ᴋᴀʀ ᴅɪ ʜᴀɪ.",
+        "already_joined": "> ⚠️ ᴀᴀᴘ ᴘᴇʜʟᴇ ꜱᴇ ɢᴀᴍᴇ ᴍᴇ ʜᴀɪɴ!",
+        "joined_success": "> ✅ {name} ɴᴇ ɢᴀᴍᴇ ᴊᴏɪɴ ᴋᴀʀ ʟɪʏᴀ ʜᴀɪ! ᴛᴏᴛᴀʟ ᴘʟᴀʏᴇʀꜱ: {count}",
+        "not_in_game": "> ⚠️ ᴀᴀᴘ ɪꜱ ɢᴀᴍᴇ ᴍᴇ ɴᴀʜɪ ʜᴀɪɴ.",
+        "left_game": "> 👋 {name} ɢᴀᴍᴇ ᴄʜʜᴏᴅ ᴋᴀʀ ᴄʜᴀʟᴀ ɢᴀʏᴀ.",
+        "not_enough_players": "> ⚠️ ᴋʜᴇʟɴᴇ ᴋᴇ ʟɪʏᴇ ʟᴏɢ ᴋᴀᴍ ʜᴀɪɴ. ɢᴀᴍᴇ ᴋʜᴀᴛᴀᴍ ᴋᴀʀ ᴅɪʏᴀ ɢᴀʏᴀ.",
+        "lobby_closed": "> 🔒 ɢᴀᴍᴇ ʟᴏʙʙʏ ᴀʙ ʙᴀɴᴅ ʜᴏ ᴄʜᴜᴋɪ ʜᴀɪ.",
+        "lobby_opened": "> 🔓 ɢᴀᴍᴇ ʟᴏʙʙʏ ᴏᴘᴇɴ ʜᴏ ᴄʜᴜᴋɪ ʜᴀɪ.",
+        "start_error": "> ⚠️ ᴋᴏɪ ʟᴏʙʙʏ ᴏᴘᴇɴ ɴᴀʜɪ ʜᴀɪ ʏᴀ ɢᴀᴍᴇ ᴄʜᴀʟ ʀᴀʜᴀ ʜᴀɪ.",
+        "need_2_players": "> ⚠️ ɢᴀᴍᴇ ꜱʜᴜʀᴜ ᴋᴀʀɴᴇ ᴋᴇ ʟɪʏᴇ ᴋᴀᴍ ꜱᴇ ᴋᴀᴍ 2 ᴘʟᴀʏᴇʀꜱ ᴄʜᴀʜɪʏᴇ!",
+        "game_started": "> 🎮 **ɢᴀᴍᴇ ꜱʜᴜʀᴜ ʜᴏ ɢᴀʏᴀ ʜᴀɪ!**",
+        "game_killed": "> 🛑 **ɢᴀᴍᴇ ꜰᴏʀᴄᴇꜰᴜʟʟʏ ʙᴀɴᴅ ᴋᴀʀ ᴅɪʏᴀ ɢᴀʏᴀ ʜᴀɪ!**",
+        "no_kill": "> ⚠️ ᴋɪʟʟ ᴋᴀʀɴᴇ ᴋᴇ ʟɪʏᴇ ᴋᴏɪ ɢᴀᴍᴇ ɴᴀʜɪ ᴄʜᴀʟ ʀᴀʜᴀ.",
+        "only_creator_kick": "> ⚠️ ꜱɪʀꜰ ɢᴀᴍᴇ ʙᴀɴᴀɴᴇ ᴡᴀʟᴀ ʜɪ ᴋɪᴄᴋ ᴋᴀʀ ꜱᴀᴋᴛᴀ ʜᴀɪ.",
+        "reply_to_kick": "> ⚠️ ᴊɪꜱᴇ ɴɪᴋᴀʟɴᴀ ʜᴀɪ ᴜꜱᴋᴇ ᴍᴇꜱꜱᴀɢᴇ ᴘᴀʀ ʀᴇᴘʟʏ ᴋᴀʀᴇɪɴ.",
+        "kicked": "> 👢 {name} ᴋᴏ ɢᴀᴍᴇ ꜱᴇ ɴɪᴋᴀᴀʟ ᴅɪʏᴀ ɢᴀʏᴀ ʜᴀɪ.",
+        "skipped": "> ⏭️ {name} ᴋɪ ʙᴀᴀʀɪ ꜱᴋɪᴘ ᴋᴀʀ ᴅɪ ɢᴀʏɪ! (ꜰᴏʀᴄᴇᴅ ᴅʀᴀᴡ)",
+        "not_active": "⚠️ ɢᴀᴍᴇ ᴀʙʜɪ ᴄʜᴀʟ ɴᴀʜɪ ʀᴀʜᴀ ʜᴀɪ!",
+        "ur_cards_title": "🃏 ᴀᴀᴘᴋᴇ ᴄᴀʀᴅꜱ:\n\n{cards}",
+        "cant_play_cheat": "🚫 {name}, ᴀᴀᴘ ʏᴇ ᴄᴀʀᴅ ᴀʙʜɪ ɴᴀʜɪ ᴋʜᴇʟ ꜱᴀᴋᴛᴇ!",
+        "not_ur_turn": "⚠️ ʏᴇ ᴀᴀᴘᴋɪ ʙᴀᴀʀɪ ɴᴀʜɪ ʜᴀɪ {name}!",
+        "wild_played": "> 🌈 **WILD CARD PLAYED by {name}!**\n> ɴᴀʏᴀ ᴄᴏʟᴏʀ ᴄʜᴜɴᴇɪɴ:",
+        "won_game": "> 🎉 **{name} UNO JEET GAYA HAI!** 🏆",
+        "drew_card": "📥 ᴀᴀᴘɴᴇ ᴇᴋ ɴᴀʏᴀ ᴄᴀʀᴅ ɴɪᴋᴀʟᴀ!",
+        "wait_turn": "⚠️ ᴀᴘɴɪ ʙᴀᴀʀɪ ᴋᴀ ɪɴᴛᴇᴢᴀᴀʀ ᴋᴀʀᴇɪɴ!",
+        "table_text": "> 🃏 **ᴜɴᴏ ᴛᴀʙʟᴇ**\n>\n> 🎨 **ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ:** {color}\n> 🎯 **ᴛᴏᴘ ᴄᴀʀᴅ:** {card}\n>\n> 👥 **ᴘʟᴀʏᴇʀꜱ:**\n> {players}\n>\n> ⏳ *ᴀᴀᴘᴋᴇ ᴘᴀᴀꜱ ᴋʜᴇʟɴᴇ ᴋᴇ ʟɪʏᴇ 90 ꜱᴇᴄᴏɴᴅꜱ ʜᴀɪɴ!*"
     }
 }
 
@@ -157,6 +157,26 @@ async def _t(user_id, key, **kwargs):
 # ==========================================
 # 🛠️ UTILS FOR OWNER (HIDDEN)
 # ==========================================
+def to_small_caps(text):
+    normal = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    small_caps = "ᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘǫʀꜱᴛᴜᴠᴡxʏᴢᴀʙᴄᴅᴇꜰɢʜɪᴊᴋʟᴍɴᴏᴘǫʀꜱᴛᴜᴠᴡxʏᴢ"
+    return str(text).translate(str.maketrans(normal, small_caps))
+
+def format_broadcast_text(text):
+    if not text: return text
+    final_lines = []
+    for line in text.split('\n'):
+        final_words = []
+        for word in line.split(' '):
+            # 🔥 IGNORE LINKS, USERNAMES AND COMMANDS - THEY WILL STAY NORMAL
+            if word.startswith(('http://', 'https://', 't.me/', 'www.', '@', '/')):
+                final_words.append(word)
+            else:
+                final_words.append(to_small_caps(word))
+        # 🔥 ADD BLOCKQUOTE (>) TO EVERY LINE FOR PREMIUM LOOK
+        final_lines.append("> " + " ".join(final_words))
+    return "\n".join(final_lines)
+
 def add_chat(chat_id):
     try:
         if not os.path.exists("chats.txt"): open("chats.txt", "w").close()
@@ -191,7 +211,7 @@ def card_to_filename(card):
     return f"{color}_{parts[2]}"
 
 # ==========================================
-# 👑 HIDDEN OWNER COMMANDS 
+# 👑 HIDDEN OWNER COMMANDS (WITH GCAST FIX)
 # ==========================================
 @app.on_message(filters.command("users") & filters.user(OWNER_ID))
 async def users_cmd(client, message):
@@ -221,11 +241,19 @@ async def gcast_cmd(client, message):
     if not replied: return await message.reply("⚠️ Puraane kisi message par reply karke `/gcast` likho!")
     chats = get_chats()
     if not chats: return await message.reply("❌ Database is empty!")
-    m = await message.reply(f"🚀 **Broadcasting exactly same message to {len(chats)} chats...**")
+    m = await message.reply(f"🚀 **Broadcasting premium formatted message to {len(chats)} chats...**")
     success, failed = 0, 0
+    
+    # 🔥 GCAST FORMAT FIX: Apply Small Caps and Quotes, but KEEP links/commands normal.
+    formatted_text = format_broadcast_text(replied.text) if replied.text else None
+    formatted_caption = format_broadcast_text(replied.caption) if replied.caption else None
+    
     for chat in chats:
         try:
-            await replied.copy(int(chat)) 
+            if replied.text: 
+                await client.send_message(int(chat), formatted_text)
+            else: 
+                await replied.copy(int(chat), caption=formatted_caption if formatted_caption else "")
             success += 1
             await asyncio.sleep(0.2)
         except: failed += 1
@@ -246,7 +274,7 @@ async def set_position_cmd(client, message):
 
 
 # ==========================================
-# ⚙️ SETTINGS, STATS, HELP & MODES (RULES)
+# ⚙️ SETTINGS, STATS, HELP & RULES
 # ==========================================
 @app.on_message(filters.command("help"))
 async def help_cmd(client, message):
@@ -254,10 +282,10 @@ async def help_cmd(client, message):
     text = await _t(message.from_user.id, "help", bot=BOT_USERNAME)
     await message.reply(text)
 
-@app.on_message(filters.command(["modes", "rules"]))
-async def modes_cmd(client, message):
+@app.on_message(filters.command("rules"))
+async def rules_cmd(client, message):
     add_chat(message.chat.id)
-    text = await _t(message.from_user.id, "modes_text")
+    text = await _t(message.from_user.id, "rules_text")
     await message.reply(text)
 
 @app.on_message(filters.command("settings") & filters.private)
@@ -287,14 +315,14 @@ async def top_players_cmd(client, message):
     m = await message.reply("🏆 Fetching Leaderboard...")
     top_players = await uno_stats_col.find().sort("wins", -1).limit(10).to_list(10)
     if not top_players: return await m.edit("😔 No one has won a game yet!")
-    text = "🔥 **UNO GLOBAL LEADERBOARD** 🔥\n\n"
+    text = "> 🔥 **ᴜɴᴏ ɢʟᴏʙᴀʟ ʟᴇᴀᴅᴇʀʙᴏᴀʀᴅ** 🔥\n>\n"
     for i, p in enumerate(top_players, start=1):
         name = p.get("name", "Unknown Player")
         wins = p.get("wins", 0)
         user_id = p.get("user_id")
-        if i <= 3: text += f"{i}. 🌟 **[Ultra Pro Player - {name}](tg://user?id={user_id})** ➣ `{wins}` Wins 👑\n"
-        elif i <= 6: text += f"{i}. 🎖 **[Pro Player - {name}](tg://user?id={user_id})** ➣ `{wins}` Wins\n"
-        else: text += f"{i}. 🔰 **[Beginner Pro - {name}](tg://user?id={user_id})** ➣ `{wins}` Wins\n"
+        if i <= 3: text += f"> {i}. 🌟 **[ᴜʟᴛʀᴀ ᴘʀᴏ ᴘʟᴀʏᴇʀ - {name}](tg://user?id={user_id})** ➣ `{wins}` ᴡɪɴꜱ 👑\n"
+        elif i <= 6: text += f"> {i}. 🎖 **[ᴘʀᴏ ᴘʟᴀʏᴇʀ - {name}](tg://user?id={user_id})** ➣ `{wins}` ᴡɪɴꜱ\n"
+        else: text += f"> {i}. 🔰 **[ʙᴇɢɪɴɴᴇʀ ᴘʀᴏ - {name}](tg://user?id={user_id})** ➣ `{wins}` ᴡɪɴꜱ\n"
     await m.edit(text)
 
 @app.on_callback_query(filters.regex("^enable_stats$"))
@@ -355,7 +383,7 @@ async def send_uno_table(chat_id, action_user_id=None):
     
     uid = action_user_id if action_user_id else game["creator"]
     current_player = game["players"][game["turn_index"]]
-    players_text = "\n".join([f"{'👉' if p['id'] == current_player['id'] else '👤'} {p['name']} - {len(p['cards'])} cards" for p in game["players"]])
+    players_text = "\n> ".join([f"{'👉' if p['id'] == current_player['id'] else '👤'} {p['name']} - {len(p['cards'])} ᴄᴀʀᴅꜱ" for p in game["players"]])
     
     text = await _t(uid, "table_text", color=game['current_color'], card=game['top_card'], players=players_text)
             
@@ -520,11 +548,11 @@ async def skip_player_cmd(client, message):
 async def show_uno_cards_cb(client, cb):
     chat_id = cb.message.chat.id; uid = cb.from_user.id
     if chat_id not in uno_games or uno_games[chat_id]["status"] != "playing": 
-        return await cb.answer(await _t(uid, "not_active"), show_alert=True)
+        return await cb.answer("Game is not active!", show_alert=True)
     player = next((p for p in uno_games[chat_id]["players"] if p["id"] == uid), None)
-    if not player: return await cb.answer(await _t(uid, "not_in_game"), show_alert=True)
+    if not player: return await cb.answer("You are not playing!", show_alert=True)
     cards_text = "\n".join(player["cards"]); 
-    await cb.answer(await _t(uid, "ur_cards_title", cards=cards_text), show_alert=True)
+    await cb.answer(f"🃏 YOUR CARDS:\n\n{cards_text}", show_alert=True)
 
 @app.on_inline_query()
 async def inline_uno_cards(client, query):
@@ -619,7 +647,7 @@ async def choose_color_cb(client, cb):
     chat_id = cb.message.chat.id; uid = cb.from_user.id
     if chat_id not in uno_games or uno_games[chat_id]["status"] != "waiting_color": return
     game = uno_games[chat_id]
-    if game["players"][game["turn_index"]]["id"] != uid: return await cb.answer(await _t(uid, "wait_turn"), show_alert=True)
+    if game["players"][game["turn_index"]]["id"] != uid: return await cb.answer("Wait!", show_alert=True)
         
     game["current_color"] = cb.data.split("_")[1].split(" ")[1]
     if game["pending_effect"] == "+4":
@@ -644,11 +672,11 @@ async def uno_draw_cb(client, cb):
     chat_id = cb.message.chat.id; uid = cb.from_user.id
     if chat_id not in uno_games or uno_games[chat_id]["status"] != "playing": return
     game = uno_games[chat_id]
-    if game["players"][game["turn_index"]]["id"] != uid: return await cb.answer(await _t(uid, "wait_turn"), show_alert=True)
+    if game["players"][game["turn_index"]]["id"] != uid: return await cb.answer("Wait for your turn!", show_alert=True)
         
     if not game["deck"]: game["deck"] = get_uno_deck()
     drawn = game["deck"].pop(); game["players"][game["turn_index"]]["cards"].append(drawn)
-    await cb.answer(await _t(uid, "drew_card"), show_alert=True)
+    await cb.answer("📥 You drew a card!", show_alert=True)
     get_next_turn(game); await send_uno_table(chat_id, uid)
 
 # ==========================================
@@ -677,7 +705,7 @@ async def main():
             BotCommand("kick", "Kick players out of the game"),
             BotCommand("skip", "Skip the current player"),
             BotCommand("help", "How to use this bot?"),
-            BotCommand("modes", "Explanation of game modes"),
+            BotCommand("rules", "Explanation of game rules"),
             BotCommand("settings", "Language and other settings"),
             BotCommand("stats", "Show statistics"),
             BotCommand("topplayers", "Global Leaderboard")
@@ -685,7 +713,7 @@ async def main():
     except Exception as e: print("Could not set commands:", e)
     
     print("=========================================")
-    print("✅ PRO UNO BOT ENGINE IS LIVE!")
+    print("✅ PRO UNO BOT (PREMIUM UI + GCAST FIX) IS LIVE!")
     print("=========================================")
     await idle()
 
