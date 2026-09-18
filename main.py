@@ -19,7 +19,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "<h1>🤖 PRO UNO Bot is Alive (Auto-Kick AFK Update)! 🚀</h1>"
+    return "<h1>🤖 PRO UNO Bot is Alive (Smart 45s Countdown & User-Lang)! 🚀</h1>"
 
 def run_web():
     port = int(os.environ.get("PORT", 8080))
@@ -49,15 +49,15 @@ else:
 app = Client("UnoBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 uno_games = {} 
 cards_cache = {} 
-user_langs_cache = {} 
+user_langs_cache = {} # 🔥 FIX: Cache is now tied to User ID
 BOT_USERNAME = ""
 
 # ==========================================
-# 🌍 TRANSLATION ENGINE (PREMIUM UI DICTIONARY)
+# 🌍 TRANSLATION ENGINE (WITH COUNTDOWN)
 # ==========================================
 TRANSLATIONS = {
     "en_US": {
-        "help": "> 💡 **ᴜɴᴏ ʙᴏᴛ ɢᴜɪᴅᴇ:**\n>\n> 1️⃣ ᴀᴅᴅ ᴛʜɪꜱ ʙᴏᴛ ᴛᴏ ᴀ ɢʀᴏᴜᴘ.\n> 2️⃣ ꜱᴛᴀʀᴛ ᴀ ɴᴇᴡ ɢᴀᴍᴇ ᴡɪᴛʜ /new ᴏʀ ᴊᴏɪɴ ᴀɴ ᴀᴄᴛɪᴠᴇ ɢᴀᴍᴇ ᴡɪᴛʜ /join.\n> 3️⃣ ᴀꜰᴛᴇʀ 2+ ᴘʟᴀʏᴇʀꜱ ᴊᴏɪɴ, ꜱᴛᴀʀᴛ ɪᴛ ᴡɪᴛʜ /start.\n> 4️⃣ ᴛʏᴘᴇ @{bot} ɪɴᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ ʙᴏx ᴀɴᴅ ʜɪᴛ ꜱᴘᴀᴄᴇ. ʏᴏᴜ ᴡɪʟʟ ꜱᴇᴇ ʏᴏᴜʀ ᴄᴀʀᴅꜱ. (ɢʀᴇʏᴇᴅ ᴏᴜᴛ = ᴄᴀɴɴᴏᴛ ᴘʟᴀʏ).\n>\n> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ ᴀɴᴅ ʀᴜʟᴇꜱ:**\n> ➥ /rules : ᴇxᴘʟᴀɴᴀᴛɪᴏɴ ᴏꜰ ɢᴀᴍᴇ ʀᴜʟᴇꜱ\n> ➥ /settings : ʟᴀɴɢᴜᴀɢᴇ ᴀɴᴅ ꜱᴛᴀᴛꜱ ꜱᴇᴛᴛɪɴɢꜱ",
+        "help": "> 💡 **ᴜɴᴏ ʙᴏᴛ ɢᴜɪᴅᴇ:**\n>\n> 1️⃣ ᴀᴅᴅ ᴛʜɪꜱ ʙᴏᴛ ᴛᴏ ᴀ ɢʀᴏᴜᴘ.\n> 2️⃣ ꜱᴛᴀʀᴛ ᴀ ɴᴇᴡ ɢᴀᴍᴇ ᴡɪᴛʜ /startgame ᴏʀ /new.\n> 3️⃣ ᴄʟɪᴄᴋ ᴛʜᴇ 'ᴊᴏɪɴ ɢᴀᴍᴇ' ʙᴜᴛᴛᴏɴ. ɢᴀᴍᴇ ꜱᴛᴀʀᴛꜱ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴀꜰᴛᴇʀ 45ꜱ!\n> 4️⃣ ᴛʏᴘᴇ @{bot} ɪɴᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ ʙᴏx ᴀɴᴅ ʜɪᴛ ꜱᴘᴀᴄᴇ. ʏᴏᴜ ᴡɪʟʟ ꜱᴇᴇ ʏᴏᴜʀ ᴄᴀʀᴅꜱ. (ɢʀᴇʏᴇᴅ ᴏᴜᴛ = ᴄᴀɴɴᴏᴛ ᴘʟᴀʏ).\n>\n> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ ᴀɴᴅ ʀᴜʟᴇꜱ:**\n> ➥ /rules : ᴇxᴘʟᴀɴᴀᴛɪᴏɴ ᴏꜰ ɢᴀᴍᴇ ʀᴜʟᴇꜱ\n> ➥ /settings : ʟᴀɴɢᴜᴀɢᴇ ᴀɴᴅ ꜱᴛᴀᴛꜱ ꜱᴇᴛᴛɪɴɢꜱ",
         "rules_text": "> 🃏 **ᴜɴᴏ ɢᴀᴍᴇ ʀᴜʟᴇꜱ & ᴍᴏᴅᴇꜱ:**\n>\n> 🔴 **ᴄʟᴀꜱꜱɪᴄ ᴜɴᴏ:**\n> ➥ ᴍᴀᴛᴄʜ ᴛʜᴇ ᴛᴏᴘ ᴄᴀʀᴅ ʙʏ ᴄᴏʟᴏʀ ᴏʀ ɴᴜᴍʙᴇʀ.\n> ➥ ᴘʟᴀʏ ꜱᴘᴇᴄɪᴀʟ ᴄᴀʀᴅꜱ (ꜱᴋɪᴘ, ʀᴇᴠᴇʀꜱᴇ, ᴅʀᴀᴡ 2) ᴛᴏ ᴅɪꜱʀᴜᴘᴛ ᴏᴘᴘᴏɴᴇɴᴛꜱ.\n> 🌈 ᴡɪʟᴅ ᴄᴀʀᴅꜱ ᴄᴀɴ ᴄʜᴀɴɢᴇ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ.\n> 💥 ᴡɪʟᴅ +4 ᴄʜᴀɴɢᴇꜱ ᴛʜᴇ ᴄᴏʟᴏʀ ᴀɴᴅ ꜰᴏʀᴄᴇꜱ ᴛʜᴇ ɴᴇxᴛ ᴘʟᴀʏᴇʀ ᴛᴏ ᴅʀᴀᴡ 4 ᴄᴀʀᴅꜱ.\n> 📥 ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ᴘʟᴀʏ ᴀɴʏ ᴄᴀʀᴅ, ʏᴏᴜ ᴍᴜꜱᴛ ᴄʟɪᴄᴋ 'ᴅʀᴀᴡ' ᴛᴏ ᴘɪᴄᴋ ᴀ ᴄᴀʀᴅ.\n> 🏆 ᴛʜᴇ ꜰɪʀꜱᴛ ᴘʟᴀʏᴇʀ ᴛᴏ ɢᴇᴛ ʀɪᴅ ᴏꜰ ᴀʟʟ ᴛʜᴇɪʀ ᴄᴀʀᴅꜱ ᴡɪɴꜱ!\n>\n> ⏳ **ᴀꜰᴋ ʀᴜʟᴇ (ᴀᴜᴛᴏ-ᴋɪᴄᴋ):**\n> ɪꜰ ʏᴏᴜ ᴛᴀᴋᴇ ᴍᴏʀᴇ ᴛʜᴀɴ 60 ꜱᴇᴄᴏɴᴅꜱ, ʏᴏᴜ ᴀʀᴇ ꜱᴋɪᴘᴘᴇᴅ ᴀɴᴅ ᴅʀᴀᴡ ᴀ ᴄᴀʀᴅ (1ꜱᴛ ᴛɪᴍᴇ). ɪꜰ ʏᴏᴜ ᴅᴏ ɪᴛ ᴀɢᴀɪɴ, ʏᴏᴜ ᴀʀᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴋɪᴄᴋᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ɢᴀᴍᴇ!",
         "settings": "> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ:**\n> ᴄʜᴏᴏꜱᴇ ᴀɴ ᴏᴘᴛɪᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ᴜᴘᴅᴀᴛᴇ ʏᴏᴜʀ ᴘʀᴇꜰᴇʀᴇɴᴄᴇꜱ.",
         "stats_disabled": "> ⚠️ ʏᴏᴜ ᴅɪᴅ ɴᴏᴛ ᴇɴᴀʙʟᴇ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ. ᴜꜱᴇ /settings ᴛᴏ ᴇɴᴀʙʟᴇ ᴛʜᴇᴍ.",
@@ -65,26 +65,29 @@ TRANSLATIONS = {
         "db_error": "> ⚠️ ᴅᴀᴛᴀʙᴀꜱᴇ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ.",
         "enabled_stats": "> ✅ ᴇɴᴀʙʟᴇᴅ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ!",
         "lang_saved": "> ✅ ʟᴀɴɢᴜᴀɢᴇ ᴘʀᴇꜰᴇʀᴇɴᴄᴇꜱ ꜱᴀᴠᴇᴅ ᴛᴏ ᴇɴɢʟɪꜱʜ.",
-        "already_playing": "> ⚠️ ᴀ ɢᴀᴍᴇ ɪꜱ ᴀʟʀᴇᴀᴅʏ ɪɴ ᴘʀᴏɢʀᴇꜱꜱ! ᴊᴏɪɴ ᴡɪᴛʜ /join ᴏʀ /kill ɪᴛ.",
-        "new_lobby": "> 🃏 **ᴀ ɴᴇᴡ ᴜɴᴏ ɢᴀᴍᴇ ʜᴀꜱ ʙᴇᴇɴ ᴄʀᴇᴀᴛᴇᴅ!**\n>\n> ᴘʀᴇꜱꜱ /join ᴛᴏ ᴇɴᴛᴇʀ ᴛʜᴇ ɢᴀᴍᴇ.\n> ᴡʜᴇɴ ᴇᴠᴇʀʏᴏɴᴇ ɪꜱ ʀᴇᴀᴅʏ, ᴛʜᴇ ᴄʀᴇᴀᴛᴏʀ ᴄᴀɴ ᴛʏᴘᴇ /start.",
-        "no_lobby": "> ⚠️ ɴᴏ ᴏᴘᴇɴ ʟᴏʙʙʏ ᴀᴠᴀɪʟᴀʙʟᴇ. ᴜꜱᴇ /new ᴛᴏ ꜱᴛᴀʀᴛ ᴏɴᴇ.",
-        "lobby_closed_err": "> ⚠️ ᴛʜᴇ ʟᴏʙʙʏ ɪꜱ ᴄʟᴏꜱᴇᴅ ʙʏ ᴛʜᴇ ᴄʀᴇᴀᴛᴏʀ.",
-        "already_joined": "> ⚠️ ʏᴏᴜ ʜᴀᴠᴇ ᴀʟʀᴇᴀᴅʏ ᴊᴏɪɴᴇᴅ!",
-        "joined_success": "> ✅ {name} ʜᴀꜱ ᴊᴏɪɴᴇᴅ ᴛʜᴇ ɢᴀᴍᴇ! ᴛᴏᴛᴀʟ ᴘʟᴀʏᴇʀꜱ: {count}",
+        "already_playing": "> ⚠️ ᴀ ɢᴀᴍᴇ ɪꜱ ᴀʟʀᴇᴀᴅʏ ɪɴ ᴘʀᴏɢʀᴇꜱꜱ ᴏʀ ʟᴏʙʙʏ ɪꜱ ᴏᴘᴇɴ! ᴜꜱᴇ /kill ᴛᴏ ꜱᴛᴏᴘ ɪᴛ.",
+        "new_lobby": "> 🃏 **ᴜɴᴏ ɢᴀᴍᴇ ʟᴏʙʙʏ ꜱᴛᴀʀᴛᴇᴅ!**\n>\n> ⏳ ᴛɪᴍᴇ ʟᴇꜰᴛ: {time}\n>\n> 👥 ᴘʟᴀʏᴇʀꜱ ᴊᴏɪɴᴇᴅ ({count}):\n{players}",
+        "timer_30": "> ⏳ **30 Seconds left!** Join fast!",
+        "timer_15": "> ⏳ **15 Seconds left!**",
+        "timer_5": "> ⏳ **5 Seconds left!** Get ready!",
+        "join_btn": "🎮 ᴊᴏɪɴ ɢᴀᴍᴇ ({count})",
+        "already_joined_alert": "⚠️ ʏᴏᴜ ʜᴀᴠᴇ ᴀʟʀᴇᴀᴅʏ ᴊᴏɪɴᴇᴅ!",
+        "joined_alert": "✅ ʏᴏᴜ ᴊᴏɪɴᴇᴅ ᴛʜᴇ ɢᴀᴍᴇ!",
+        "lobby_closed_alert": "⚠️ ʟᴏʙʙʏ ɪꜱ ᴄʟᴏꜱᴇᴅ ᴏʀ ɢᴀᴍᴇ ꜱᴛᴀʀᴛᴇᴅ!",
         "not_in_game": "> ⚠️ ʏᴏᴜ ᴀʀᴇ ɴᴏᴛ ɪɴ ᴛʜᴇ ɢᴀᴍᴇ.",
         "left_game": "> 👋 {name} ʟᴇꜰᴛ ᴛʜᴇ ɢᴀᴍᴇ.",
         "not_enough_players": "> ⚠️ ɴᴏᴛ ᴇɴᴏᴜɢʜ ᴘʟᴀʏᴇʀꜱ ʟᴇꜰᴛ. ɢᴀᴍᴇ ᴛᴇʀᴍɪɴᴀᴛᴇᴅ.",
-        "lobby_closed": "> 🔒 ᴛʜᴇ ɢᴀᴍᴇ ʟᴏʙʙʏ ɪꜱ ɴᴏᴡ ᴄʟᴏꜱᴇᴅ. ɴᴏ ᴏɴᴇ ᴇʟꜱᴇ ᴄᴀɴ ᴊᴏɪɴ.",
-        "lobby_opened": "> 🔓 ᴛʜᴇ ɢᴀᴍᴇ ʟᴏʙʙʏ ɪꜱ ɴᴏᴡ ᴏᴘᴇɴ. ᴘʟᴀʏᴇʀꜱ ᴄᴀɴ /join.",
-        "start_error": "> ⚠️ ɴᴏ ʟᴏʙʙʏ ᴇxɪꜱᴛꜱ ᴏʀ ɢᴀᴍᴇ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴘʟᴀʏɪɴɢ.",
-        "need_2_players": "> ⚠️ ɴᴇᴇᴅ ᴀᴛ ʟᴇᴀꜱᴛ 2 ᴘʟᴀʏᴇʀꜱ ᴛᴏ ꜱᴛᴀʀᴛ!",
+        "not_enough_players_start": "> ⚠️ ɴᴏᴛ ᴇɴᴏᴜɢʜ ᴘʟᴀʏᴇʀꜱ (ᴍɪɴɪᴍᴜᴍ 2). ɢᴀᴍᴇ ᴄᴀɴᴄᴇʟʟᴇᴅ!",
         "game_started": "> 🎮 **ᴛʜᴇ ɢᴀᴍᴇ ʜᴀꜱ ꜱᴛᴀʀᴛᴇᴅ!**",
         "game_killed": "> 🛑 **ᴛʜᴇ ɢᴀᴍᴇ ʜᴀꜱ ʙᴇᴇɴ ᴛᴇʀᴍɪɴᴀᴛᴇᴅ!**",
         "no_kill": "> ⚠️ ɴᴏ ᴀᴄᴛɪᴠᴇ ɢᴀᴍᴇ ᴛᴏ ᴋɪʟʟ.",
         "only_creator_kick": "> ⚠️ ᴏɴʟʏ ᴛʜᴇ ɢᴀᴍᴇ ᴄʀᴇᴀᴛᴏʀ ᴄᴀɴ ᴋɪᴄᴋ ᴘʟᴀʏᴇʀꜱ.",
         "reply_to_kick": "> ⚠️ ᴘʟᴇᴀꜱᴇ ʀᴇᴘʟʏ ᴛᴏ ᴛʜᴇ ᴜꜱᴇʀ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴋɪᴄᴋ.",
         "kicked": "> 👢 {name} ʜᴀꜱ ʙᴇᴇɴ ᴋɪᴄᴋᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ɢᴀᴍᴇ.",
-        "skipped": "> ⏭️ **1ꜱᴛ ᴡᴀʀɴɪɴɢ:** {name} ᴛᴏᴏᴋ ᴛᴏᴏ ʟᴏɴɢ ᴀɴᴅ ᴡᴀꜱ ꜱᴋɪᴘᴘᴇᴅ! (ꜰᴏʀᴄᴇᴅ ᴅʀᴀᴡ)",
+        "afk_kick": "> 👢 **bkl bhag gya {name}**",
+        "afk_warn": "> ⏳ **1ꜱᴛ ᴡᴀʀɴɪɴɢ:** {name} ᴛᴏᴏᴋ ᴛᴏᴏ ʟᴏɴɢ ᴀɴᴅ ᴡᴀꜱ ꜱᴋɪᴘᴘᴇᴅ! (ꜰᴏʀᴄᴇᴅ ᴅʀᴀᴡ)",
+        "afk_wild_warn": "> ⏳ **1ꜱᴛ ᴡᴀʀɴɪɴɢ:** {name} ᴅɪᴅ ɴᴏᴛ ᴄʜᴏᴏꜱᴇ ᴀ ᴄᴏʟᴏʀ. ᴅᴇꜰᴀᴜʟᴛ '🔴 ʀᴇᴅ' ꜱᴇʟᴇᴄᴛᴇᴅ.",
+        "skipped": "> ⏭️ {name} ᴡᴀꜱ ꜱᴋɪᴘᴘᴇᴅ!",
         "not_active": "⚠️ ɢᴀᴍᴇ ɪꜱ ɴᴏᴛ ᴀᴄᴛɪᴠᴇ!",
         "ur_cards_title": "🃏 ʏᴏᴜʀ ᴄᴀʀᴅꜱ:\n\n{cards}",
         "cant_play_cheat": "🚫 {name}, ʏᴏᴜ ᴄᴀɴɴᴏᴛ ᴘʟᴀʏ ᴛʜᴀᴛ ᴄᴀʀᴅ ʀɪɢʜᴛ ɴᴏᴡ!",
@@ -96,7 +99,7 @@ TRANSLATIONS = {
         "table_text": "> 🃏 **ᴜɴᴏ ᴛᴀʙʟᴇ**\n>\n> 🎨 **ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ:** {color}\n> 🎯 **ᴛᴏᴘ ᴄᴀʀᴅ:** {card}\n>\n> 👥 **ᴘʟᴀʏᴇʀꜱ:**\n> {players}\n>\n> ⏳ *ʏᴏᴜ ʜᴀᴠᴇ 60 ꜱᴇᴄᴏɴᴅꜱ ᴛᴏ ᴘʟᴀʏ!*"
     },
     "hi_IN": {
-        "help": "> 💡 **ᴜɴᴏ ʙᴏᴛ ɢᴜɪᴅᴇ:**\n>\n> 1️⃣ ɪꜱ ʙᴏᴛ ᴋᴏ ᴋɪꜱɪ ɢʀᴏᴜᴘ ᴍᴇ ᴀᴅᴅ ᴋᴀʀᴇɪɴ.\n> 2️⃣ ɴᴀʏᴀ ɢᴀᴍᴇ ʙᴀɴᴀɴᴇ ᴋᴇ ʟɪʏᴇ /new ʙʜᴇᴊᴇɪɴ, ʏᴀ ᴄʜᴀʟᴛᴇ ɢᴀᴍᴇ ᴍᴇ /join ᴋᴀʀᴇɪɴ.\n> 3️⃣ ᴊᴀʙ 2 ʏᴀ ᴢʏᴀᴅᴀ ʟᴏɢ ᴀᴀ ᴊᴀʏᴇɪɴ, ᴛᴏʜ ɢᴀᴍᴇ ꜱʜᴜʀᴜ ᴋᴀʀɴᴇ ᴋᴇ ʟɪʏᴇ /start ʙʜᴇᴊᴇɪɴ.\n> 4️⃣ ᴀᴘɴᴇ ᴄʜᴀᴛ ʙᴏx ᴍᴇ @{bot} ʟɪᴋʜ ᴋᴀʀ ꜱᴘᴀᴄᴇ ᴅᴀʙᴀʏᴇɪɴ. ᴀᴀᴘᴋᴏ ᴀᴘɴᴇ ᴄᴀʀᴅꜱ ᴅɪᴋʜ ᴊᴀʏᴇɴɢᴇ. (ɢʀᴇʏ ᴄᴀʀᴅꜱ ɴᴀʜɪ ᴋʜᴇʟ ꜱᴀᴋᴛᴇ).\n>\n> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ ᴀᴜʀ ʀᴜʟᴇꜱ:**\n> ➥ /rules : ᴜɴᴏ ᴋʜᴇʟɴᴇ ᴋᴇ ɴɪʏᴀᴍ\n> ➥ /settings : ʟᴀɴɢᴜᴀɢᴇ ᴀᴜʀ ꜱᴛᴀᴛꜱ ꜱᴇᴛᴛɪɴɢꜱ",
+        "help": "> 💡 **ᴜɴᴏ ʙᴏᴛ ɢᴜɪᴅᴇ:**\n>\n> 1️⃣ ɪꜱ ʙᴏᴛ ᴋᴏ ᴋɪꜱɪ ɢʀᴏᴜᴘ ᴍᴇ ᴀᴅᴅ ᴋᴀʀᴇɪɴ.\n> 2️⃣ ɴᴀʏᴀ ɢᴀᴍᴇ ʙᴀɴᴀɴᴇ ᴋᴇ ʟɪʏᴇ /startgame ʏᴀ /new ʙʜᴇᴊᴇɪɴ.\n> 3️⃣ ɴɪᴄʜᴇ ᴅɪʏᴇ ɢᴀʏᴇ 'ᴊᴏɪɴ ɢᴀᴍᴇ' ʙᴜᴛᴛᴏɴ ᴘᴀʀ ᴄʟɪᴄᴋ ᴋᴀʀᴇɪɴ. ɢᴀᴍᴇ 45 ꜱᴇᴄ ᴍᴇ ᴀᴘɴᴇ ᴀᴀᴘ ꜱᴛᴀʀᴛ ʜᴏ ᴊᴀʏᴇɢᴀ!\n> 4️⃣ ᴀᴘɴᴇ ᴄʜᴀᴛ ʙᴏx ᴍᴇ @{bot} ʟɪᴋʜ ᴋᴀʀ ꜱᴘᴀᴄᴇ ᴅᴀʙᴀʏᴇɪɴ. ᴀᴀᴘᴋᴏ ᴀᴘɴᴇ ᴄᴀʀᴅꜱ ᴅɪᴋʜ ᴊᴀʏᴇɴɢᴇ. (ɢʀᴇʏ ᴄᴀʀᴅꜱ ɴᴀʜɪ ᴋʜᴇʟ ꜱᴀᴋᴛᴇ).\n>\n> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ ᴀᴜʀ ʀᴜʟᴇꜱ:**\n> ➥ /rules : ᴜɴᴏ ᴋʜᴇʟɴᴇ ᴋᴇ ɴɪʏᴀᴍ\n> ➥ /settings : ʟᴀɴɢᴜᴀɢᴇ ᴀᴜʀ ꜱᴛᴀᴛꜱ ꜱᴇᴛᴛɪɴɢꜱ",
         "rules_text": "> 🃏 **ᴜɴᴏ ɢᴀᴍᴇ ʀᴜʟᴇꜱ (ɴɪʏᴀᴍ):**\n>\n> 🔴 **ᴄʟᴀꜱꜱɪᴄ ᴜɴᴏ:**\n> ➥ ᴛᴏᴘ ᴄᴀʀᴅ ᴋᴇ ᴄᴏʟᴏʀ ʏᴀ ɴᴜᴍʙᴇʀ ꜱᴇ ᴍᴀᴛᴄʜ ᴋᴀʀᴛᴀ ʜᴜᴀ ᴄᴀʀᴅ ᴋʜᴇʟᴇɪɴ.\n> ➥ ᴏᴘᴘᴏɴᴇɴᴛꜱ ᴋᴏ ʀᴏᴋɴᴇ ᴋᴇ ʟɪʏᴇ ꜱᴘᴇᴄɪᴀʟ ᴄᴀʀᴅꜱ (ꜱᴋɪᴘ, ʀᴇᴠᴇʀꜱᴇ, ᴅʀᴀᴡ 2) ᴋᴀ ᴜꜱᴇ ᴋᴀʀᴇɪɴ.\n> 🌈 ᴡɪʟᴅ ᴄᴀʀᴅ ᴋʜᴇʟ ᴋᴀʀ ᴀᴀᴘ ᴄᴏʟᴏʀ ᴄʜᴀɴɢᴇ ᴋᴀʀ ꜱᴀᴋᴛᴇ ʜᴀɪɴ.\n> 💥 ᴡɪʟᴅ +4 ᴄᴏʟᴏʀ ʙʜɪ ᴄʜᴀɴɢᴇ ᴋᴀʀᴛᴀ ʜᴀɪ ᴀᴜʀ ᴀɢʟᴇ ᴘʟᴀʏᴇʀ ᴋᴏ 4 ᴄᴀʀᴅꜱ ɴɪᴋᴀʟɴᴇ ᴘᴀᴅᴛᴇ ʜᴀɪɴ.\n> 📥 ᴀɢᴀʀ ᴀᴀᴘᴋᴇ ᴘᴀᴀꜱ ᴋʜᴇʟɴᴇ ᴋᴇ ʟɪʏᴇ ᴋᴏɪ ᴠᴀʟɪᴅ ᴄᴀʀᴅ ɴᴀʜɪ ʜᴀɪ, ᴛᴏʜ 'ᴅʀᴀᴡ' ᴘᴀʀ ᴄʟɪᴄᴋ ᴋᴀʀᴋᴇ ɴᴀʏᴀ ᴄᴀʀᴅ ɴɪᴋᴀʟᴇɪɴ.\n> 🏆 ᴊᴏ ᴘʟᴀʏᴇʀ ꜱᴀʙꜱᴇ ᴘᴇʜʟᴇ ᴀᴘɴᴇ ꜱᴀᴀʀᴇ ᴄᴀʀᴅꜱ ᴋʜᴀᴛᴀᴍ ᴋᴀʀᴇɢᴀ, ᴡᴏ ᴊᴇᴇᴛᴇɢᴀ!\n>\n> ⏳ **ᴀꜰᴋ ʀᴜʟᴇ (ᴀᴜᴛᴏ-ᴋɪᴄᴋ):**\n> ᴀɢᴀʀ ᴋᴏɪ 60 ꜱᴇᴄᴏɴᴅ ᴛᴀᴋ ɴᴀʜɪ ᴋʜᴇʟᴇɢᴀ, ᴛᴏʜ 1ꜱᴛ ᴛɪᴍᴇ ᴜꜱᴇ ᴘᴇɴᴀʟᴛʏ ᴍɪʟᴇɢɪ ᴀᴜʀ ꜱᴋɪᴘ ʜᴏɢᴀ. 2ɴᴅ ᴛɪᴍᴇ ᴡᴀʜɪ ɢᴀʟᴛɪ ᴋᴀʀɴᴇ ᴘᴀʀ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ɢᴀᴍᴇ ꜱᴇ ɴɪᴋᴀᴀʟ ᴅɪʏᴀ ᴊᴀʏᴇɢᴀ!",
         "settings": "> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ (ꜱᴇᴛɪɴɢꜱ):**\n> ɴɪᴄʜᴇ ᴅɪʏᴇ ɢᴀʏᴇ ᴏᴘᴛɪᴏɴꜱ ꜱᴇ ᴀᴘɴɪ ᴘᴀꜱᴀɴᴅ ᴄʜᴜɴᴇɪɴ.",
         "stats_disabled": "> ⚠️ ᴀᴀᴘɴᴇ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ ᴏɴ ɴᴀʜɪ ᴋɪʏᴀ ʜᴀɪ. /settings ʙʜᴇᴊ ᴋᴀʀ ᴏɴ ᴋᴀʀᴇɪɴ.",
@@ -104,26 +107,29 @@ TRANSLATIONS = {
         "db_error": "> ⚠️ ᴅᴀᴛᴀʙᴀꜱᴇ ᴄᴏɴɴᴇᴄᴛᴇᴅ ɴᴀʜɪ ʜᴀɪ.",
         "enabled_stats": "> ✅ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ ᴏɴ ᴋᴀʀ ᴅɪʏᴇ ɢᴀʏᴇ ʜᴀɪɴ!",
         "lang_saved": "> ✅ ᴀᴀᴘᴋɪ ʙʜᴀꜱʜᴀ ʜɪɴᴅɪ ᴍᴇ ꜱᴇᴛ ᴋᴀʀ ᴅɪ ɢᴀʏɪ ʜᴀɪ.",
-        "already_playing": "> ⚠️ ᴇᴋ ɢᴀᴍᴇ ᴘᴇʜʟᴇ ꜱᴇ ᴄʜᴀʟ ʀᴀʜᴀ ʜᴀɪ! /join ꜱᴇ ᴊᴏɪɴ ᴋᴀʀᴇɪɴ ʏᴀ /kill ᴋᴀʀᴇɪɴ.",
-        "new_lobby": "> 🃏 **ᴇᴋ ɴᴀʏᴀ ᴜɴᴏ ɢᴀᴍᴇ ʙᴀɴ ɢᴀʏᴀ ʜᴀɪ!**\n>\n> ɢᴀᴍᴇ ᴍᴇ ᴀᴀɴᴇ ᴋᴇ ʟɪʏᴇ /join ᴅᴀʙᴀʏᴇɪɴ.\n> ᴊᴀʙ ꜱᴀʙ ʀᴇᴀᴅʏ ʜᴏ ᴊᴀʏᴇɪɴ, ᴛᴏʜ ᴄʀᴇᴀᴛᴏʀ /start ᴅᴀʙᴀ ᴋᴀʀ ɢᴀᴍᴇ ꜱʜᴜʀᴜ ᴋᴀʀᴇ.",
-        "no_lobby": "> ⚠️ ᴋᴏɪ ᴏᴘᴇɴ ʟᴏʙʙʏ ɴᴀʜɪ ᴍɪʟɪ. /new ᴅᴀʙᴀʏᴇɪɴ.",
-        "lobby_closed_err": "> ⚠️ ᴄʀᴇᴀᴛᴏʀ ɴᴇ ʟᴏʙʙʏ ᴄʟᴏꜱᴇ ᴋᴀʀ ᴅɪ ʜᴀɪ.",
-        "already_joined": "> ⚠️ ᴀᴀᴘ ᴘᴇʜʟᴇ ꜱᴇ ɢᴀᴍᴇ ᴍᴇ ʜᴀɪɴ!",
-        "joined_success": "> ✅ {name} ɴᴇ ɢᴀᴍᴇ ᴊᴏɪɴ ᴋᴀʀ ʟɪʏᴀ ʜᴀɪ! ᴛᴏᴛᴀʟ ᴘʟᴀʏᴇʀꜱ: {count}",
+        "already_playing": "> ⚠️ ᴇᴋ ɢᴀᴍᴇ ᴘᴇʜʟᴇ ꜱᴇ ᴄʜᴀʟ ʀᴀʜᴀ ʜᴀɪ ʏᴀ ʟᴏʙʙʏ ᴏᴘᴇɴ ʜᴀɪ! ᴜꜱᴇ /kill ᴋᴀʀᴇɪɴ.",
+        "new_lobby": "> 🃏 **ᴜɴᴏ ɢᴀᴍᴇ ʟᴏʙʙʏ ꜱᴛᴀʀᴛᴇᴅ!**\n>\n> ⏳ ᴛɪᴍᴇ ʟᴇꜰᴛ: {time}\n>\n> 👥 ᴘʟᴀʏᴇʀꜱ ᴊᴏɪɴᴇᴅ ({count}):\n{players}",
+        "timer_30": "> ⏳ **30 Seconds bache hain!** Jaldi join karo!",
+        "timer_15": "> ⏳ **15 Seconds bache hain!**",
+        "timer_5": "> ⏳ **5 Seconds bache hain!** Get ready!",
+        "join_btn": "🎮 ᴊᴏɪɴ ɢᴀᴍᴇ ({count})",
+        "already_joined_alert": "⚠️ ᴀᴀᴘ ᴘᴇʜʟᴇ ꜱᴇ ɢᴀᴍᴇ ᴍᴇ ʜᴀɪɴ!",
+        "joined_alert": "✅ ᴀᴀᴘɴᴇ ɢᴀᴍᴇ ᴊᴏɪɴ ᴋᴀʀ ʟɪʏᴀ!",
+        "lobby_closed_alert": "⚠️ ʟᴏʙʙʏ ʙᴀɴᴅ ʜᴏ ᴄʜᴜᴋɪ ʜᴀɪ!",
         "not_in_game": "> ⚠️ ᴀᴀᴘ ɪꜱ ɢᴀᴍᴇ ᴍᴇ ɴᴀʜɪ ʜᴀɪɴ.",
         "left_game": "> 👋 {name} ɢᴀᴍᴇ ᴄʜʜᴏᴅ ᴋᴀʀ ᴄʜᴀʟᴀ ɢᴀʏᴀ.",
         "not_enough_players": "> ⚠️ ᴋʜᴇʟɴᴇ ᴋᴇ ʟɪʏᴇ ʟᴏɢ ᴋᴀᴍ ʜᴀɪɴ. ɢᴀᴍᴇ ᴋʜᴀᴛᴀᴍ ᴋᴀʀ ᴅɪʏᴀ ɢᴀʏᴀ.",
-        "lobby_closed": "> 🔒 ɢᴀᴍᴇ ʟᴏʙʙʏ ᴀʙ ʙᴀɴᴅ ʜᴏ ᴄʜᴜᴋɪ ʜᴀɪ.",
-        "lobby_opened": "> 🔓 ɢᴀᴍᴇ ʟᴏʙʙʏ ᴏᴘᴇɴ ʜᴏ ᴄʜᴜᴋɪ ʜᴀɪ.",
-        "start_error": "> ⚠️ ᴋᴏɪ ʟᴏʙʙʏ ᴏᴘᴇɴ ɴᴀʜɪ ʜᴀɪ ʏᴀ ɢᴀᴍᴇ ᴄʜᴀʟ ʀᴀʜᴀ ʜᴀɪ.",
-        "need_2_players": "> ⚠️ ɢᴀᴍᴇ ꜱʜᴜʀᴜ ᴋᴀʀɴᴇ ᴋᴇ ʟɪʏᴇ ᴋᴀᴍ ꜱᴇ ᴋᴀᴍ 2 ᴘʟᴀʏᴇʀꜱ ᴄʜᴀʜɪʏᴇ!",
+        "not_enough_players_start": "> ⚠️ ᴋᴀᴍ ꜱᴇ ᴋᴀᴍ 2 ᴘʟᴀʏᴇʀꜱ ᴄʜᴀʜɪʏᴇ! ɢᴀᴍᴇ ᴄᴀɴᴄᴇʟʟᴇᴅ.",
         "game_started": "> 🎮 **ɢᴀᴍᴇ ꜱʜᴜʀᴜ ʜᴏ ɢᴀʏᴀ ʜᴀɪ!**",
         "game_killed": "> 🛑 **ɢᴀᴍᴇ ꜰᴏʀᴄᴇꜰᴜʟʟʏ ʙᴀɴᴅ ᴋᴀʀ ᴅɪʏᴀ ɢᴀʏᴀ ʜᴀɪ!**",
         "no_kill": "> ⚠️ ᴋɪʟʟ ᴋᴀʀɴᴇ ᴋᴇ ʟɪʏᴇ ᴋᴏɪ ɢᴀᴍᴇ ɴᴀʜɪ ᴄʜᴀʟ ʀᴀʜᴀ.",
         "only_creator_kick": "> ⚠️ ꜱɪʀꜰ ɢᴀᴍᴇ ʙᴀɴᴀɴᴇ ᴡᴀʟᴀ ʜɪ ᴋɪᴄᴋ ᴋᴀʀ ꜱᴀᴋᴛᴀ ʜᴀɪ.",
         "reply_to_kick": "> ⚠️ ᴊɪꜱᴇ ɴɪᴋᴀʟɴᴀ ʜᴀɪ ᴜꜱᴋᴇ ᴍᴇꜱꜱᴀɢᴇ ᴘᴀʀ ʀᴇᴘʟʏ ᴋᴀʀᴇɪɴ.",
         "kicked": "> 👢 {name} ᴋᴏ ɢᴀᴍᴇ ꜱᴇ ɴɪᴋᴀᴀʟ ᴅɪʏᴀ ɢᴀʏᴀ ʜᴀɪ.",
-        "skipped": "> ⏭️ **1ꜱᴛ ᴡᴀʀɴɪɴɢ:** {name} ɴᴇ ʙᴀʜᴜᴛ ᴛɪᴍᴇ ʟᴀɢᴀʏᴀ ɪꜱʟɪʏᴇ ꜱᴋɪᴘ ᴋᴀʀ ᴅɪʏᴀ ɢᴀʏᴀ! (ꜰᴏʀᴄᴇᴅ ᴅʀᴀᴡ)",
+        "afk_kick": "> 👢 **bkl bhag gya {name}**",
+        "afk_warn": "> ⏳ **1ꜱᴛ ᴡᴀʀɴɪɴɢ:** {name} ɴᴇ ʙᴀʜᴜᴛ ᴛɪᴍᴇ ʟᴀɢᴀʏᴀ ɪꜱʟɪʏᴇ ꜱᴋɪᴘ ᴋᴀʀ ᴅɪʏᴀ ɢᴀʏᴀ! (ꜰᴏʀᴄᴇᴅ ᴅʀᴀᴡ)",
+        "afk_wild_warn": "> ⏳ **1ꜱᴛ ᴡᴀʀɴɪɴɢ:** {name} ɴᴇ ᴋᴏɪ ᴄᴏʟᴏʀ ɴᴀʜɪ ᴄʜᴜɴᴀ. ᴅᴇꜰᴀᴜʟᴛ '🔴 ʀᴇᴅ' ꜱᴇʟᴇᴄᴛ ʜᴏ ɢᴀʏᴀ.",
+        "skipped": "> ⏭️ {name} ᴋɪ ʙᴀᴀʀɪ ꜱᴋɪᴘ ᴋᴀʀ ᴅɪ ɢᴀʏɪ! (ꜰᴏʀᴄᴇᴅ ᴅʀᴀᴡ)",
         "not_active": "⚠️ ɢᴀᴍᴇ ᴀʙʜɪ ᴄʜᴀʟ ɴᴀʜɪ ʀᴀʜᴀ ʜᴀɪ!",
         "ur_cards_title": "🃏 ᴀᴀᴘᴋᴇ ᴄᴀʀᴅꜱ:\n\n{cards}",
         "cant_play_cheat": "🚫 {name}, ᴀᴀᴘ ʏᴇ ᴄᴀʀᴅ ᴀʙʜɪ ɴᴀʜɪ ᴋʜᴇʟ ꜱᴀᴋᴛᴇ!",
@@ -136,17 +142,18 @@ TRANSLATIONS = {
     }
 }
 
-async def get_user_lang(user_id):
-    if user_id in user_langs_cache: return user_langs_cache[user_id]
+# 🔥 FIX: Language strictly depends on the specific User ID!
+async def get_lang(uid):
+    if uid in user_langs_cache: return user_langs_cache[uid]
     if MONGO_URL:
-        u = await user_settings_col.find_one({"user_id": user_id})
+        u = await user_settings_col.find_one({"user_id": uid})
         if u and "lang" in u:
-            user_langs_cache[user_id] = u["lang"]
+            user_langs_cache[uid] = u["lang"]
             return u["lang"]
-    return "en_US"
+    return "en_US" # Default English
 
-async def _t(user_id, key, **kwargs):
-    lang = await get_user_lang(user_id)
+async def _t(uid, key, **kwargs):
+    lang = await get_lang(uid)
     if lang not in TRANSLATIONS: lang = "en_US"
     text = TRANSLATIONS[lang].get(key, TRANSLATIONS["en_US"].get(key, key))
     if kwargs:
@@ -155,7 +162,7 @@ async def _t(user_id, key, **kwargs):
     return text
 
 # ==========================================
-# 🛠️ UTILS FOR OWNER (HIDDEN)
+# 🛠️ UTILS FOR OWNER & BOT
 # ==========================================
 def to_small_caps(text):
     normal = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -168,10 +175,8 @@ def format_broadcast_text(text):
     for line in text.split('\n'):
         final_words = []
         for word in line.split(' '):
-            if word.startswith(('http://', 'https://', 't.me/', 'www.', '@', '/')):
-                final_words.append(word)
-            else:
-                final_words.append(to_small_caps(word))
+            if word.startswith(('http://', 'https://', 't.me/', 'www.', '@', '/')): final_words.append(word)
+            else: final_words.append(to_small_caps(word))
         final_lines.append("> " + " ".join(final_words))
     return "\n".join(final_lines)
 
@@ -241,18 +246,13 @@ async def gcast_cmd(client, message):
     if not chats: return await message.reply("❌ Database is empty!")
     m = await message.reply(f"🚀 **Broadcasting premium formatted message to {len(chats)} chats...**")
     success, failed = 0, 0
-    
     formatted_text = format_broadcast_text(replied.text) if replied.text else None
     formatted_caption = format_broadcast_text(replied.caption) if replied.caption else None
-    
     for chat in chats:
         try:
-            if replied.text: 
-                await client.send_message(int(chat), formatted_text)
-            else: 
-                await replied.copy(int(chat), caption=formatted_caption if formatted_caption else "")
-            success += 1
-            await asyncio.sleep(0.2)
+            if replied.text: await client.send_message(int(chat), formatted_text)
+            else: await replied.copy(int(chat), caption=formatted_caption if formatted_caption else "")
+            success += 1; await asyncio.sleep(0.2)
         except: failed += 1
     await m.edit(f"✅ **Broadcast Completed!**\n\n🎯 Success: `{success}`\n❌ Failed: `{failed}`")
 
@@ -303,7 +303,6 @@ async def stats_cmd(client, message):
     add_chat(message.chat.id)
     uid = message.from_user.id if message.from_user else message.chat.id
     fname = message.from_user.first_name if message.from_user else "Admin"
-    
     if not MONGO_URL: return await message.reply(await _t(uid, "db_error"))
     stats = await uno_stats_col.find_one({"user_id": uid})
     if not stats: return await message.reply(await _t(uid, "stats_disabled"))
@@ -331,8 +330,9 @@ async def top_players_cmd(client, message):
 
 @app.on_callback_query(filters.regex("^enable_stats$"))
 async def cb_enable_stats(client, cb):
-    if MONGO_URL: await uno_stats_col.update_one({"user_id": cb.from_user.id}, {"$set": {"name": cb.from_user.first_name}}, upsert=True)
-    await cb.message.edit(await _t(cb.from_user.id, "enabled_stats"))
+    uid = cb.from_user.id
+    if MONGO_URL: await uno_stats_col.update_one({"user_id": uid}, {"$set": {"name": cb.from_user.first_name}}, upsert=True)
+    await cb.message.edit(await _t(uid, "enabled_stats"))
 
 @app.on_callback_query(filters.regex("^change_lang$"))
 async def cb_change_lang(client, cb):
@@ -345,14 +345,15 @@ async def cb_change_lang(client, cb):
 @app.on_callback_query(filters.regex(r"^lang_"))
 async def cb_set_lang(client, cb):
     lang_code = cb.data.replace("lang_", "")
-    user_langs_cache[cb.from_user.id] = lang_code
-    if MONGO_URL: await user_settings_col.update_one({"user_id": cb.from_user.id}, {"$set": {"lang": lang_code}}, upsert=True)
+    uid = cb.from_user.id # 🔥 FIX: Maps strictly to User ID now
+    user_langs_cache[uid] = lang_code
+    if MONGO_URL: await user_settings_col.update_one({"user_id": uid}, {"$set": {"lang": lang_code}}, upsert=True)
     await cb.answer("Updated!", show_alert=False)
-    await cb.message.edit(await _t(cb.from_user.id, "lang_saved"))
+    await cb.message.edit(await _t(uid, "lang_saved"))
 
 
 # ==========================================
-# 🃏 UNO CORE ENGINE & AUTO-KICK TIMER
+# 🃏 UNO CORE ENGINE & SMART TIMERS
 # ==========================================
 def get_uno_deck():
     colors = ["🔴 Red", "🔵 Blue", "🟢 Green", "🟡 Yellow"]
@@ -406,7 +407,65 @@ async def send_uno_table(chat_id, action_user_id=None):
         else: game["table_msg"] = await app.send_message(chat_id, text, reply_markup=kb)
     except: game["table_msg"] = await app.send_message(chat_id, text, reply_markup=kb)
 
-# 🔥 THE 60-SEC AFK AUTO-KICK TIMER LOGIC
+# 🔥 LOBBY TIMER: 45 SECONDS WITH SMART NOTIFICATIONS (USER-LANG)
+async def uno_lobby_timer(chat_id):
+    game = uno_games.get(chat_id)
+    if not game or game["status"] != "lobby": return
+    uid = game["creator"] # Get creator's language
+    alert_msg = None
+
+    # Wait 15s (45s - 15s = 30s left)
+    await asyncio.sleep(15)
+    if chat_id in uno_games and uno_games[chat_id]["status"] == "lobby":
+        alert_msg = await app.send_message(chat_id, await _t(uid, "timer_30"))
+
+    # Wait 15s (Total 30s elapsed, 15s left)
+    await asyncio.sleep(15)
+    if chat_id in uno_games and uno_games[chat_id]["status"] == "lobby":
+        try: await alert_msg.delete()
+        except: pass
+        alert_msg = await app.send_message(chat_id, await _t(uid, "timer_15"))
+
+    # Wait 10s (Total 40s elapsed, 5s left)
+    await asyncio.sleep(10)
+    if chat_id in uno_games and uno_games[chat_id]["status"] == "lobby":
+        try: await alert_msg.delete()
+        except: pass
+        alert_msg = await app.send_message(chat_id, await _t(uid, "timer_5"))
+
+    # Wait final 5s (Total 45s elapsed)
+    await asyncio.sleep(5)
+
+    if chat_id in uno_games and uno_games[chat_id]["status"] == "lobby":
+        try: await alert_msg.delete()
+        except: pass
+        
+        game = uno_games[chat_id]
+        if len(game["players"]) < 2:
+            uno_games.pop(chat_id, None)
+            await app.send_message(chat_id, await _t(uid, "not_enough_players_start"))
+            return
+            
+        # Start game automatically
+        game["status"] = "playing"
+        deck = get_uno_deck()
+        for p in game["players"]: 
+            p["cards"] = [deck.pop() for _ in range(7)]
+            p["afk_strikes"] = 0
+        top_card = deck.pop()
+        while "Wild" in top_card or "Reverse" in top_card or "Skip" in top_card or "➕2" in top_card:
+            deck.append(top_card); random.shuffle(deck); top_card = deck.pop()
+        
+        game["deck"] = deck; game["top_card"] = top_card; game["current_color"] = top_card.split(" ")[1]
+        game["turn_index"] = 0; game["direction"] = 1; game["turn_id"] = 1  
+        
+        try: await game["lobby_msg"].delete()
+        except: pass
+        
+        await app.send_message(chat_id, await _t(uid, "game_started"))
+        asyncio.create_task(uno_turn_timer(chat_id, 1))
+        await send_uno_table(chat_id, uid)
+
 async def uno_turn_timer(chat_id, turn_id):
     await asyncio.sleep(60)
     if chat_id not in uno_games: return
@@ -416,61 +475,56 @@ async def uno_turn_timer(chat_id, turn_id):
     try:
         player_idx = game["turn_index"]
         player = game["players"][player_idx]
+        uid = player["id"] # Use current player's language for warning
         
-        # Increment AFK Strike
         player["afk_strikes"] = player.get("afk_strikes", 0) + 1
         
-        # 🚨 STRIKE 2: KICK FROM GAME
         if player["afk_strikes"] >= 2:
             kicked_name = player["name"]
             game["players"].pop(player_idx)
-            
-            await app.send_message(chat_id, f"bkl bhag gya {kicked_name}")
+            kick_msg = await _t(uid, "afk_kick", name=f"[{kicked_name}](tg://user?id={player['id']})")
+            await app.send_message(chat_id, kick_msg)
             
             if len(game["players"]) < 2:
                 uno_games.pop(chat_id, None)
-                await app.send_message(chat_id, await _t(game["creator"], "not_enough_players"))
+                await app.send_message(chat_id, await _t(uid, "not_enough_players"))
             else:
-                if game["direction"] == -1:
-                    game["turn_index"] = (game["turn_index"] - 1) % len(game["players"])
-                else:
-                    game["turn_index"] = game["turn_index"] % len(game["players"])
-                game["status"] = "playing"
-                game["pending_effect"] = "none"
-                game["turn_id"] += 1
+                if game["direction"] == -1: game["turn_index"] = (game["turn_index"] - 1) % len(game["players"])
+                else: game["turn_index"] = game["turn_index"] % len(game["players"])
+                game["status"] = "playing"; game["pending_effect"] = "none"; game["turn_id"] += 1
                 asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
-                await send_uno_table(chat_id, game["creator"])
+                await send_uno_table(chat_id, uid)
             return
 
-        # ⚠️ STRIKE 1: SKIP & PENALTY
         if game["status"] == "waiting_color":
-            game["current_color"] = "🔴"
-            game["status"] = "playing"
+            game["current_color"] = "🔴"; game["status"] = "playing"
             if game.get("pending_effect") == "+4":
                 victim = game["players"][(game["turn_index"] + game["direction"]) % len(game["players"])]
                 for _ in range(4):
                     if not game["deck"]: game["deck"] = get_uno_deck()
                     victim["cards"].append(game["deck"].pop())
             game["pending_effect"] = "none"
-            await app.send_message(chat_id, f"⏳ **1st Warning:** {player['name']} ne koi color nahi chuna. Default '🔴 Red' select ho gaya.")
+            warn_msg = await _t(uid, "afk_wild_warn", name=f"[{player['name']}](tg://user?id={player['id']})")
+            await app.send_message(chat_id, warn_msg)
             get_next_turn(game)
             asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
-            await send_uno_table(chat_id, game["creator"])
+            await send_uno_table(chat_id, uid)
             
         elif game["status"] == "playing":
             if not game["deck"]: game["deck"] = get_uno_deck()
             drawn = game["deck"].pop()
             player["cards"].append(drawn)
-            await app.send_message(chat_id, f"⏳ **1st Warning:** [{player['name']}](tg://user?id={player['id']}) ne 60 sec me card nahi khela, isliye skip hokar penalty mili.")
+            warn_msg = await _t(uid, "afk_warn", name=f"[{player['name']}](tg://user?id={player['id']})")
+            await app.send_message(chat_id, warn_msg)
             get_next_turn(game)
             asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
-            await send_uno_table(chat_id, game["creator"])
-    except Exception as e: pass
+            await send_uno_table(chat_id, uid)
+    except: pass
 
 # ==========================================
-# 🎮 GAME COMMANDS (/new, /join, /start, /leave, /kill, /kick)
+# 🎮 GAME COMMANDS & LOBBY LOGIC
 # ==========================================
-@app.on_message(filters.command("new") & filters.group)
+@app.on_message(filters.command(["startgame", "new"]) & filters.group)
 async def new_game_cmd(client, message):
     chat_id = message.chat.id
     uid = message.from_user.id if message.from_user else message.chat.id
@@ -478,27 +532,47 @@ async def new_game_cmd(client, message):
     add_chat(chat_id)
     if chat_id in uno_games:
         return await message.reply(await _t(uid, "already_playing"))
+        
     player = {"id": uid, "name": fname, "cards": [], "afk_strikes": 0}
     uno_games[chat_id] = {"status": "lobby", "creator": uid, "is_open": True, "players": [player], "lobby_msg": None}
-    await message.reply(await _t(uid, "new_lobby"))
+    
+    players_text = f"> - {fname}"
+    text = await _t(uid, "new_lobby", time="45s", count=1, players=players_text)
+    
+    btn_text = await _t(uid, "join_btn", count=1)
+    kb = InlineKeyboardMarkup([[InlineKeyboardButton(btn_text, callback_data="join_uno")]])
+    
+    m = await message.reply(text, reply_markup=kb)
+    uno_games[chat_id]["lobby_msg"] = m
+    
+    asyncio.create_task(uno_lobby_timer(chat_id))
 
-@app.on_message(filters.command("join") & filters.group)
-async def join_game_cmd(client, message):
-    chat_id = message.chat.id
-    uid = message.from_user.id if message.from_user else message.chat.id
-    fname = message.from_user.first_name if message.from_user else "Admin"
-    add_chat(chat_id)
+@app.on_callback_query(filters.regex("^join_uno$"))
+async def join_uno_cb(client, cb):
+    chat_id = cb.message.chat.id
+    uid = cb.from_user.id
+    fname = cb.from_user.first_name
+    
     if chat_id not in uno_games or uno_games[chat_id]["status"] != "lobby":
-        return await message.reply(await _t(uid, "no_lobby"))
-    if not uno_games[chat_id]["is_open"]:
-        return await message.reply(await _t(uid, "lobby_closed_err"))
+        return await cb.answer(await _t(uid, "lobby_closed_alert"), show_alert=True)
         
-    players = uno_games[chat_id]["players"]
+    game = uno_games[chat_id]
+    players = game["players"]
     if any(p["id"] == uid for p in players): 
-        return await message.reply(await _t(uid, "already_joined"))
+        return await cb.answer(await _t(uid, "already_joined_alert"), show_alert=True)
         
     players.append({"id": uid, "name": fname, "cards": [], "afk_strikes": 0})
-    await message.reply(await _t(uid, "joined_success", name=fname, count=len(players)))
+    await cb.answer(await _t(uid, "joined_alert"), show_alert=False)
+    
+    creator_id = game["creator"]
+    players_text = "\n> ".join([f"- {p['name']}" for p in players])
+    text = await _t(creator_id, "new_lobby", time="45s", count=len(players), players=f"> {players_text}")
+    
+    btn_text = await _t(creator_id, "join_btn", count=len(players))
+    kb = InlineKeyboardMarkup([[InlineKeyboardButton(btn_text, callback_data="join_uno")]])
+    
+    try: await cb.message.edit_text(text, reply_markup=kb)
+    except: pass
 
 @app.on_message(filters.command("leave") & filters.group)
 async def leave_game_cmd(client, message):
@@ -519,49 +593,6 @@ async def leave_game_cmd(client, message):
     elif game["status"] == "playing" and game["turn_index"] == player_idx:
         get_next_turn(game)
         await send_uno_table(chat_id, uid)
-
-@app.on_message(filters.command("close") & filters.group)
-async def close_lobby_cmd(client, message):
-    chat_id = message.chat.id
-    uid = message.from_user.id if message.from_user else message.chat.id
-    if chat_id in uno_games and uno_games[chat_id]["creator"] == uid:
-        uno_games[chat_id]["is_open"] = False
-        await message.reply(await _t(uid, "lobby_closed"))
-
-@app.on_message(filters.command("open") & filters.group)
-async def open_lobby_cmd(client, message):
-    chat_id = message.chat.id
-    uid = message.from_user.id if message.from_user else message.chat.id
-    if chat_id in uno_games and uno_games[chat_id]["creator"] == uid:
-        uno_games[chat_id]["is_open"] = True
-        await message.reply(await _t(uid, "lobby_opened"))
-
-@app.on_message(filters.command("start") & filters.group)
-async def start_game_cmd(client, message):
-    chat_id = message.chat.id
-    uid = message.from_user.id if message.from_user else message.chat.id
-    if chat_id not in uno_games or uno_games[chat_id]["status"] != "lobby":
-        return await message.reply(await _t(uid, "start_error"))
-        
-    game = uno_games[chat_id]
-    if len(game["players"]) < 2:
-        return await message.reply(await _t(uid, "need_2_players"))
-        
-    game["status"] = "playing"
-    deck = get_uno_deck()
-    for p in game["players"]: 
-        p["cards"] = [deck.pop() for _ in range(7)]
-        p["afk_strikes"] = 0
-    top_card = deck.pop()
-    while "Wild" in top_card or "Reverse" in top_card or "Skip" in top_card or "➕2" in top_card:
-        deck.append(top_card); random.shuffle(deck); top_card = deck.pop()
-    
-    game["deck"] = deck; game["top_card"] = top_card; game["current_color"] = top_card.split(" ")[1]
-    game["turn_index"] = 0; game["direction"] = 1; game["turn_id"] = 1  
-    
-    asyncio.create_task(uno_turn_timer(chat_id, 1))
-    await message.reply(await _t(uid, "game_started"))
-    await send_uno_table(chat_id, uid)
 
 @app.on_message(filters.command("kill") & filters.group)
 async def kill_game_cmd(client, message):
@@ -605,29 +636,29 @@ async def skip_player_cmd(client, message):
     
     player_idx = game["turn_index"]
     player = game["players"][player_idx]
-    
     player["afk_strikes"] = player.get("afk_strikes", 0) + 1
     
     if player["afk_strikes"] >= 2:
         kicked_name = player["name"]
         game["players"].pop(player_idx)
-        await message.reply(f"bkl bhag gya {kicked_name}")
+        kick_msg = await _t(uid, "afk_kick", name=f"[{kicked_name}](tg://user?id={player['id']})")
+        await app.send_message(chat_id, kick_msg)
+        
         if len(game["players"]) < 2:
             uno_games.pop(chat_id, None)
             await app.send_message(chat_id, await _t(uid, "not_enough_players"))
         else:
             if game["direction"] == -1: game["turn_index"] = (game["turn_index"] - 1) % len(game["players"])
             else: game["turn_index"] = game["turn_index"] % len(game["players"])
-            game["status"] = "playing"
-            game["turn_id"] += 1
+            game["status"] = "playing"; game["turn_id"] += 1
             asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
             await send_uno_table(chat_id, uid)
     else:
         if not game["deck"]: game["deck"] = get_uno_deck()
         player["cards"].append(game["deck"].pop())
-        await message.reply(await _t(uid, "skipped", name=player['name']))
-        get_next_turn(game)
-        game["turn_id"] += 1
+        warn_msg = await _t(uid, "afk_warn", name=f"[{player['name']}](tg://user?id={player['id']})")
+        await app.send_message(chat_id, warn_msg)
+        get_next_turn(game); game["turn_id"] += 1
         asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
         await send_uno_table(chat_id, uid)
 
@@ -798,12 +829,9 @@ async def main():
     
     try:
         await app.set_bot_commands([
+            BotCommand("startgame", "Start a new game"),
             BotCommand("new", "Start a new game"),
-            BotCommand("join", "Join the current game"),
-            BotCommand("start", "Start the game"),
             BotCommand("leave", "Leave the game you're in"),
-            BotCommand("close", "Close the game lobby"),
-            BotCommand("open", "Open the game lobby"),
             BotCommand("kill", "Terminate the game"),
             BotCommand("kick", "Kick players out of the game"),
             BotCommand("skip", "Skip the current player"),
@@ -816,7 +844,7 @@ async def main():
     except Exception as e: print("Could not set commands:", e)
     
     print("=========================================")
-    print("✅ PRO UNO BOT (2-STRIKE AFK READY) IS LIVE!")
+    print("✅ PRO UNO BOT (SMART 45S AUTO-LOBBY & USER-LANG) IS LIVE!")
     print("=========================================")
     await idle()
 
