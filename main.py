@@ -19,7 +19,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "<h1>🤖 PRO UNO Bot is Alive (Premium UI Update)! 🚀</h1>"
+    return "<h1>🤖 PRO UNO Bot is Alive (All Commands Fixed)! 🚀</h1>"
 
 def run_web():
     port = int(os.environ.get("PORT", 8080))
@@ -60,7 +60,7 @@ TRANSLATIONS = {
         "help": "> 💡 **ᴜɴᴏ ʙᴏᴛ ɢᴜɪᴅᴇ:**\n>\n> 1️⃣ ᴀᴅᴅ ᴛʜɪꜱ ʙᴏᴛ ᴛᴏ ᴀ ɢʀᴏᴜᴘ.\n> 2️⃣ ꜱᴛᴀʀᴛ ᴀ ɴᴇᴡ ɢᴀᴍᴇ ᴡɪᴛʜ /new ᴏʀ ᴊᴏɪɴ ᴀɴ ᴀᴄᴛɪᴠᴇ ɢᴀᴍᴇ ᴡɪᴛʜ /join.\n> 3️⃣ ᴀꜰᴛᴇʀ 2+ ᴘʟᴀʏᴇʀꜱ ᴊᴏɪɴ, ꜱᴛᴀʀᴛ ɪᴛ ᴡɪᴛʜ /start.\n> 4️⃣ ᴛʏᴘᴇ @{bot} ɪɴᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ ʙᴏx ᴀɴᴅ ʜɪᴛ ꜱᴘᴀᴄᴇ. ʏᴏᴜ ᴡɪʟʟ ꜱᴇᴇ ʏᴏᴜʀ ᴄᴀʀᴅꜱ. (ɢʀᴇʏᴇᴅ ᴏᴜᴛ = ᴄᴀɴɴᴏᴛ ᴘʟᴀʏ).\n>\n> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ ᴀɴᴅ ʀᴜʟᴇꜱ:**\n> ➥ /rules : ᴇxᴘʟᴀɴᴀᴛɪᴏɴ ᴏꜰ ɢᴀᴍᴇ ʀᴜʟᴇꜱ\n> ➥ /settings : ʟᴀɴɢᴜᴀɢᴇ ᴀɴᴅ ꜱᴛᴀᴛꜱ ꜱᴇᴛᴛɪɴɢꜱ",
         "rules_text": "> 🃏 **ᴜɴᴏ ɢᴀᴍᴇ ʀᴜʟᴇꜱ & ᴍᴏᴅᴇꜱ:**\n>\n> 🔴 **ᴄʟᴀꜱꜱɪᴄ ᴜɴᴏ:**\n> ➥ ᴍᴀᴛᴄʜ ᴛʜᴇ ᴛᴏᴘ ᴄᴀʀᴅ ʙʏ ᴄᴏʟᴏʀ ᴏʀ ɴᴜᴍʙᴇʀ.\n> ➥ ᴘʟᴀʏ ꜱᴘᴇᴄɪᴀʟ ᴄᴀʀᴅꜱ (ꜱᴋɪᴘ, ʀᴇᴠᴇʀꜱᴇ, ᴅʀᴀᴡ 2) ᴛᴏ ᴅɪꜱʀᴜᴘᴛ ᴏᴘᴘᴏɴᴇɴᴛꜱ.\n> 🌈 ᴡɪʟᴅ ᴄᴀʀᴅꜱ ᴄᴀɴ ᴄʜᴀɴɢᴇ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ.\n> 💥 ᴡɪʟᴅ +4 ᴄʜᴀɴɢᴇꜱ ᴛʜᴇ ᴄᴏʟᴏʀ ᴀɴᴅ ꜰᴏʀᴄᴇꜱ ᴛʜᴇ ɴᴇxᴛ ᴘʟᴀʏᴇʀ ᴛᴏ ᴅʀᴀᴡ 4 ᴄᴀʀᴅꜱ.\n> 📥 ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ᴘʟᴀʏ ᴀɴʏ ᴄᴀʀᴅ, ʏᴏᴜ ᴍᴜꜱᴛ ᴄʟɪᴄᴋ 'ᴅʀᴀᴡ' ᴛᴏ ᴘɪᴄᴋ ᴀ ᴄᴀʀᴅ.\n> 🏆 ᴛʜᴇ ꜰɪʀꜱᴛ ᴘʟᴀʏᴇʀ ᴛᴏ ɢᴇᴛ ʀɪᴅ ᴏꜰ ᴀʟʟ ᴛʜᴇɪʀ ᴄᴀʀᴅꜱ ᴡɪɴꜱ!",
         "settings": "> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ:**\n> ᴄʜᴏᴏꜱᴇ ᴀɴ ᴏᴘᴛɪᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ᴜᴘᴅᴀᴛᴇ ʏᴏᴜʀ ᴘʀᴇꜰᴇʀᴇɴᴄᴇꜱ.",
-        "stats_disabled": "> ⚠️ ʏᴏᴜ ᴅɪᴅ ɴᴏᴛ ᴇɴᴀʙʟᴇ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ. ᴜꜱᴇ /settings ɪɴ ᴀ ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ ᴛᴏ ᴇɴᴀʙʟᴇ ᴛʜᴇᴍ.",
+        "stats_disabled": "> ⚠️ ʏᴏᴜ ᴅɪᴅ ɴᴏᴛ ᴇɴᴀʙʟᴇ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ. ᴜꜱᴇ /settings ᴛᴏ ᴇɴᴀʙʟᴇ ᴛʜᴇᴍ.",
         "stats_msg": "> 📊 **{name}'ꜱ ᴜɴᴏ ꜱᴛᴀᴛꜱ:**\n>\n> 🏆 ɢᴀᴍᴇꜱ ᴡᴏɴ : `{wins}`\n> 🥇 ꜰɪʀꜱᴛ ᴘʟᴀᴄᴇꜱ : `{percent}%`\n> 🃏 ᴄᴀʀᴅꜱ ᴘʟᴀʏᴇᴅ : `{cards}`",
         "db_error": "> ⚠️ ᴅᴀᴛᴀʙᴀꜱᴇ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ.",
         "enabled_stats": "> ✅ ᴇɴᴀʙʟᴇᴅ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ!",
@@ -99,7 +99,7 @@ TRANSLATIONS = {
         "help": "> 💡 **ᴜɴᴏ ʙᴏᴛ ɢᴜɪᴅᴇ:**\n>\n> 1️⃣ ɪꜱ ʙᴏᴛ ᴋᴏ ᴋɪꜱɪ ɢʀᴏᴜᴘ ᴍᴇ ᴀᴅᴅ ᴋᴀʀᴇɪɴ.\n> 2️⃣ ɴᴀʏᴀ ɢᴀᴍᴇ ʙᴀɴᴀɴᴇ ᴋᴇ ʟɪʏᴇ /new ʙʜᴇᴊᴇɪɴ, ʏᴀ ᴄʜᴀʟᴛᴇ ɢᴀᴍᴇ ᴍᴇ /join ᴋᴀʀᴇɪɴ.\n> 3️⃣ ᴊᴀʙ 2 ʏᴀ ᴢʏᴀᴅᴀ ʟᴏɢ ᴀᴀ ᴊᴀʏᴇɪɴ, ᴛᴏʜ ɢᴀᴍᴇ ꜱʜᴜʀᴜ ᴋᴀʀɴᴇ ᴋᴇ ʟɪʏᴇ /start ʙʜᴇᴊᴇɪɴ.\n> 4️⃣ ᴀᴘɴᴇ ᴄʜᴀᴛ ʙᴏx ᴍᴇ @{bot} ʟɪᴋʜ ᴋᴀʀ ꜱᴘᴀᴄᴇ ᴅᴀʙᴀʏᴇɪɴ. ᴀᴀᴘᴋᴏ ᴀᴘɴᴇ ᴄᴀʀᴅꜱ ᴅɪᴋʜ ᴊᴀʏᴇɴɢᴇ. (ɢʀᴇʏ ᴄᴀʀᴅꜱ ɴᴀʜɪ ᴋʜᴇʟ ꜱᴀᴋᴛᴇ).\n>\n> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ ᴀᴜʀ ʀᴜʟᴇꜱ:**\n> ➥ /rules : ᴜɴᴏ ᴋʜᴇʟɴᴇ ᴋᴇ ɴɪʏᴀᴍ\n> ➥ /settings : ʟᴀɴɢᴜᴀɢᴇ ᴀᴜʀ ꜱᴛᴀᴛꜱ ꜱᴇᴛᴛɪɴɢꜱ",
         "rules_text": "> 🃏 **ᴜɴᴏ ɢᴀᴍᴇ ʀᴜʟᴇꜱ (ɴɪʏᴀᴍ):**\n>\n> 🔴 **ᴄʟᴀꜱꜱɪᴄ ᴜɴᴏ:**\n> ➥ ᴛᴏᴘ ᴄᴀʀᴅ ᴋᴇ ᴄᴏʟᴏʀ ʏᴀ ɴᴜᴍʙᴇʀ ꜱᴇ ᴍᴀᴛᴄʜ ᴋᴀʀᴛᴀ ʜᴜᴀ ᴄᴀʀᴅ ᴋʜᴇʟᴇɪɴ.\n> ➥ ᴏᴘᴘᴏɴᴇɴᴛꜱ ᴋᴏ ʀᴏᴋɴᴇ ᴋᴇ ʟɪʏᴇ ꜱᴘᴇᴄɪᴀʟ ᴄᴀʀᴅꜱ (ꜱᴋɪᴘ, ʀᴇᴠᴇʀꜱᴇ, ᴅʀᴀᴡ 2) ᴋᴀ ᴜꜱᴇ ᴋᴀʀᴇɪɴ.\n> 🌈 ᴡɪʟᴅ ᴄᴀʀᴅ ᴋʜᴇʟ ᴋᴀʀ ᴀᴀᴘ ᴄᴏʟᴏʀ ᴄʜᴀɴɢᴇ ᴋᴀʀ ꜱᴀᴋᴛᴇ ʜᴀɪɴ.\n> 💥 ᴡɪʟᴅ +4 ᴄᴏʟᴏʀ ʙʜɪ ᴄʜᴀɴɢᴇ ᴋᴀʀᴛᴀ ʜᴀɪ ᴀᴜʀ ᴀɢʟᴇ ᴘʟᴀʏᴇʀ ᴋᴏ 4 ᴄᴀʀᴅꜱ ɴɪᴋᴀʟɴᴇ ᴘᴀᴅᴛᴇ ʜᴀɪɴ.\n> 📥 ᴀɢᴀʀ ᴀᴀᴘᴋᴇ ᴘᴀᴀꜱ ᴋʜᴇʟɴᴇ ᴋᴇ ʟɪʏᴇ ᴋᴏɪ ᴠᴀʟɪᴅ ᴄᴀʀᴅ ɴᴀʜɪ ʜᴀɪ, ᴛᴏʜ 'ᴅʀᴀᴡ' ᴘᴀʀ ᴄʟɪᴄᴋ ᴋᴀʀᴋᴇ ɴᴀʏᴀ ᴄᴀʀᴅ ɴɪᴋᴀʟᴇɪɴ.\n> 🏆 ᴊᴏ ᴘʟᴀʏᴇʀ ꜱᴀʙꜱᴇ ᴘᴇʜʟᴇ ᴀᴘɴᴇ ꜱᴀᴀʀᴇ ᴄᴀʀᴅꜱ ᴋʜᴀᴛᴀᴍ ᴋᴀʀᴇɢᴀ, ᴡᴏ ᴊᴇᴇᴛᴇɢᴀ!",
         "settings": "> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ (ꜱᴇᴛɪɴɢꜱ):**\n> ɴɪᴄʜᴇ ᴅɪʏᴇ ɢᴀʏᴇ ᴏᴘᴛɪᴏɴꜱ ꜱᴇ ᴀᴘɴɪ ᴘᴀꜱᴀɴᴅ ᴄʜᴜɴᴇɪɴ.",
-        "stats_disabled": "> ⚠️ ᴀᴀᴘɴᴇ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ ᴏɴ ɴᴀʜɪ ᴋɪʏᴀ ʜᴀɪ. ᴘʀɪᴠᴀᴛᴇ ᴄʜᴀᴛ ᴍᴇ /settings ʙʜᴇᴊ ᴋᴀʀ ᴏɴ ᴋᴀʀᴇɪɴ.",
+        "stats_disabled": "> ⚠️ ᴀᴀᴘɴᴇ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ ᴏɴ ɴᴀʜɪ ᴋɪʏᴀ ʜᴀɪ. /settings ʙʜᴇᴊ ᴋᴀʀ ᴏɴ ᴋᴀʀᴇɪɴ.",
         "stats_msg": "> 📊 **{name} ᴋᴇ ᴜɴᴏ ꜱᴛᴀᴛꜱ:**\n>\n> 🏆 ɢᴀᴍᴇꜱ ᴊᴇᴇᴛᴇ : `{wins}`\n> 🥇 ꜰɪʀꜱᴛ ᴘʟᴀᴄᴇꜱ : `{percent}%`\n> 🃏 ᴄᴀʀᴅꜱ ᴋʜᴇʟᴇ : `{cards}`",
         "db_error": "> ⚠️ ᴅᴀᴛᴀʙᴀꜱᴇ ᴄᴏɴɴᴇᴄᴛᴇᴅ ɴᴀʜɪ ʜᴀɪ.",
         "enabled_stats": "> ✅ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ ᴏɴ ᴋᴀʀ ᴅɪʏᴇ ɢᴀʏᴇ ʜᴀɪɴ!",
@@ -168,12 +168,10 @@ def format_broadcast_text(text):
     for line in text.split('\n'):
         final_words = []
         for word in line.split(' '):
-            # 🔥 IGNORE LINKS, USERNAMES AND COMMANDS - THEY WILL STAY NORMAL
             if word.startswith(('http://', 'https://', 't.me/', 'www.', '@', '/')):
                 final_words.append(word)
             else:
                 final_words.append(to_small_caps(word))
-        # 🔥 ADD BLOCKQUOTE (>) TO EVERY LINE FOR PREMIUM LOOK
         final_lines.append("> " + " ".join(final_words))
     return "\n".join(final_lines)
 
@@ -244,7 +242,6 @@ async def gcast_cmd(client, message):
     m = await message.reply(f"🚀 **Broadcasting premium formatted message to {len(chats)} chats...**")
     success, failed = 0, 0
     
-    # 🔥 GCAST FORMAT FIX: Apply Small Caps and Quotes, but KEEP links/commands normal.
     formatted_text = format_broadcast_text(replied.text) if replied.text else None
     formatted_caption = format_broadcast_text(replied.caption) if replied.caption else None
     
@@ -274,24 +271,27 @@ async def set_position_cmd(client, message):
 
 
 # ==========================================
-# ⚙️ SETTINGS, STATS, HELP & RULES
+# ⚙️ SETTINGS, STATS, HELP & RULES (FIXED FILTERS)
 # ==========================================
 @app.on_message(filters.command("help"))
 async def help_cmd(client, message):
     add_chat(message.chat.id)
-    text = await _t(message.from_user.id, "help", bot=BOT_USERNAME)
+    uid = message.from_user.id if message.from_user else message.chat.id
+    text = await _t(uid, "help", bot=BOT_USERNAME)
     await message.reply(text)
 
 @app.on_message(filters.command("rules"))
 async def rules_cmd(client, message):
     add_chat(message.chat.id)
-    text = await _t(message.from_user.id, "rules_text")
+    uid = message.from_user.id if message.from_user else message.chat.id
+    text = await _t(uid, "rules_text")
     await message.reply(text)
 
-@app.on_message(filters.command("settings") & filters.private)
+@app.on_message(filters.command("settings")) # Removed filters.private
 async def settings_cmd(client, message):
     add_chat(message.chat.id)
-    text = await _t(message.from_user.id, "settings")
+    uid = message.from_user.id if message.from_user else message.chat.id
+    text = await _t(uid, "settings")
     kb = InlineKeyboardMarkup([
         [InlineKeyboardButton("📊 Enable statistics", callback_data="enable_stats")],
         [InlineKeyboardButton("🌍 Language", callback_data="change_lang")]
@@ -301,16 +301,20 @@ async def settings_cmd(client, message):
 @app.on_message(filters.command("stats"))
 async def stats_cmd(client, message):
     add_chat(message.chat.id)
-    if not MONGO_URL: return await message.reply(await _t(message.from_user.id, "db_error"))
-    stats = await uno_stats_col.find_one({"user_id": message.from_user.id})
-    if not stats: return await message.reply(await _t(message.from_user.id, "stats_disabled"))
+    uid = message.from_user.id if message.from_user else message.chat.id
+    fname = message.from_user.first_name if message.from_user else "Admin"
+    
+    if not MONGO_URL: return await message.reply(await _t(uid, "db_error"))
+    stats = await uno_stats_col.find_one({"user_id": uid})
+    if not stats: return await message.reply(await _t(uid, "stats_disabled"))
     
     wins = stats.get("wins", 0)
-    text = await _t(message.from_user.id, "stats_msg", name=message.from_user.first_name, wins=wins, percent='100' if wins>0 else '0', cards=(wins*15)+random.randint(10,50) if wins>0 else 0)
+    text = await _t(uid, "stats_msg", name=fname, wins=wins, percent='100' if wins>0 else '0', cards=(wins*15)+random.randint(10,50) if wins>0 else 0)
     await message.reply(text)
 
 @app.on_message(filters.command("topplayers"))
 async def top_players_cmd(client, message):
+    add_chat(message.chat.id)
     if not MONGO_URL: return await message.reply("⚠️ Database is not connected!")
     m = await message.reply("🏆 Fetching Leaderboard...")
     top_players = await uno_stats_col.find().sort("wins", -1).limit(10).to_list(10)
@@ -408,18 +412,20 @@ async def send_uno_table(chat_id, action_user_id=None):
 @app.on_message(filters.command("new") & filters.group)
 async def new_game_cmd(client, message):
     chat_id = message.chat.id
-    uid = message.from_user.id
+    uid = message.from_user.id if message.from_user else message.chat.id
+    fname = message.from_user.first_name if message.from_user else "Admin"
     add_chat(chat_id)
     if chat_id in uno_games:
         return await message.reply(await _t(uid, "already_playing"))
-    player = {"id": uid, "name": message.from_user.first_name, "cards": []}
+    player = {"id": uid, "name": fname, "cards": []}
     uno_games[chat_id] = {"status": "lobby", "creator": uid, "is_open": True, "players": [player], "lobby_msg": None}
     await message.reply(await _t(uid, "new_lobby"))
 
 @app.on_message(filters.command("join") & filters.group)
 async def join_game_cmd(client, message):
     chat_id = message.chat.id
-    uid = message.from_user.id
+    uid = message.from_user.id if message.from_user else message.chat.id
+    fname = message.from_user.first_name if message.from_user else "Admin"
     add_chat(chat_id)
     if chat_id not in uno_games or uno_games[chat_id]["status"] != "lobby":
         return await message.reply(await _t(uid, "no_lobby"))
@@ -430,13 +436,13 @@ async def join_game_cmd(client, message):
     if any(p["id"] == uid for p in players): 
         return await message.reply(await _t(uid, "already_joined"))
         
-    players.append({"id": uid, "name": message.from_user.first_name, "cards": []})
-    await message.reply(await _t(uid, "joined_success", name=message.from_user.first_name, count=len(players)))
+    players.append({"id": uid, "name": fname, "cards": []})
+    await message.reply(await _t(uid, "joined_success", name=fname, count=len(players)))
 
 @app.on_message(filters.command("leave") & filters.group)
 async def leave_game_cmd(client, message):
     chat_id = message.chat.id
-    uid = message.from_user.id
+    uid = message.from_user.id if message.from_user else message.chat.id
     if chat_id not in uno_games: return
     game = uno_games[chat_id]
     
@@ -456,7 +462,7 @@ async def leave_game_cmd(client, message):
 @app.on_message(filters.command("close") & filters.group)
 async def close_lobby_cmd(client, message):
     chat_id = message.chat.id
-    uid = message.from_user.id
+    uid = message.from_user.id if message.from_user else message.chat.id
     if chat_id in uno_games and uno_games[chat_id]["creator"] == uid:
         uno_games[chat_id]["is_open"] = False
         await message.reply(await _t(uid, "lobby_closed"))
@@ -464,7 +470,7 @@ async def close_lobby_cmd(client, message):
 @app.on_message(filters.command("open") & filters.group)
 async def open_lobby_cmd(client, message):
     chat_id = message.chat.id
-    uid = message.from_user.id
+    uid = message.from_user.id if message.from_user else message.chat.id
     if chat_id in uno_games and uno_games[chat_id]["creator"] == uid:
         uno_games[chat_id]["is_open"] = True
         await message.reply(await _t(uid, "lobby_opened"))
@@ -472,7 +478,7 @@ async def open_lobby_cmd(client, message):
 @app.on_message(filters.command("start") & filters.group)
 async def start_game_cmd(client, message):
     chat_id = message.chat.id
-    uid = message.from_user.id
+    uid = message.from_user.id if message.from_user else message.chat.id
     if chat_id not in uno_games or uno_games[chat_id]["status"] != "lobby":
         return await message.reply(await _t(uid, "start_error"))
         
@@ -496,7 +502,7 @@ async def start_game_cmd(client, message):
 @app.on_message(filters.command("kill") & filters.group)
 async def kill_game_cmd(client, message):
     chat_id = message.chat.id
-    uid = message.from_user.id
+    uid = message.from_user.id if message.from_user else message.chat.id
     if chat_id in uno_games:
         uno_games.pop(chat_id, None)
         await message.reply(await _t(uid, "game_killed"))
@@ -505,7 +511,7 @@ async def kill_game_cmd(client, message):
 @app.on_message(filters.command("kick") & filters.group)
 async def kick_player_cmd(client, message):
     chat_id = message.chat.id
-    uid = message.from_user.id
+    uid = message.from_user.id if message.from_user else message.chat.id
     if chat_id not in uno_games: return
     game = uno_games[chat_id]
     
@@ -514,7 +520,7 @@ async def kick_player_cmd(client, message):
     if not message.reply_to_message:
         return await message.reply(await _t(uid, "reply_to_kick"))
         
-    target_id = message.reply_to_message.from_user.id
+    target_id = message.reply_to_message.from_user.id if message.reply_to_message.from_user else 0
     player_idx = next((i for i, p in enumerate(game["players"]) if p["id"] == target_id), None)
     
     if player_idx is not None:
@@ -529,7 +535,7 @@ async def kick_player_cmd(client, message):
 @app.on_message(filters.command("skip") & filters.group)
 async def skip_player_cmd(client, message):
     chat_id = message.chat.id
-    uid = message.from_user.id
+    uid = message.from_user.id if message.from_user else message.chat.id
     if chat_id not in uno_games or uno_games[chat_id]["status"] != "playing": return
     game = uno_games[chat_id]
     
@@ -548,11 +554,11 @@ async def skip_player_cmd(client, message):
 async def show_uno_cards_cb(client, cb):
     chat_id = cb.message.chat.id; uid = cb.from_user.id
     if chat_id not in uno_games or uno_games[chat_id]["status"] != "playing": 
-        return await cb.answer("Game is not active!", show_alert=True)
+        return await cb.answer(await _t(uid, "not_active"), show_alert=True)
     player = next((p for p in uno_games[chat_id]["players"] if p["id"] == uid), None)
-    if not player: return await cb.answer("You are not playing!", show_alert=True)
+    if not player: return await cb.answer(await _t(uid, "not_in_game"), show_alert=True)
     cards_text = "\n".join(player["cards"]); 
-    await cb.answer(f"🃏 YOUR CARDS:\n\n{cards_text}", show_alert=True)
+    await cb.answer(await _t(uid, "ur_cards_title", cards=cards_text), show_alert=True)
 
 @app.on_inline_query()
 async def inline_uno_cards(client, query):
@@ -587,7 +593,8 @@ async def catch_cheat(client, message):
     try: await message.delete()
     except: pass
     uid = message.from_user.id
-    m = await message.reply(await _t(uid, "cant_play_cheat", name=f"[{message.from_user.first_name}](tg://user?id={uid})"))
+    fname = message.from_user.first_name if message.from_user else "Player"
+    m = await message.reply(await _t(uid, "cant_play_cheat", name=f"[{fname}](tg://user?id={uid})"))
     asyncio.create_task(delayed_delete(m, 4))
 
 @app.on_message(filters.regex(r"🃏 \[UNO\] Played: (.*)\n\nChatID: (-\d+)\nCardIndex: (\d+)"))
@@ -596,12 +603,13 @@ async def catch_uno_play(client, message):
     except: pass
     match = message.matches[0]; card, chat_id, card_index = match.group(1), int(match.group(2)), int(match.group(3))
     uid = message.from_user.id
+    fname = message.from_user.first_name if message.from_user else "Player"
 
     if chat_id not in uno_games or uno_games[chat_id]["status"] != "playing": return
     game = uno_games[chat_id]
     
     if game["players"][game["turn_index"]]["id"] != uid:
-        m = await app.send_message(chat_id, await _t(uid, "not_ur_turn", name=f"[{message.from_user.first_name}](tg://user?id={uid})"))
+        m = await app.send_message(chat_id, await _t(uid, "not_ur_turn", name=f"[{fname}](tg://user?id={uid})"))
         return asyncio.create_task(delayed_delete(m, 4))
 
     player = game["players"][game["turn_index"]]
@@ -713,7 +721,7 @@ async def main():
     except Exception as e: print("Could not set commands:", e)
     
     print("=========================================")
-    print("✅ PRO UNO BOT (PREMIUM UI + GCAST FIX) IS LIVE!")
+    print("✅ PRO UNO BOT (PREMIUM UI + ALL COMMANDS FIXED) IS LIVE!")
     print("=========================================")
     await idle()
 
