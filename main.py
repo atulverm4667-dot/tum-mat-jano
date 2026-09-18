@@ -2,7 +2,6 @@ import logging
 import asyncio
 import os
 import time
-import json
 import random
 from pyrogram import Client, filters, idle
 from pyrogram.types import (InlineKeyboardMarkup, InlineKeyboardButton, BotCommand, 
@@ -19,7 +18,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "<h1>🤖 PRO UNO Bot is Alive (Smart 45s Countdown & User-Lang)! 🚀</h1>"
+    return "<h1>🤖 PRO UNO Bot is Alive (With Turn Highlight Update)! 🚀</h1>"
 
 def run_web():
     port = int(os.environ.get("PORT", 8080))
@@ -49,15 +48,15 @@ else:
 app = Client("UnoBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 uno_games = {} 
 cards_cache = {} 
-user_langs_cache = {} # 🔥 FIX: Cache is now tied to User ID
+user_langs_cache = {} 
 BOT_USERNAME = ""
 
 # ==========================================
-# 🌍 TRANSLATION ENGINE (WITH COUNTDOWN)
+# 🌍 TRANSLATION ENGINE (WITH TURN HIGHLIGHT)
 # ==========================================
 TRANSLATIONS = {
     "en_US": {
-        "help": "> 💡 **ᴜɴᴏ ʙᴏᴛ ɢᴜɪᴅᴇ:**\n>\n> 1️⃣ ᴀᴅᴅ ᴛʜɪꜱ ʙᴏᴛ ᴛᴏ ᴀ ɢʀᴏᴜᴘ.\n> 2️⃣ ꜱᴛᴀʀᴛ ᴀ ɴᴇᴡ ɢᴀᴍᴇ ᴡɪᴛʜ /startgame ᴏʀ /new.\n> 3️⃣ ᴄʟɪᴄᴋ ᴛʜᴇ 'ᴊᴏɪɴ ɢᴀᴍᴇ' ʙᴜᴛᴛᴏɴ. ɢᴀᴍᴇ ꜱᴛᴀʀᴛꜱ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴀꜰᴛᴇʀ 45ꜱ!\n> 4️⃣ ᴛʏᴘᴇ @{bot} ɪɴᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ ʙᴏx ᴀɴᴅ ʜɪᴛ ꜱᴘᴀᴄᴇ. ʏᴏᴜ ᴡɪʟʟ ꜱᴇᴇ ʏᴏᴜʀ ᴄᴀʀᴅꜱ. (ɢʀᴇʏᴇᴅ ᴏᴜᴛ = ᴄᴀɴɴᴏᴛ ᴘʟᴀʏ).\n>\n> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ ᴀɴᴅ ʀᴜʟᴇꜱ:**\n> ➥ /rules : ᴇxᴘʟᴀɴᴀᴛɪᴏɴ ᴏꜰ ɢᴀᴍᴇ ʀᴜʟᴇꜱ\n> ➥ /settings : ʟᴀɴɢᴜᴀɢᴇ ᴀɴᴅ ꜱᴛᴀᴛꜱ ꜱᴇᴛᴛɪɴɢꜱ",
+        "help": "> 💡 **ᴜɴᴏ ʙᴏᴛ ɢᴜɪᴅᴇ:**\n>\n> 1️⃣ ᴀᴅᴅ ᴛʜɪꜱ ʙᴏᴛ ᴛᴏ ᴀ ɢʀᴏᴜᴘ.\n> 2️⃣ ꜱᴛᴀʀᴛ ᴀ ɴᴇᴡ ɢᴀᴍᴇ ᴡɪᴛ🇭 /startgame ᴏʀ /new.\n> 3️⃣ ᴄʟɪᴄᴋ ᴛʜᴇ 'ᴊᴏɪɴ ɢᴀᴍᴇ' ʙᴜᴛᴛᴏɴ. ɢᴀᴍᴇ ꜱᴛᴀʀᴛꜱ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴀꜰᴛᴇʀ 45ꜱ!\n> 4️⃣ ᴛʏᴘᴇ @{bot} ɪɴᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ ʙᴏx ᴀɴᴅ ʜɪᴛ ꜱᴘᴀᴄᴇ. ʏᴏᴜ ᴡɪʟʟ ꜱᴇᴇ ʏᴏᴜʀ ᴄᴀʀᴅꜱ. (ɢʀᴇʏᴇᴅ ᴏᴜᴛ = ᴄᴀɴɴᴏᴛ ᴘʟᴀʏ).\n>\n> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ ᴀɴᴅ ʀᴜʟᴇꜱ:**\n> ➥ /rules : ᴇxᴘʟᴀɴᴀᴛɪᴏɴ ᴏꜰ ɢᴀᴍᴇ ʀᴜʟᴇꜱ\n> ➥ /settings : ʟᴀɴɢᴜᴀɢᴇ ᴀɴᴅ ꜱᴛᴀᴛꜱ ꜱᴇᴛᴛɪɴɢꜱ",
         "rules_text": "> 🃏 **ᴜɴᴏ ɢᴀᴍᴇ ʀᴜʟᴇꜱ & ᴍᴏᴅᴇꜱ:**\n>\n> 🔴 **ᴄʟᴀꜱꜱɪᴄ ᴜɴᴏ:**\n> ➥ ᴍᴀᴛᴄʜ ᴛʜᴇ ᴛᴏᴘ ᴄᴀʀᴅ ʙʏ ᴄᴏʟᴏʀ ᴏʀ ɴᴜᴍʙᴇʀ.\n> ➥ ᴘʟᴀʏ ꜱᴘᴇᴄɪᴀʟ ᴄᴀʀᴅꜱ (ꜱᴋɪᴘ, ʀᴇᴠᴇʀꜱᴇ, ᴅʀᴀᴡ 2) ᴛᴏ ᴅɪꜱʀᴜᴘᴛ ᴏᴘᴘᴏɴᴇɴᴛꜱ.\n> 🌈 ᴡɪʟᴅ ᴄᴀʀᴅꜱ ᴄᴀɴ ᴄʜᴀɴɢᴇ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ.\n> 💥 ᴡɪʟᴅ +4 ᴄʜᴀɴɢᴇꜱ ᴛʜᴇ ᴄᴏʟᴏʀ ᴀɴᴅ ꜰᴏʀᴄᴇꜱ ᴛʜᴇ ɴᴇxᴛ ᴘʟᴀʏᴇʀ ᴛᴏ ᴅʀᴀᴡ 4 ᴄᴀʀᴅꜱ.\n> 📥 ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ᴘʟᴀʏ ᴀɴʏ ᴄᴀʀᴅ, ʏᴏᴜ ᴍᴜꜱᴛ ᴄʟɪᴄᴋ 'ᴅʀᴀᴡ' ᴛᴏ ᴘɪᴄᴋ ᴀ ᴄᴀʀᴅ.\n> 🏆 ᴛʜᴇ ꜰɪʀꜱᴛ ᴘʟᴀʏᴇʀ ᴛᴏ ɢᴇᴛ ʀɪᴅ ᴏꜰ ᴀʟʟ ᴛʜᴇɪʀ ᴄᴀʀᴅꜱ ᴡɪɴꜱ!\n>\n> ⏳ **ᴀꜰᴋ ʀᴜʟᴇ (ᴀᴜᴛᴏ-ᴋɪᴄᴋ):**\n> ɪꜰ ʏᴏᴜ ᴛᴀᴋᴇ ᴍᴏʀᴇ ᴛʜᴀɴ 60 ꜱᴇᴄᴏɴᴅꜱ, ʏᴏᴜ ᴀʀᴇ ꜱᴋɪᴘᴘᴇᴅ ᴀɴᴅ ᴅʀᴀᴡ ᴀ ᴄᴀʀᴅ (1ꜱᴛ ᴛɪᴍᴇ). ɪꜰ ʏᴏᴜ ᴅᴏ ɪᴛ ᴀɢᴀɪɴ, ʏᴏᴜ ᴀʀᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴋɪᴄᴋᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ɢᴀᴍᴇ!",
         "settings": "> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ:**\n> ᴄʜᴏᴏꜱᴇ ᴀɴ ᴏᴘᴛɪᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ᴜᴘᴅᴀᴛᴇ ʏᴏᴜʀ ᴘʀᴇꜰᴇʀᴇɴᴄᴇꜱ.",
         "stats_disabled": "> ⚠️ ʏᴏᴜ ᴅɪᴅ ɴᴏᴛ ᴇɴᴀʙʟᴇ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ. ᴜꜱᴇ /settings ᴛᴏ ᴇɴᴀʙʟᴇ ᴛʜᴇᴍ.",
@@ -96,7 +95,7 @@ TRANSLATIONS = {
         "won_game": "> 🎉 **{name} HAS WON UNO!** 🏆",
         "drew_card": "📥 ʏᴏᴜ ᴅʀᴇᴡ ᴀ ᴄᴀʀᴅ!",
         "wait_turn": "⚠️ ᴡᴀɪᴛ ꜰᴏʀ ʏᴏᴜʀ ᴛᴜʀɴ!",
-        "table_text": "> 🃏 **ᴜɴᴏ ᴛᴀʙʟᴇ**\n>\n> 🎨 **ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ:** {color}\n> 🎯 **ᴛᴏᴘ ᴄᴀʀᴅ:** {card}\n>\n> 👥 **ᴘʟᴀʏᴇʀꜱ:**\n> {players}\n>\n> ⏳ *ʏᴏᴜ ʜᴀᴠᴇ 60 ꜱᴇᴄᴏɴᴅꜱ ᴛᴏ ᴘʟᴀʏ!*"
+        "table_text": "> 🃏 **ᴜɴᴏ ᴛᴀʙʟᴇ**\n>\n> 🎨 **ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ:** {color}\n> 🎯 **ᴛᴏᴘ ᴄᴀʀᴅ:** {card}\n>\n> 👤 **ᴄᴜʀʀᴇɴᴛ ᴛᴜʀɴ:** **{turn_name}** 👈\n>\n> 👥 **ᴘʟᴀʏᴇʀꜱ:**\n> {players}\n>\n> ⏳ *ʏᴏᴜ ʜᴀᴠᴇ 60 ꜱᴇᴄᴏɴᴅꜱ ᴛᴏ ᴘʟᴀʏ!*"
     },
     "hi_IN": {
         "help": "> 💡 **ᴜɴᴏ ʙᴏᴛ ɢᴜɪᴅᴇ:**\n>\n> 1️⃣ ɪꜱ ʙᴏᴛ ᴋᴏ ᴋɪꜱɪ ɢʀᴏᴜᴘ ᴍᴇ ᴀᴅᴅ ᴋᴀʀᴇɪɴ.\n> 2️⃣ ɴᴀʏᴀ ɢᴀᴍᴇ ʙᴀɴᴀɴᴇ ᴋᴇ ʟɪʏᴇ /startgame ʏᴀ /new ʙʜᴇᴊᴇɪɴ.\n> 3️⃣ ɴɪᴄʜᴇ ᴅɪʏᴇ ɢᴀʏᴇ 'ᴊᴏɪɴ ɢᴀᴍᴇ' ʙᴜᴛᴛᴏɴ ᴘᴀʀ ᴄʟɪᴄᴋ ᴋᴀʀᴇɪɴ. ɢᴀᴍᴇ 45 ꜱᴇᴄ ᴍᴇ ᴀᴘɴᴇ ᴀᴀᴘ ꜱᴛᴀʀᴛ ʜᴏ ᴊᴀʏᴇɢᴀ!\n> 4️⃣ ᴀᴘɴᴇ ᴄʜᴀᴛ ʙᴏx ᴍᴇ @{bot} ʟɪᴋʜ ᴋᴀʀ ꜱᴘᴀᴄᴇ ᴅᴀʙᴀʏᴇɪɴ. ᴀᴀᴘᴋᴏ ᴀᴘɴᴇ ᴄᴀʀᴅꜱ ᴅɪᴋʜ ᴊᴀʏᴇɴɢᴇ. (ɢʀᴇʏ ᴄᴀʀᴅꜱ ɴᴀʜɪ ᴋʜᴇʟ ꜱᴀᴋᴛᴇ).\n>\n> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ ᴀᴜʀ ʀᴜʟᴇꜱ:**\n> ➥ /rules : ᴜɴᴏ ᴋʜᴇʟɴᴇ ᴋᴇ ɴɪʏᴀᴍ\n> ➥ /settings : ʟᴀɴɢᴜᴀɢᴇ ᴀᴜʀ ꜱᴛᴀᴛꜱ ꜱᴇᴛᴛɪɴɢꜱ",
@@ -106,7 +105,7 @@ TRANSLATIONS = {
         "stats_msg": "> 📊 **{name} ᴋᴇ ᴜɴᴏ ꜱᴛᴀᴛꜱ:**\n>\n> 🏆 ɢᴀᴍᴇꜱ ᴊᴇᴇᴛᴇ : `{wins}`\n> 🥇 ꜰɪʀꜱᴛ ᴘʟᴀᴄᴇꜱ : `{percent}%`\n> 🃏 ᴄᴀʀᴅꜱ ᴋʜᴇʟᴇ : `{cards}`",
         "db_error": "> ⚠️ ᴅᴀᴛᴀʙᴀꜱᴇ ᴄᴏɴɴᴇᴄᴛᴇᴅ ɴᴀʜɪ ʜᴀɪ.",
         "enabled_stats": "> ✅ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ ᴏɴ ᴋᴀʀ ᴅɪʏᴇ ɢᴀʏᴇ ʜᴀɪɴ!",
-        "lang_saved": "> ✅ ᴀᴀᴘᴋɪ ʙʜᴀꜱʜᴀ ʜɪɴᴅɪ ᴍᴇ ꜱᴇᴛ ᴋᴀʀ ᴅɪ ɢᴀʏɪ ʜᴀɪ.",
+        "lang_saved": "> ✅ ɪꜱ ɢʀᴏᴜᴘ/ᴄʜᴀᴛ ᴋɪ ʙʜᴀꜱʜᴀ ʜɪɴᴅɪ ᴍᴇ ꜱᴇᴛ ᴋᴀʀ ᴅɪ ɢᴀʏɪ ʜᴀɪ.",
         "already_playing": "> ⚠️ ᴇᴋ ɢᴀᴍᴇ ᴘᴇʜʟᴇ ꜱᴇ ᴄʜᴀʟ ʀᴀʜᴀ ʜᴀɪ ʏᴀ ʟᴏʙʙʏ ᴏᴘᴇɴ ʜᴀɪ! ᴜꜱᴇ /kill ᴋᴀʀᴇɪɴ.",
         "new_lobby": "> 🃏 **ᴜɴᴏ ɢᴀᴍᴇ ʟᴏʙʙʏ ꜱᴛᴀʀᴛᴇᴅ!**\n>\n> ⏳ ᴛɪᴍᴇ ʟᴇꜰᴛ: {time}\n>\n> 👥 ᴘʟᴀʏᴇʀꜱ ᴊᴏɪɴᴇᴅ ({count}):\n{players}",
         "timer_30": "> ⏳ **30 Seconds bache hain!** Jaldi join karo!",
@@ -138,11 +137,10 @@ TRANSLATIONS = {
         "won_game": "> 🎉 **{name} UNO JEET GAYA HAI!** 🏆",
         "drew_card": "📥 ᴀᴀᴘɴᴇ ᴇᴋ ɴᴀʏᴀ ᴄᴀʀᴅ ɴɪᴋᴀʟᴀ!",
         "wait_turn": "⚠️ ᴀᴘɴɪ ʙᴀᴀʀɪ ᴋᴀ ɪɴᴛᴇᴢᴀᴀʀ ᴋᴀʀᴇɪɴ!",
-        "table_text": "> 🃏 **ᴜɴᴏ ᴛᴀʙʟᴇ**\n>\n> 🎨 **ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ:** {color}\n> 🎯 **ᴛᴏᴘ ᴄᴀʀᴅ:** {card}\n>\n> 👥 **ᴘʟᴀʏᴇʀꜱ:**\n> {players}\n>\n> ⏳ *ᴀᴀᴘᴋᴇ ᴘᴀᴀꜱ ᴋʜᴇʟɴᴇ ᴋᴇ ʟɪʏᴇ 60 ꜱᴇᴄᴏɴᴅꜱ ʜᴀɪɴ!*"
+        "table_text": "> 🃏 **ᴜɴᴏ ᴛᴀʙʟᴇ**\n>\n> 🎨 **ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ:** {color}\n> 🎯 **ᴛᴏᴘ ᴄᴀʀᴅ:** {card}\n>\n> 👤 **ᴄᴜʀʀᴇɴᴛ ᴛᴜʀɴ:** **{turn_name}** 👈\n>\n> 👥 **ᴘʟᴀʏᴇʀꜱ:**\n> {players}\n>\n> ⏳ *ᴀᴀᴘᴋᴇ ᴘᴀᴀꜱ ᴋʜᴇʟɴᴇ ᴋᴇ ʟɪʏᴇ 60 ꜱᴇᴄᴏɴᴅꜱ ʜᴀɪɴ!*"
     }
 }
 
-# 🔥 FIX: Language strictly depends on the specific User ID!
 async def get_lang(uid):
     if uid in user_langs_cache: return user_langs_cache[uid]
     if MONGO_URL:
@@ -150,7 +148,7 @@ async def get_lang(uid):
         if u and "lang" in u:
             user_langs_cache[uid] = u["lang"]
             return u["lang"]
-    return "en_US" # Default English
+    return "en_US"
 
 async def _t(uid, key, **kwargs):
     lang = await get_lang(uid)
@@ -269,10 +267,68 @@ async def set_position_cmd(client, message):
         await message.reply(f"✅ Update Done!\n👤 **Player:** {name}\n🏆 **Wins Set To:** `{wins}`")
     except: await message.reply("⚠️ User ID and Wins should be numbers!")
 
+@app.on_message(filters.command("uploadcards") & filters.user(OWNER_ID))
+async def upload_cards_cmd(client, message):
+    if not MONGO_URL: return await message.reply("⚠️ MongoDB connected nahi hai!")
+    folder = "uno_images"
+    if not os.path.exists(folder):
+        return await message.reply(f"⚠️ `{folder}` naam ka folder nahi mila!")
+    m = await message.reply("⏳ **Uploading cards safely...**")
+    uploaded = 0
+    for root_dir, sub_dirs, files in os.walk(folder):
+        for file in files:
+            name_without_ext = os.path.splitext(file)[0]
+            if file.lower().endswith((".png", ".jpg", ".jpeg")):
+                file_path = os.path.join(root_dir, file)
+                try:
+                    msg = await client.send_photo(message.chat.id, file_path)
+                    file_id = msg.photo.file_id
+                    cards_cache[name_without_ext] = file_id
+                    await uno_cards_col.update_one({"card_name": name_without_ext}, {"$set": {"file_id": file_id}}, upsert=True)
+                    uploaded += 1
+                    await asyncio.sleep(1.2) 
+                except Exception: pass
+    await m.edit(f"✅ **Upload Complete!** Total: `{uploaded}` cards.")
+
+@app.on_message(filters.command("setstart") & filters.user(OWNER_ID))
+async def set_start_cmd(client, message):
+    if not MONGO_URL: 
+        return await message.reply("⚠️ Database connected nahi hai!")
+    if not message.reply_to_message:
+        return await message.reply("⚠️ Puraane kisi message (Text ya Photo) par reply karke `/setstart` likho!")
+    
+    msg = message.reply_to_message
+    if msg.photo:
+        file_id = msg.photo.file_id
+        caption = msg.caption or ""
+        await user_settings_col.update_one({"type": "start_msg"}, {"$set": {"has_photo": True, "file_id": file_id, "text": caption}}, upsert=True)
+    else:
+        text = msg.text or ""
+        await user_settings_col.update_one({"type": "start_msg"}, {"$set": {"has_photo": False, "text": text}}, upsert=True)
+    await message.reply("✅ **Naya `/start` message successfully set ho gaya hai!**")
+
 
 # ==========================================
-# ⚙️ SETTINGS, STATS, HELP & RULES
+# ⚙️ GENERAL COMMANDS (/start, /help, /settings...)
 # ==========================================
+@app.on_message(filters.command("start") & filters.private)
+async def start_cmd(client, message):
+    add_chat(message.chat.id)
+    fname = message.from_user.first_name if message.from_user else "User"
+    default_text = (f"> 🃏 **ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴘʀᴏ ᴜɴᴏ ʙᴏᴛ, {fname}!**\n>\n"
+                    f"> ᴍᴀɪɴ ᴇᴋ ᴀᴅᴠᴀɴᴄᴇᴅ ᴜɴᴏ ɢᴀᴍᴇ ʙᴏᴛ ʜᴏᴏɴ.\n"
+                    f"> ᴍᴜᴊʜᴇ ᴀᴘɴᴇ ɢʀᴏᴜᴘ ᴍᴇɪɴ ᴀᴅᴅ ᴋᴀʀᴏ ᴀᴜʀ `/startgame` ʟɪᴋʜ ᴋᴀʀ ᴋʜᴇʟɴᴀ ꜱʜᴜʀᴜ ᴋᴀʀᴏ!\n>\n"
+                    f"> 📚 ʀᴜʟᴇꜱ ᴊᴀᴀɴɴᴇ ᴋᴇ ʟɪʏᴇ `/rules` ᴅᴀʙᴀʏᴇɪɴ.")
+    
+    if MONGO_URL:
+        config = await user_settings_col.find_one({"type": "start_msg"})
+        if config:
+            if config.get("has_photo"):
+                return await message.reply_photo(photo=config["file_id"], caption=config["text"])
+            else:
+                return await message.reply(config["text"])
+    await message.reply(default_text)
+
 @app.on_message(filters.command("help"))
 async def help_cmd(client, message):
     add_chat(message.chat.id)
@@ -345,7 +401,7 @@ async def cb_change_lang(client, cb):
 @app.on_callback_query(filters.regex(r"^lang_"))
 async def cb_set_lang(client, cb):
     lang_code = cb.data.replace("lang_", "")
-    uid = cb.from_user.id # 🔥 FIX: Maps strictly to User ID now
+    uid = cb.from_user.id 
     user_langs_cache[uid] = lang_code
     if MONGO_URL: await user_settings_col.update_one({"user_id": uid}, {"$set": {"lang": lang_code}}, upsert=True)
     await cb.answer("Updated!", show_alert=False)
@@ -353,7 +409,7 @@ async def cb_set_lang(client, cb):
 
 
 # ==========================================
-# 🃏 UNO CORE ENGINE & SMART TIMERS
+# 🃏 UNO CORE ENGINE & TIMERS
 # ==========================================
 def get_uno_deck():
     colors = ["🔴 Red", "🔵 Blue", "🟢 Green", "🟡 Yellow"]
@@ -390,7 +446,7 @@ async def send_uno_table(chat_id, action_user_id=None):
     current_player = game["players"][game["turn_index"]]
     players_text = "\n> ".join([f"{'👉' if p['id'] == current_player['id'] else '👤'} {p['name']} - {len(p['cards'])} ᴄᴀʀᴅꜱ" for p in game["players"]])
     
-    text = await _t(uid, "table_text", color=game['current_color'], card=game['top_card'], players=players_text)
+    text = await _t(uid, "table_text", color=game['current_color'], card=game['top_card'], turn_name=current_player['name'], players=players_text)
             
     kb = InlineKeyboardMarkup([
         [InlineKeyboardButton("🃏 Play Card", switch_inline_query_current_chat="")],
@@ -411,29 +467,25 @@ async def send_uno_table(chat_id, action_user_id=None):
 async def uno_lobby_timer(chat_id):
     game = uno_games.get(chat_id)
     if not game or game["status"] != "lobby": return
-    uid = game["creator"] # Get creator's language
+    uid = game["creator"] 
     alert_msg = None
 
-    # Wait 15s (45s - 15s = 30s left)
     await asyncio.sleep(15)
     if chat_id in uno_games and uno_games[chat_id]["status"] == "lobby":
         alert_msg = await app.send_message(chat_id, await _t(uid, "timer_30"))
 
-    # Wait 15s (Total 30s elapsed, 15s left)
     await asyncio.sleep(15)
     if chat_id in uno_games and uno_games[chat_id]["status"] == "lobby":
         try: await alert_msg.delete()
         except: pass
         alert_msg = await app.send_message(chat_id, await _t(uid, "timer_15"))
 
-    # Wait 10s (Total 40s elapsed, 5s left)
     await asyncio.sleep(10)
     if chat_id in uno_games and uno_games[chat_id]["status"] == "lobby":
         try: await alert_msg.delete()
         except: pass
         alert_msg = await app.send_message(chat_id, await _t(uid, "timer_5"))
 
-    # Wait final 5s (Total 45s elapsed)
     await asyncio.sleep(5)
 
     if chat_id in uno_games and uno_games[chat_id]["status"] == "lobby":
@@ -446,7 +498,6 @@ async def uno_lobby_timer(chat_id):
             await app.send_message(chat_id, await _t(uid, "not_enough_players_start"))
             return
             
-        # Start game automatically
         game["status"] = "playing"
         deck = get_uno_deck()
         for p in game["players"]: 
@@ -475,7 +526,7 @@ async def uno_turn_timer(chat_id, turn_id):
     try:
         player_idx = game["turn_index"]
         player = game["players"][player_idx]
-        uid = player["id"] # Use current player's language for warning
+        uid = player["id"] 
         
         player["afk_strikes"] = player.get("afk_strikes", 0) + 1
         
@@ -594,7 +645,7 @@ async def leave_game_cmd(client, message):
         get_next_turn(game)
         await send_uno_table(chat_id, uid)
 
-@app.on_message(filters.command("kill") & filters.group)
+@app.on_message(filters.command(["kill", "end"]) & filters.group)
 async def kill_game_cmd(client, message):
     chat_id = message.chat.id
     uid = message.from_user.id if message.from_user else message.chat.id
@@ -829,10 +880,12 @@ async def main():
     
     try:
         await app.set_bot_commands([
+            BotCommand("start", "Start the bot"),
             BotCommand("startgame", "Start a new game"),
             BotCommand("new", "Start a new game"),
             BotCommand("leave", "Leave the game you're in"),
             BotCommand("kill", "Terminate the game"),
+            BotCommand("end", "Terminate the game (Same as kill)"),
             BotCommand("kick", "Kick players out of the game"),
             BotCommand("skip", "Skip the current player"),
             BotCommand("help", "How to use this bot?"),
@@ -844,7 +897,7 @@ async def main():
     except Exception as e: print("Could not set commands:", e)
     
     print("=========================================")
-    print("✅ PRO UNO BOT (SMART 45S AUTO-LOBBY & USER-LANG) IS LIVE!")
+    print("✅ PRO UNO BOT (TURN HIGHLIGHT EDITION) IS LIVE!")
     print("=========================================")
     await idle()
 
