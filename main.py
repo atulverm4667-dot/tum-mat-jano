@@ -19,7 +19,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "<h1>🤖 PRO UNO Bot is Alive (All Commands Fixed)! 🚀</h1>"
+    return "<h1>🤖 PRO UNO Bot is Alive (Auto-Kick AFK Update)! 🚀</h1>"
 
 def run_web():
     port = int(os.environ.get("PORT", 8080))
@@ -58,7 +58,7 @@ BOT_USERNAME = ""
 TRANSLATIONS = {
     "en_US": {
         "help": "> 💡 **ᴜɴᴏ ʙᴏᴛ ɢᴜɪᴅᴇ:**\n>\n> 1️⃣ ᴀᴅᴅ ᴛʜɪꜱ ʙᴏᴛ ᴛᴏ ᴀ ɢʀᴏᴜᴘ.\n> 2️⃣ ꜱᴛᴀʀᴛ ᴀ ɴᴇᴡ ɢᴀᴍᴇ ᴡɪᴛʜ /new ᴏʀ ᴊᴏɪɴ ᴀɴ ᴀᴄᴛɪᴠᴇ ɢᴀᴍᴇ ᴡɪᴛʜ /join.\n> 3️⃣ ᴀꜰᴛᴇʀ 2+ ᴘʟᴀʏᴇʀꜱ ᴊᴏɪɴ, ꜱᴛᴀʀᴛ ɪᴛ ᴡɪᴛʜ /start.\n> 4️⃣ ᴛʏᴘᴇ @{bot} ɪɴᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ ʙᴏx ᴀɴᴅ ʜɪᴛ ꜱᴘᴀᴄᴇ. ʏᴏᴜ ᴡɪʟʟ ꜱᴇᴇ ʏᴏᴜʀ ᴄᴀʀᴅꜱ. (ɢʀᴇʏᴇᴅ ᴏᴜᴛ = ᴄᴀɴɴᴏᴛ ᴘʟᴀʏ).\n>\n> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ ᴀɴᴅ ʀᴜʟᴇꜱ:**\n> ➥ /rules : ᴇxᴘʟᴀɴᴀᴛɪᴏɴ ᴏꜰ ɢᴀᴍᴇ ʀᴜʟᴇꜱ\n> ➥ /settings : ʟᴀɴɢᴜᴀɢᴇ ᴀɴᴅ ꜱᴛᴀᴛꜱ ꜱᴇᴛᴛɪɴɢꜱ",
-        "rules_text": "> 🃏 **ᴜɴᴏ ɢᴀᴍᴇ ʀᴜʟᴇꜱ & ᴍᴏᴅᴇꜱ:**\n>\n> 🔴 **ᴄʟᴀꜱꜱɪᴄ ᴜɴᴏ:**\n> ➥ ᴍᴀᴛᴄʜ ᴛʜᴇ ᴛᴏᴘ ᴄᴀʀᴅ ʙʏ ᴄᴏʟᴏʀ ᴏʀ ɴᴜᴍʙᴇʀ.\n> ➥ ᴘʟᴀʏ ꜱᴘᴇᴄɪᴀʟ ᴄᴀʀᴅꜱ (ꜱᴋɪᴘ, ʀᴇᴠᴇʀꜱᴇ, ᴅʀᴀᴡ 2) ᴛᴏ ᴅɪꜱʀᴜᴘᴛ ᴏᴘᴘᴏɴᴇɴᴛꜱ.\n> 🌈 ᴡɪʟᴅ ᴄᴀʀᴅꜱ ᴄᴀɴ ᴄʜᴀɴɢᴇ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ.\n> 💥 ᴡɪʟᴅ +4 ᴄʜᴀɴɢᴇꜱ ᴛʜᴇ ᴄᴏʟᴏʀ ᴀɴᴅ ꜰᴏʀᴄᴇꜱ ᴛʜᴇ ɴᴇxᴛ ᴘʟᴀʏᴇʀ ᴛᴏ ᴅʀᴀᴡ 4 ᴄᴀʀᴅꜱ.\n> 📥 ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ᴘʟᴀʏ ᴀɴʏ ᴄᴀʀᴅ, ʏᴏᴜ ᴍᴜꜱᴛ ᴄʟɪᴄᴋ 'ᴅʀᴀᴡ' ᴛᴏ ᴘɪᴄᴋ ᴀ ᴄᴀʀᴅ.\n> 🏆 ᴛʜᴇ ꜰɪʀꜱᴛ ᴘʟᴀʏᴇʀ ᴛᴏ ɢᴇᴛ ʀɪᴅ ᴏꜰ ᴀʟʟ ᴛʜᴇɪʀ ᴄᴀʀᴅꜱ ᴡɪɴꜱ!",
+        "rules_text": "> 🃏 **ᴜɴᴏ ɢᴀᴍᴇ ʀᴜʟᴇꜱ & ᴍᴏᴅᴇꜱ:**\n>\n> 🔴 **ᴄʟᴀꜱꜱɪᴄ ᴜɴᴏ:**\n> ➥ ᴍᴀᴛᴄʜ ᴛʜᴇ ᴛᴏᴘ ᴄᴀʀᴅ ʙʏ ᴄᴏʟᴏʀ ᴏʀ ɴᴜᴍʙᴇʀ.\n> ➥ ᴘʟᴀʏ ꜱᴘᴇᴄɪᴀʟ ᴄᴀʀᴅꜱ (ꜱᴋɪᴘ, ʀᴇᴠᴇʀꜱᴇ, ᴅʀᴀᴡ 2) ᴛᴏ ᴅɪꜱʀᴜᴘᴛ ᴏᴘᴘᴏɴᴇɴᴛꜱ.\n> 🌈 ᴡɪʟᴅ ᴄᴀʀᴅꜱ ᴄᴀɴ ᴄʜᴀɴɢᴇ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ.\n> 💥 ᴡɪʟᴅ +4 ᴄʜᴀɴɢᴇꜱ ᴛʜᴇ ᴄᴏʟᴏʀ ᴀɴᴅ ꜰᴏʀᴄᴇꜱ ᴛʜᴇ ɴᴇxᴛ ᴘʟᴀʏᴇʀ ᴛᴏ ᴅʀᴀᴡ 4 ᴄᴀʀᴅꜱ.\n> 📥 ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ᴘʟᴀʏ ᴀɴʏ ᴄᴀʀᴅ, ʏᴏᴜ ᴍᴜꜱᴛ ᴄʟɪᴄᴋ 'ᴅʀᴀᴡ' ᴛᴏ ᴘɪᴄᴋ ᴀ ᴄᴀʀᴅ.\n> 🏆 ᴛʜᴇ ꜰɪʀꜱᴛ ᴘʟᴀʏᴇʀ ᴛᴏ ɢᴇᴛ ʀɪᴅ ᴏꜰ ᴀʟʟ ᴛʜᴇɪʀ ᴄᴀʀᴅꜱ ᴡɪɴꜱ!\n>\n> ⏳ **ᴀꜰᴋ ʀᴜʟᴇ (ᴀᴜᴛᴏ-ᴋɪᴄᴋ):**\n> ɪꜰ ʏᴏᴜ ᴛᴀᴋᴇ ᴍᴏʀᴇ ᴛʜᴀɴ 60 ꜱᴇᴄᴏɴᴅꜱ, ʏᴏᴜ ᴀʀᴇ ꜱᴋɪᴘᴘᴇᴅ ᴀɴᴅ ᴅʀᴀᴡ ᴀ ᴄᴀʀᴅ (1ꜱᴛ ᴛɪᴍᴇ). ɪꜰ ʏᴏᴜ ᴅᴏ ɪᴛ ᴀɢᴀɪɴ, ʏᴏᴜ ᴀʀᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴋɪᴄᴋᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ɢᴀᴍᴇ!",
         "settings": "> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ:**\n> ᴄʜᴏᴏꜱᴇ ᴀɴ ᴏᴘᴛɪᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ᴜᴘᴅᴀᴛᴇ ʏᴏᴜʀ ᴘʀᴇꜰᴇʀᴇɴᴄᴇꜱ.",
         "stats_disabled": "> ⚠️ ʏᴏᴜ ᴅɪᴅ ɴᴏᴛ ᴇɴᴀʙʟᴇ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ. ᴜꜱᴇ /settings ᴛᴏ ᴇɴᴀʙʟᴇ ᴛʜᴇᴍ.",
         "stats_msg": "> 📊 **{name}'ꜱ ᴜɴᴏ ꜱᴛᴀᴛꜱ:**\n>\n> 🏆 ɢᴀᴍᴇꜱ ᴡᴏɴ : `{wins}`\n> 🥇 ꜰɪʀꜱᴛ ᴘʟᴀᴄᴇꜱ : `{percent}%`\n> 🃏 ᴄᴀʀᴅꜱ ᴘʟᴀʏᴇᴅ : `{cards}`",
@@ -84,7 +84,7 @@ TRANSLATIONS = {
         "only_creator_kick": "> ⚠️ ᴏɴʟʏ ᴛʜᴇ ɢᴀᴍᴇ ᴄʀᴇᴀᴛᴏʀ ᴄᴀɴ ᴋɪᴄᴋ ᴘʟᴀʏᴇʀꜱ.",
         "reply_to_kick": "> ⚠️ ᴘʟᴇᴀꜱᴇ ʀᴇᴘʟʏ ᴛᴏ ᴛʜᴇ ᴜꜱᴇʀ ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ ᴋɪᴄᴋ.",
         "kicked": "> 👢 {name} ʜᴀꜱ ʙᴇᴇɴ ᴋɪᴄᴋᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ɢᴀᴍᴇ.",
-        "skipped": "> ⏭️ {name} ᴛᴏᴏᴋ ᴛᴏᴏ ʟᴏɴɢ ᴀɴᴅ ᴡᴀꜱ ꜱᴋɪᴘᴘᴇᴅ! (ꜰᴏʀᴄᴇᴅ ᴅʀᴀᴡ)",
+        "skipped": "> ⏭️ **1ꜱᴛ ᴡᴀʀɴɪɴɢ:** {name} ᴛᴏᴏᴋ ᴛᴏᴏ ʟᴏɴɢ ᴀɴᴅ ᴡᴀꜱ ꜱᴋɪᴘᴘᴇᴅ! (ꜰᴏʀᴄᴇᴅ ᴅʀᴀᴡ)",
         "not_active": "⚠️ ɢᴀᴍᴇ ɪꜱ ɴᴏᴛ ᴀᴄᴛɪᴠᴇ!",
         "ur_cards_title": "🃏 ʏᴏᴜʀ ᴄᴀʀᴅꜱ:\n\n{cards}",
         "cant_play_cheat": "🚫 {name}, ʏᴏᴜ ᴄᴀɴɴᴏᴛ ᴘʟᴀʏ ᴛʜᴀᴛ ᴄᴀʀᴅ ʀɪɢʜᴛ ɴᴏᴡ!",
@@ -93,11 +93,11 @@ TRANSLATIONS = {
         "won_game": "> 🎉 **{name} HAS WON UNO!** 🏆",
         "drew_card": "📥 ʏᴏᴜ ᴅʀᴇᴡ ᴀ ᴄᴀʀᴅ!",
         "wait_turn": "⚠️ ᴡᴀɪᴛ ꜰᴏʀ ʏᴏᴜʀ ᴛᴜʀɴ!",
-        "table_text": "> 🃏 **ᴜɴᴏ ᴛᴀʙʟᴇ**\n>\n> 🎨 **ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ:** {color}\n> 🎯 **ᴛᴏᴘ ᴄᴀʀᴅ:** {card}\n>\n> 👥 **ᴘʟᴀʏᴇʀꜱ:**\n> {players}\n>\n> ⏳ *ʏᴏᴜ ʜᴀᴠᴇ 90 ꜱᴇᴄᴏɴᴅꜱ ᴛᴏ ᴘʟᴀʏ!*"
+        "table_text": "> 🃏 **ᴜɴᴏ ᴛᴀʙʟᴇ**\n>\n> 🎨 **ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ:** {color}\n> 🎯 **ᴛᴏᴘ ᴄᴀʀᴅ:** {card}\n>\n> 👥 **ᴘʟᴀʏᴇʀꜱ:**\n> {players}\n>\n> ⏳ *ʏᴏᴜ ʜᴀᴠᴇ 60 ꜱᴇᴄᴏɴᴅꜱ ᴛᴏ ᴘʟᴀʏ!*"
     },
     "hi_IN": {
         "help": "> 💡 **ᴜɴᴏ ʙᴏᴛ ɢᴜɪᴅᴇ:**\n>\n> 1️⃣ ɪꜱ ʙᴏᴛ ᴋᴏ ᴋɪꜱɪ ɢʀᴏᴜᴘ ᴍᴇ ᴀᴅᴅ ᴋᴀʀᴇɪɴ.\n> 2️⃣ ɴᴀʏᴀ ɢᴀᴍᴇ ʙᴀɴᴀɴᴇ ᴋᴇ ʟɪʏᴇ /new ʙʜᴇᴊᴇɪɴ, ʏᴀ ᴄʜᴀʟᴛᴇ ɢᴀᴍᴇ ᴍᴇ /join ᴋᴀʀᴇɪɴ.\n> 3️⃣ ᴊᴀʙ 2 ʏᴀ ᴢʏᴀᴅᴀ ʟᴏɢ ᴀᴀ ᴊᴀʏᴇɪɴ, ᴛᴏʜ ɢᴀᴍᴇ ꜱʜᴜʀᴜ ᴋᴀʀɴᴇ ᴋᴇ ʟɪʏᴇ /start ʙʜᴇᴊᴇɪɴ.\n> 4️⃣ ᴀᴘɴᴇ ᴄʜᴀᴛ ʙᴏx ᴍᴇ @{bot} ʟɪᴋʜ ᴋᴀʀ ꜱᴘᴀᴄᴇ ᴅᴀʙᴀʏᴇɪɴ. ᴀᴀᴘᴋᴏ ᴀᴘɴᴇ ᴄᴀʀᴅꜱ ᴅɪᴋʜ ᴊᴀʏᴇɴɢᴇ. (ɢʀᴇʏ ᴄᴀʀᴅꜱ ɴᴀʜɪ ᴋʜᴇʟ ꜱᴀᴋᴛᴇ).\n>\n> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ ᴀᴜʀ ʀᴜʟᴇꜱ:**\n> ➥ /rules : ᴜɴᴏ ᴋʜᴇʟɴᴇ ᴋᴇ ɴɪʏᴀᴍ\n> ➥ /settings : ʟᴀɴɢᴜᴀɢᴇ ᴀᴜʀ ꜱᴛᴀᴛꜱ ꜱᴇᴛᴛɪɴɢꜱ",
-        "rules_text": "> 🃏 **ᴜɴᴏ ɢᴀᴍᴇ ʀᴜʟᴇꜱ (ɴɪʏᴀᴍ):**\n>\n> 🔴 **ᴄʟᴀꜱꜱɪᴄ ᴜɴᴏ:**\n> ➥ ᴛᴏᴘ ᴄᴀʀᴅ ᴋᴇ ᴄᴏʟᴏʀ ʏᴀ ɴᴜᴍʙᴇʀ ꜱᴇ ᴍᴀᴛᴄʜ ᴋᴀʀᴛᴀ ʜᴜᴀ ᴄᴀʀᴅ ᴋʜᴇʟᴇɪɴ.\n> ➥ ᴏᴘᴘᴏɴᴇɴᴛꜱ ᴋᴏ ʀᴏᴋɴᴇ ᴋᴇ ʟɪʏᴇ ꜱᴘᴇᴄɪᴀʟ ᴄᴀʀᴅꜱ (ꜱᴋɪᴘ, ʀᴇᴠᴇʀꜱᴇ, ᴅʀᴀᴡ 2) ᴋᴀ ᴜꜱᴇ ᴋᴀʀᴇɪɴ.\n> 🌈 ᴡɪʟᴅ ᴄᴀʀᴅ ᴋʜᴇʟ ᴋᴀʀ ᴀᴀᴘ ᴄᴏʟᴏʀ ᴄʜᴀɴɢᴇ ᴋᴀʀ ꜱᴀᴋᴛᴇ ʜᴀɪɴ.\n> 💥 ᴡɪʟᴅ +4 ᴄᴏʟᴏʀ ʙʜɪ ᴄʜᴀɴɢᴇ ᴋᴀʀᴛᴀ ʜᴀɪ ᴀᴜʀ ᴀɢʟᴇ ᴘʟᴀʏᴇʀ ᴋᴏ 4 ᴄᴀʀᴅꜱ ɴɪᴋᴀʟɴᴇ ᴘᴀᴅᴛᴇ ʜᴀɪɴ.\n> 📥 ᴀɢᴀʀ ᴀᴀᴘᴋᴇ ᴘᴀᴀꜱ ᴋʜᴇʟɴᴇ ᴋᴇ ʟɪʏᴇ ᴋᴏɪ ᴠᴀʟɪᴅ ᴄᴀʀᴅ ɴᴀʜɪ ʜᴀɪ, ᴛᴏʜ 'ᴅʀᴀᴡ' ᴘᴀʀ ᴄʟɪᴄᴋ ᴋᴀʀᴋᴇ ɴᴀʏᴀ ᴄᴀʀᴅ ɴɪᴋᴀʟᴇɪɴ.\n> 🏆 ᴊᴏ ᴘʟᴀʏᴇʀ ꜱᴀʙꜱᴇ ᴘᴇʜʟᴇ ᴀᴘɴᴇ ꜱᴀᴀʀᴇ ᴄᴀʀᴅꜱ ᴋʜᴀᴛᴀᴍ ᴋᴀʀᴇɢᴀ, ᴡᴏ ᴊᴇᴇᴛᴇɢᴀ!",
+        "rules_text": "> 🃏 **ᴜɴᴏ ɢᴀᴍᴇ ʀᴜʟᴇꜱ (ɴɪʏᴀᴍ):**\n>\n> 🔴 **ᴄʟᴀꜱꜱɪᴄ ᴜɴᴏ:**\n> ➥ ᴛᴏᴘ ᴄᴀʀᴅ ᴋᴇ ᴄᴏʟᴏʀ ʏᴀ ɴᴜᴍʙᴇʀ ꜱᴇ ᴍᴀᴛᴄʜ ᴋᴀʀᴛᴀ ʜᴜᴀ ᴄᴀʀᴅ ᴋʜᴇʟᴇɪɴ.\n> ➥ ᴏᴘᴘᴏɴᴇɴᴛꜱ ᴋᴏ ʀᴏᴋɴᴇ ᴋᴇ ʟɪʏᴇ ꜱᴘᴇᴄɪᴀʟ ᴄᴀʀᴅꜱ (ꜱᴋɪᴘ, ʀᴇᴠᴇʀꜱᴇ, ᴅʀᴀᴡ 2) ᴋᴀ ᴜꜱᴇ ᴋᴀʀᴇɪɴ.\n> 🌈 ᴡɪʟᴅ ᴄᴀʀᴅ ᴋʜᴇʟ ᴋᴀʀ ᴀᴀᴘ ᴄᴏʟᴏʀ ᴄʜᴀɴɢᴇ ᴋᴀʀ ꜱᴀᴋᴛᴇ ʜᴀɪɴ.\n> 💥 ᴡɪʟᴅ +4 ᴄᴏʟᴏʀ ʙʜɪ ᴄʜᴀɴɢᴇ ᴋᴀʀᴛᴀ ʜᴀɪ ᴀᴜʀ ᴀɢʟᴇ ᴘʟᴀʏᴇʀ ᴋᴏ 4 ᴄᴀʀᴅꜱ ɴɪᴋᴀʟɴᴇ ᴘᴀᴅᴛᴇ ʜᴀɪɴ.\n> 📥 ᴀɢᴀʀ ᴀᴀᴘᴋᴇ ᴘᴀᴀꜱ ᴋʜᴇʟɴᴇ ᴋᴇ ʟɪʏᴇ ᴋᴏɪ ᴠᴀʟɪᴅ ᴄᴀʀᴅ ɴᴀʜɪ ʜᴀɪ, ᴛᴏʜ 'ᴅʀᴀᴡ' ᴘᴀʀ ᴄʟɪᴄᴋ ᴋᴀʀᴋᴇ ɴᴀʏᴀ ᴄᴀʀᴅ ɴɪᴋᴀʟᴇɪɴ.\n> 🏆 ᴊᴏ ᴘʟᴀʏᴇʀ ꜱᴀʙꜱᴇ ᴘᴇʜʟᴇ ᴀᴘɴᴇ ꜱᴀᴀʀᴇ ᴄᴀʀᴅꜱ ᴋʜᴀᴛᴀᴍ ᴋᴀʀᴇɢᴀ, ᴡᴏ ᴊᴇᴇᴛᴇɢᴀ!\n>\n> ⏳ **ᴀꜰᴋ ʀᴜʟᴇ (ᴀᴜᴛᴏ-ᴋɪᴄᴋ):**\n> ᴀɢᴀʀ ᴋᴏɪ 60 ꜱᴇᴄᴏɴᴅ ᴛᴀᴋ ɴᴀʜɪ ᴋʜᴇʟᴇɢᴀ, ᴛᴏʜ 1ꜱᴛ ᴛɪᴍᴇ ᴜꜱᴇ ᴘᴇɴᴀʟᴛʏ ᴍɪʟᴇɢɪ ᴀᴜʀ ꜱᴋɪᴘ ʜᴏɢᴀ. 2ɴᴅ ᴛɪᴍᴇ ᴡᴀʜɪ ɢᴀʟᴛɪ ᴋᴀʀɴᴇ ᴘᴀʀ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ɢᴀᴍᴇ ꜱᴇ ɴɪᴋᴀᴀʟ ᴅɪʏᴀ ᴊᴀʏᴇɢᴀ!",
         "settings": "> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ (ꜱᴇᴛɪɴɢꜱ):**\n> ɴɪᴄʜᴇ ᴅɪʏᴇ ɢᴀʏᴇ ᴏᴘᴛɪᴏɴꜱ ꜱᴇ ᴀᴘɴɪ ᴘᴀꜱᴀɴᴅ ᴄʜᴜɴᴇɪɴ.",
         "stats_disabled": "> ⚠️ ᴀᴀᴘɴᴇ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ ᴏɴ ɴᴀʜɪ ᴋɪʏᴀ ʜᴀɪ. /settings ʙʜᴇᴊ ᴋᴀʀ ᴏɴ ᴋᴀʀᴇɪɴ.",
         "stats_msg": "> 📊 **{name} ᴋᴇ ᴜɴᴏ ꜱᴛᴀᴛꜱ:**\n>\n> 🏆 ɢᴀᴍᴇꜱ ᴊᴇᴇᴛᴇ : `{wins}`\n> 🥇 ꜰɪʀꜱᴛ ᴘʟᴀᴄᴇꜱ : `{percent}%`\n> 🃏 ᴄᴀʀᴅꜱ ᴋʜᴇʟᴇ : `{cards}`",
@@ -123,7 +123,7 @@ TRANSLATIONS = {
         "only_creator_kick": "> ⚠️ ꜱɪʀꜰ ɢᴀᴍᴇ ʙᴀɴᴀɴᴇ ᴡᴀʟᴀ ʜɪ ᴋɪᴄᴋ ᴋᴀʀ ꜱᴀᴋᴛᴀ ʜᴀɪ.",
         "reply_to_kick": "> ⚠️ ᴊɪꜱᴇ ɴɪᴋᴀʟɴᴀ ʜᴀɪ ᴜꜱᴋᴇ ᴍᴇꜱꜱᴀɢᴇ ᴘᴀʀ ʀᴇᴘʟʏ ᴋᴀʀᴇɪɴ.",
         "kicked": "> 👢 {name} ᴋᴏ ɢᴀᴍᴇ ꜱᴇ ɴɪᴋᴀᴀʟ ᴅɪʏᴀ ɢᴀʏᴀ ʜᴀɪ.",
-        "skipped": "> ⏭️ {name} ᴋɪ ʙᴀᴀʀɪ ꜱᴋɪᴘ ᴋᴀʀ ᴅɪ ɢᴀʏɪ! (ꜰᴏʀᴄᴇᴅ ᴅʀᴀᴡ)",
+        "skipped": "> ⏭️ **1ꜱᴛ ᴡᴀʀɴɪɴɢ:** {name} ɴᴇ ʙᴀʜᴜᴛ ᴛɪᴍᴇ ʟᴀɢᴀʏᴀ ɪꜱʟɪʏᴇ ꜱᴋɪᴘ ᴋᴀʀ ᴅɪʏᴀ ɢᴀʏᴀ! (ꜰᴏʀᴄᴇᴅ ᴅʀᴀᴡ)",
         "not_active": "⚠️ ɢᴀᴍᴇ ᴀʙʜɪ ᴄʜᴀʟ ɴᴀʜɪ ʀᴀʜᴀ ʜᴀɪ!",
         "ur_cards_title": "🃏 ᴀᴀᴘᴋᴇ ᴄᴀʀᴅꜱ:\n\n{cards}",
         "cant_play_cheat": "🚫 {name}, ᴀᴀᴘ ʏᴇ ᴄᴀʀᴅ ᴀʙʜɪ ɴᴀʜɪ ᴋʜᴇʟ ꜱᴀᴋᴛᴇ!",
@@ -132,7 +132,7 @@ TRANSLATIONS = {
         "won_game": "> 🎉 **{name} UNO JEET GAYA HAI!** 🏆",
         "drew_card": "📥 ᴀᴀᴘɴᴇ ᴇᴋ ɴᴀʏᴀ ᴄᴀʀᴅ ɴɪᴋᴀʟᴀ!",
         "wait_turn": "⚠️ ᴀᴘɴɪ ʙᴀᴀʀɪ ᴋᴀ ɪɴᴛᴇᴢᴀᴀʀ ᴋᴀʀᴇɪɴ!",
-        "table_text": "> 🃏 **ᴜɴᴏ ᴛᴀʙʟᴇ**\n>\n> 🎨 **ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ:** {color}\n> 🎯 **ᴛᴏᴘ ᴄᴀʀᴅ:** {card}\n>\n> 👥 **ᴘʟᴀʏᴇʀꜱ:**\n> {players}\n>\n> ⏳ *ᴀᴀᴘᴋᴇ ᴘᴀᴀꜱ ᴋʜᴇʟɴᴇ ᴋᴇ ʟɪʏᴇ 90 ꜱᴇᴄᴏɴᴅꜱ ʜᴀɪɴ!*"
+        "table_text": "> 🃏 **ᴜɴᴏ ᴛᴀʙʟᴇ**\n>\n> 🎨 **ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ:** {color}\n> 🎯 **ᴛᴏᴘ ᴄᴀʀᴅ:** {card}\n>\n> 👥 **ᴘʟᴀʏᴇʀꜱ:**\n> {players}\n>\n> ⏳ *ᴀᴀᴘᴋᴇ ᴘᴀᴀꜱ ᴋʜᴇʟɴᴇ ᴋᴇ ʟɪʏᴇ 60 ꜱᴇᴄᴏɴᴅꜱ ʜᴀɪɴ!*"
     }
 }
 
@@ -209,7 +209,7 @@ def card_to_filename(card):
     return f"{color}_{parts[2]}"
 
 # ==========================================
-# 👑 HIDDEN OWNER COMMANDS (WITH GCAST FIX)
+# 👑 HIDDEN OWNER COMMANDS
 # ==========================================
 @app.on_message(filters.command("users") & filters.user(OWNER_ID))
 async def users_cmd(client, message):
@@ -271,7 +271,7 @@ async def set_position_cmd(client, message):
 
 
 # ==========================================
-# ⚙️ SETTINGS, STATS, HELP & RULES (FIXED FILTERS)
+# ⚙️ SETTINGS, STATS, HELP & RULES
 # ==========================================
 @app.on_message(filters.command("help"))
 async def help_cmd(client, message):
@@ -287,7 +287,7 @@ async def rules_cmd(client, message):
     text = await _t(uid, "rules_text")
     await message.reply(text)
 
-@app.on_message(filters.command("settings")) # Removed filters.private
+@app.on_message(filters.command("settings"))
 async def settings_cmd(client, message):
     add_chat(message.chat.id)
     uid = message.from_user.id if message.from_user else message.chat.id
@@ -352,7 +352,7 @@ async def cb_set_lang(client, cb):
 
 
 # ==========================================
-# 🃏 UNO CORE ENGINE
+# 🃏 UNO CORE ENGINE & AUTO-KICK TIMER
 # ==========================================
 def get_uno_deck():
     colors = ["🔴 Red", "🔵 Blue", "🟢 Green", "🟡 Yellow"]
@@ -406,6 +406,67 @@ async def send_uno_table(chat_id, action_user_id=None):
         else: game["table_msg"] = await app.send_message(chat_id, text, reply_markup=kb)
     except: game["table_msg"] = await app.send_message(chat_id, text, reply_markup=kb)
 
+# 🔥 THE 60-SEC AFK AUTO-KICK TIMER LOGIC
+async def uno_turn_timer(chat_id, turn_id):
+    await asyncio.sleep(60)
+    if chat_id not in uno_games: return
+    game = uno_games.get(chat_id)
+    if not game or game.get("turn_id") != turn_id: return
+    
+    try:
+        player_idx = game["turn_index"]
+        player = game["players"][player_idx]
+        
+        # Increment AFK Strike
+        player["afk_strikes"] = player.get("afk_strikes", 0) + 1
+        
+        # 🚨 STRIKE 2: KICK FROM GAME
+        if player["afk_strikes"] >= 2:
+            kicked_name = player["name"]
+            game["players"].pop(player_idx)
+            
+            await app.send_message(chat_id, f"bkl bhag gya {kicked_name}")
+            
+            if len(game["players"]) < 2:
+                uno_games.pop(chat_id, None)
+                await app.send_message(chat_id, await _t(game["creator"], "not_enough_players"))
+            else:
+                if game["direction"] == -1:
+                    game["turn_index"] = (game["turn_index"] - 1) % len(game["players"])
+                else:
+                    game["turn_index"] = game["turn_index"] % len(game["players"])
+                game["status"] = "playing"
+                game["pending_effect"] = "none"
+                game["turn_id"] += 1
+                asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
+                await send_uno_table(chat_id, game["creator"])
+            return
+
+        # ⚠️ STRIKE 1: SKIP & PENALTY
+        if game["status"] == "waiting_color":
+            game["current_color"] = "🔴"
+            game["status"] = "playing"
+            if game.get("pending_effect") == "+4":
+                victim = game["players"][(game["turn_index"] + game["direction"]) % len(game["players"])]
+                for _ in range(4):
+                    if not game["deck"]: game["deck"] = get_uno_deck()
+                    victim["cards"].append(game["deck"].pop())
+            game["pending_effect"] = "none"
+            await app.send_message(chat_id, f"⏳ **1st Warning:** {player['name']} ne koi color nahi chuna. Default '🔴 Red' select ho gaya.")
+            get_next_turn(game)
+            asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
+            await send_uno_table(chat_id, game["creator"])
+            
+        elif game["status"] == "playing":
+            if not game["deck"]: game["deck"] = get_uno_deck()
+            drawn = game["deck"].pop()
+            player["cards"].append(drawn)
+            await app.send_message(chat_id, f"⏳ **1st Warning:** [{player['name']}](tg://user?id={player['id']}) ne 60 sec me card nahi khela, isliye skip hokar penalty mili.")
+            get_next_turn(game)
+            asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
+            await send_uno_table(chat_id, game["creator"])
+    except Exception as e: pass
+
 # ==========================================
 # 🎮 GAME COMMANDS (/new, /join, /start, /leave, /kill, /kick)
 # ==========================================
@@ -417,7 +478,7 @@ async def new_game_cmd(client, message):
     add_chat(chat_id)
     if chat_id in uno_games:
         return await message.reply(await _t(uid, "already_playing"))
-    player = {"id": uid, "name": fname, "cards": []}
+    player = {"id": uid, "name": fname, "cards": [], "afk_strikes": 0}
     uno_games[chat_id] = {"status": "lobby", "creator": uid, "is_open": True, "players": [player], "lobby_msg": None}
     await message.reply(await _t(uid, "new_lobby"))
 
@@ -436,7 +497,7 @@ async def join_game_cmd(client, message):
     if any(p["id"] == uid for p in players): 
         return await message.reply(await _t(uid, "already_joined"))
         
-    players.append({"id": uid, "name": fname, "cards": []})
+    players.append({"id": uid, "name": fname, "cards": [], "afk_strikes": 0})
     await message.reply(await _t(uid, "joined_success", name=fname, count=len(players)))
 
 @app.on_message(filters.command("leave") & filters.group)
@@ -488,7 +549,9 @@ async def start_game_cmd(client, message):
         
     game["status"] = "playing"
     deck = get_uno_deck()
-    for p in game["players"]: p["cards"] = [deck.pop() for _ in range(7)]
+    for p in game["players"]: 
+        p["cards"] = [deck.pop() for _ in range(7)]
+        p["afk_strikes"] = 0
     top_card = deck.pop()
     while "Wild" in top_card or "Reverse" in top_card or "Skip" in top_card or "➕2" in top_card:
         deck.append(top_card); random.shuffle(deck); top_card = deck.pop()
@@ -496,6 +559,7 @@ async def start_game_cmd(client, message):
     game["deck"] = deck; game["top_card"] = top_card; game["current_color"] = top_card.split(" ")[1]
     game["turn_index"] = 0; game["direction"] = 1; game["turn_id"] = 1  
     
+    asyncio.create_task(uno_turn_timer(chat_id, 1))
     await message.reply(await _t(uid, "game_started"))
     await send_uno_table(chat_id, uid)
 
@@ -539,13 +603,33 @@ async def skip_player_cmd(client, message):
     if chat_id not in uno_games or uno_games[chat_id]["status"] != "playing": return
     game = uno_games[chat_id]
     
-    player = game["players"][game["turn_index"]]
-    if not game["deck"]: game["deck"] = get_uno_deck()
-    player["cards"].append(game["deck"].pop())
+    player_idx = game["turn_index"]
+    player = game["players"][player_idx]
     
-    await message.reply(await _t(uid, "skipped", name=player['name']))
-    get_next_turn(game)
-    await send_uno_table(chat_id, uid)
+    player["afk_strikes"] = player.get("afk_strikes", 0) + 1
+    
+    if player["afk_strikes"] >= 2:
+        kicked_name = player["name"]
+        game["players"].pop(player_idx)
+        await message.reply(f"bkl bhag gya {kicked_name}")
+        if len(game["players"]) < 2:
+            uno_games.pop(chat_id, None)
+            await app.send_message(chat_id, await _t(uid, "not_enough_players"))
+        else:
+            if game["direction"] == -1: game["turn_index"] = (game["turn_index"] - 1) % len(game["players"])
+            else: game["turn_index"] = game["turn_index"] % len(game["players"])
+            game["status"] = "playing"
+            game["turn_id"] += 1
+            asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
+            await send_uno_table(chat_id, uid)
+    else:
+        if not game["deck"]: game["deck"] = get_uno_deck()
+        player["cards"].append(game["deck"].pop())
+        await message.reply(await _t(uid, "skipped", name=player['name']))
+        get_next_turn(game)
+        game["turn_id"] += 1
+        asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
+        await send_uno_table(chat_id, uid)
 
 # ==========================================
 # 🃏 INLINE PLAYING MECHANICS
@@ -616,6 +700,7 @@ async def catch_uno_play(client, message):
     if card_index >= len(player["cards"]) or player["cards"][card_index] != card: return
 
     player["cards"].pop(card_index); game["top_card"] = card
+    player["afk_strikes"] = 0 # RESET STRIKES IF PLAYED SUCCESSFULLY
 
     if "Wild" in card:
         kb = InlineKeyboardMarkup([
@@ -628,6 +713,7 @@ async def catch_uno_play(client, message):
             except: pass
             
         game["turn_id"] += 1
+        asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
         game["table_msg"] = await app.send_message(chat_id, await _t(uid, "wild_played", name=player['name']), reply_markup=kb)
         return
 
@@ -648,7 +734,10 @@ async def catch_uno_play(client, message):
         if MONGO_URL: await uno_stats_col.update_one({"user_id": winner_id}, {"$inc": {"wins": 1}, "$set": {"name": winner_name}}, upsert=True)
         return await app.send_message(chat_id, await _t(uid, "won_game", name=f"[{winner_name}](tg://user?id={winner_id})"))
 
-    get_next_turn(game); await send_uno_table(chat_id, uid)
+    get_next_turn(game)
+    game["turn_id"] += 1
+    asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
+    await send_uno_table(chat_id, uid)
 
 @app.on_callback_query(filters.regex(r"^unocolor_(.*)$"))
 async def choose_color_cb(client, cb):
@@ -673,7 +762,10 @@ async def choose_color_cb(client, cb):
         if MONGO_URL: await uno_stats_col.update_one({"user_id": winner_id}, {"$inc": {"wins": 1}, "$set": {"name": winner_name}}, upsert=True)
         return await app.send_message(chat_id, await _t(uid, "won_game", name=f"[{winner_name}](tg://user?id={winner_id})"))
         
-    get_next_turn(game); await cb.message.delete(); await send_uno_table(chat_id, uid)
+    get_next_turn(game); await cb.message.delete()
+    game["turn_id"] += 1
+    asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
+    await send_uno_table(chat_id, uid)
 
 @app.on_callback_query(filters.regex("^uno_draw$"))
 async def uno_draw_cb(client, cb):
@@ -685,7 +777,10 @@ async def uno_draw_cb(client, cb):
     if not game["deck"]: game["deck"] = get_uno_deck()
     drawn = game["deck"].pop(); game["players"][game["turn_index"]]["cards"].append(drawn)
     await cb.answer("📥 You drew a card!", show_alert=True)
-    get_next_turn(game); await send_uno_table(chat_id, uid)
+    get_next_turn(game)
+    game["turn_id"] += 1
+    asyncio.create_task(uno_turn_timer(chat_id, game["turn_id"]))
+    await send_uno_table(chat_id, uid)
 
 # ==========================================
 # 🚀 MAIN LOOP
@@ -721,7 +816,7 @@ async def main():
     except Exception as e: print("Could not set commands:", e)
     
     print("=========================================")
-    print("✅ PRO UNO BOT (PREMIUM UI + ALL COMMANDS FIXED) IS LIVE!")
+    print("✅ PRO UNO BOT (2-STRIKE AFK READY) IS LIVE!")
     print("=========================================")
     await idle()
 
