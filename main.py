@@ -18,7 +18,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "<h1>🤖 PRO UNO Bot is Alive (Auto-Delete Commands Edition)! 🚀</h1>"
+    return "<h1>🤖 PRO UNO Bot is Alive (Ultimate Edition)! 🚀</h1>"
 
 def run_web():
     port = int(os.environ.get("PORT", 8080))
@@ -131,7 +131,7 @@ TRANSLATIONS = {
         "reply_to_kick": "> ⚠️ ᴊɪꜱᴇ ɴɪᴋᴀʟɴᴀ ʜᴀɪ ᴜꜱᴋᴇ ᴍᴇꜱꜱᴀɢᴇ ᴘᴀʀ ʀᴇᴘʟʏ ᴋᴀʀᴇɪɴ.",
         "kicked": "> 👢 {name} ᴋᴏ ɢᴀᴍᴇ ꜱᴇ ɴɪᴋᴀᴀʟ ᴅɪʏᴀ ɢᴀʏᴀ ʜᴀɪ.",
         "afk_kick": "> 👢 **bkl bhag gya {name}**",
-        "afk_warn": "> ⏳ **1ꜱᴛ ᴡᴀʀɴɪɴɢ:** {name} ɴᴇ ʙᴀʜᴜᴛ ᴛɪᴍᴇ ʟᴀɢᴀʏᴀ ɪꜱʟɪʏᴇ ꜱᴋɪᴘ ᴋᴀʀ ᴅɪʏᴀ ɢᴀʏᴀ! (ꜰᴏʀᴄᴇᴅ ᴅʀᴀᴡ)",
+        "afk_warn": "> ⏳ **1ꜱᴛ ᴡᴀʀɴɪɴɢ:** {name} ɴᴇ ʙᴀʜᴜᴛ ᴛɪᴍᴇ ʟᴀɢᴀʏᴀ ɪꜱʟɪʏᴇ ꜱᴋɪ sub ᴋᴀʀ ᴅɪʏᴀ ɢᴀʏᴀ! (ꜰᴏʀᴄᴇᴅ ᴅʀᴀᴡ)",
         "afk_wild_warn": "> ⏳ **1ꜱᴛ ᴡᴀʀɴɪɴɢ:** {name} ɴᴇ ᴋᴏɪ ᴄᴏʟᴏʀ ɴᴀʜɪ ᴄʜᴜɴᴀ. ᴅᴇꜰᴀᴜʟᴛ '🔴 ʀᴇᴅ' ꜱᴇʟᴇᴄᴛ ʜᴏ ɢᴀʏᴀ.",
         "skipped": "> ⏭️ {name} ᴋɪ ʙᴀᴀʀɪ ꜱᴋɪᴘ ᴋᴀʀ ᴅɪ ɢᴀʏɪ! (ꜰᴏʀᴄᴇᴅ ᴅʀᴀᴡ)",
         "not_active": "⚠️ ɢᴀᴍᴇ ᴀʙʜɪ ᴄʜᴀʟ ɴᴀʜɪ ʀᴀʜᴀ ʜᴀɪ!",
@@ -218,7 +218,7 @@ def card_to_filename(card):
     return f"{color}_{parts[2]}"
 
 # ==========================================
-# 👑 HIDDEN OWNER COMMANDS & DIRECT CAPTION /setstart
+# 👑 HIDDEN OWNER COMMANDS & UNIVERSAL /setstart
 # ==========================================
 @app.on_message(filters.command("users") & filters.user(OWNER_ID))
 async def users_cmd(client, message):
@@ -296,7 +296,6 @@ async def upload_cards_cmd(client, message):
                 except Exception: pass
     await m.edit(f"✅ **Upload Complete!** Total: `{uploaded}` cards.")
 
-# 🔥 UNIVERSAL /setstart HANDLER
 @app.on_message(filters.command("setstart") & filters.user(OWNER_ID) & filters.private)
 async def setstart_universal_cmd(client, message):
     target_msg = message.reply_to_message if message.reply_to_message else message
@@ -578,9 +577,16 @@ async def uno_lobby_timer(chat_id):
             
         game["status"] = "playing"
         deck = get_uno_deck()
+        
+        # 🔥 SMART MULTI-DECK SYSTEM: Auto-adds new UNO decks if players are high
+        while len(deck) < (len(game["players"]) * 7 + 20):
+            deck.extend(get_uno_deck())
+            random.shuffle(deck)
+            
         for p in game["players"]: 
             p["cards"] = [deck.pop() for _ in range(7)]
             p["afk_strikes"] = 0
+            
         top_card = deck.pop()
         while "Wild" in top_card or "Reverse" in top_card or "Skip" in top_card or "➕2" in top_card:
             deck.append(top_card); random.shuffle(deck); top_card = deck.pop()
@@ -999,7 +1005,7 @@ async def main():
     except Exception as e: print("Could not set commands:", e)
     
     print("=========================================")
-    print("✅ PRO UNO BOT (AUTO-DELETE CMDS EDITION) IS LIVE!")
+    print("✅ PRO UNO BOT (ULTIMATE UNLIMITED EDITION) IS LIVE!")
     print("=========================================")
     await idle()
 
