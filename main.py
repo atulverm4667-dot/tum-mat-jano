@@ -18,7 +18,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "<h1>🤖 PRO UNO Bot is Alive (Caption /setstart Edition)! 🚀</h1>"
+    return "<h1>🤖 PRO UNO Bot is Alive (Players Button Edition)! 🚀</h1>"
 
 def run_web():
     port = int(os.environ.get("PORT", 8080))
@@ -87,7 +87,7 @@ TRANSLATIONS = {
         "kicked": "> 👢 {name} ʜᴀꜱ ʙᴇᴇɴ ᴋɪᴄᴋᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ɢᴀᴍᴇ.",
         "afk_kick": "> 👢 **bkl bhag gya {name}**",
         "afk_warn": "> ⏳ **1ꜱᴛ ᴡᴀʀɴɪɴɢ:** {name} ᴛᴏᴏᴋ ᴛᴏᴏ ʟᴏɴɢ ᴀɴᴅ ᴡᴀꜱ ꜱᴋɪᴘᴘᴇᴅ! (ꜰᴏʀᴄᴇᴅ ᴅʀᴀᴡ)",
-        "afk_wild_warn": "> ⏳ **1ꜱᴛ ᴡᴀʀɴɪɴɢ:** {name} ᴅɪᴅ ɴᴏᴛ ᴄʜᴏᴏꜱᴇ ᴀ ᴄᴏʟᴏʀ. ᴅᴇꜰᴀᴜʟᴛ '🔴 ʀᴇᴅ' ꜱᴇʟᴇᴄᴛᴇᴅ.",
+        "afk_wild_warn": "> ⏳ **1ꜱᴛ ᴡᴀʀɴɪɴɢ:** {name} ᴅɪᴅ ɴᴏᴛ ᴄʜᴏᴏꜱᴇ ᴀ ᴄᴏʟᴏʀ. ᴅᴇꜰᴀᴜʟᴛ '🔴 ʀᴇᴅ' ꜱᴇʟᴇᴄᴛ ʜᴏ ɢᴀʏᴀ.",
         "skipped": "> ⏭️ {name} ᴡᴀꜱ ꜱᴋɪᴘᴘᴇᴅ!",
         "not_active": "⚠️ ɢᴀᴍᴇ ɪꜱ ɴᴏᴛ ᴀᴄᴛɪᴠᴇ!",
         "ur_cards_title": "🃏 ʏᴏᴜʀ ᴄᴀʀᴅꜱ:\n\n{cards}",
@@ -97,7 +97,8 @@ TRANSLATIONS = {
         "won_game": "> 🎉 **{name} HAS WON UNO!** 🏆",
         "drew_card": "📥 ʏᴏᴜ ᴅʀᴇᴡ ᴀ ᴄᴀʀᴅ!",
         "wait_turn": "⚠️ ᴡᴀɪᴛ ꜰᴏʀ ʏᴏᴜʀ ᴛᴜʀɴ!",
-        "table_text": "> 🃏 **ᴜɴᴏ ᴛᴀʙʟᴇ**\n>\n> 🎨 **ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ:** {color}\n> 🎯 **ᴛᴏᴘ ᴄᴀʀᴅ:** {card}\n>\n> 👤 **ᴄᴜʀʀᴇɴᴛ ᴛᴜʀɴ:** **{turn_name}** 👈\n>\n> 👥 **ᴘʟᴀʏᴇʀꜱ:**\n> {players}\n>\n> ⏳ *ʏᴏᴜ ʜᴀᴠᴇ 60 ꜱᴇᴄᴏɴᴅꜱ ᴛᴏ ᴘʟᴀʏ!*"
+        "players_list": "👥 PLAYERS LIST:\n\n{players}",
+        "table_text": "> 🃏 **ᴜɴᴏ ᴛᴀʙʟᴇ**\n>\n> 🎨 **ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ:** {color}\n> 🎯 **ᴛᴏᴘ ᴄᴀʀᴅ:** {card}\n>\n> 👤 **ᴄᴜʀʀᴇɴᴛ ᴛᴜʀɴ:** **{turn_name}** 👈\n>\n> ⏳ *ʏᴏᴜ ʜᴀᴠᴇ 60 ꜱᴇᴄᴏɴᴅꜱ ᴛᴏ ᴘʟᴀʏ!*"
     },
     "hi_IN": {
         "help": "> 💡 **ᴜɴᴏ ʙᴏᴛ ɢᴜɪᴅᴇ:**\n>\n> 1️⃣ ɪꜱ ʙᴏᴛ ᴋᴏ ᴋɪꜱɪ ɢʀᴏᴜᴘ ᴍᴇ ᴀᴅᴅ ᴋᴀʀᴇɪɴ.\n> 2️⃣ ɴᴀʏᴀ ɢᴀᴍᴇ ʙᴀɴᴀɴᴇ ᴋᴇ ʟɪʏᴇ /startgame ʏᴀ /new ʙʜᴇᴊᴇɪɴ.\n> 3️⃣ ɴɪᴄʜᴇ ᴅɪʏᴇ ɢᴀʏᴇ 'ᴊᴏɪɴ ɢᴀᴍᴇ' ʙᴜᴛᴛᴏɴ ᴘᴀʀ ᴄʟɪᴄᴋ ᴋᴀʀᴇɪɴ. ɢᴀᴍᴇ 45 ꜱᴇᴄ ᴍᴇ ᴀᴘɴᴇ ᴀᴀᴘ ꜱᴛᴀʀᴛ ʜᴏ ᴊᴀʏᴇɢᴀ!\n> 4️⃣ ᴀᴘɴᴇ ᴄʜᴀᴛ ʙᴏx ᴍᴇ @{bot} ʟɪᴋʜ ᴋᴀʀ ꜱᴘᴀᴄᴇ ᴅᴀʙᴀʏᴇɪɴ. ᴀᴀᴘᴋᴏ ᴀᴘɴᴇ ᴄᴀʀᴅꜱ ᴅɪᴋʜ ᴊᴀʏᴇɴɢᴇ. (ɢʀᴇʏ ᴄᴀʀᴅꜱ ɴᴀʜɪ ᴋʜᴇʟ ꜱᴀᴋᴛᴇ).\n>\n> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ ᴀᴜʀ ʀᴜʟᴇꜱ:**\n> ➥ /rules : ᴜɴᴏ ᴋʜᴇʟɴᴇ ᴋᴇ ɴɪʏᴀᴍ\n> ➥ /settings : ʟᴀɴɢᴜᴀɢᴇ ᴀᴜʀ ꜱᴛᴀᴛꜱ ꜱᴇᴛᴛɪɴɢꜱ",
@@ -141,7 +142,8 @@ TRANSLATIONS = {
         "won_game": "> 🎉 **{name} UNO JEET GAYA HAI!** 🏆",
         "drew_card": "📥 ᴀᴀᴘɴᴇ ᴇᴋ ɴᴀʏᴀ ᴄᴀʀᴅ ɴɪᴋᴀʟᴀ!",
         "wait_turn": "⚠️ ᴀᴘɴɪ ʙᴀᴀʀɪ ᴋᴀ ɪɴᴛᴇᴢᴀᴀʀ ᴋᴀʀᴇɪɴ!",
-        "table_text": "> 🃏 **ᴜɴᴏ ᴛᴀʙʟᴇ**\n>\n> 🎨 **ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ:** {color}\n> 🎯 **ᴛᴏᴘ ᴄᴀʀᴅ:** {card}\n>\n> 👤 **ᴄᴜʀʀᴇɴᴛ ᴛᴜʀɴ:** **{turn_name}** 👈\n>\n> 👥 **ᴘʟᴀʏᴇʀꜱ:**\n> {players}\n>\n> ⏳ *ᴀᴀᴘᴋᴇ ᴘᴀᴀꜱ ᴋʜᴇʟɴᴇ ᴋᴇ ʟɪʏᴇ 60 ꜱᴇᴄᴏɴᴅꜱ ʜᴀɪɴ!*"
+        "players_list": "👥 PLAYERS LIST:\n\n{players}",
+        "table_text": "> 🃏 **ᴜɴᴏ ᴛᴀʙʟᴇ**\n>\n> 🎨 **ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ:** {color}\n> 🎯 **ᴛᴏᴘ ᴄᴀʀᴅ:** {card}\n>\n> 👤 **ᴄᴜʀʀᴇɴᴛ ᴛᴜʀɴ:** **{turn_name}** 👈\n>\n> ⏳ *ᴀᴀᴘᴋᴇ ᴘᴀᴀꜱ ᴋʜᴇʟɴᴇ ᴋᴇ ʟɪʏᴇ 60 ꜱᴇᴄᴏɴᴅꜱ ʜᴀɪɴ!*"
     }
 }
 
@@ -294,27 +296,37 @@ async def upload_cards_cmd(client, message):
                 except Exception: pass
     await m.edit(f"✅ **Upload Complete!** Total: `{uploaded}` cards.")
 
-# 🔥 DIRECT CAPTION /setstart HANDLER
+# 🔥 UNIVERSAL /setstart HANDLER
 @app.on_message(filters.command("setstart") & filters.user(OWNER_ID) & filters.private)
-async def setstart_caption_cmd(client, message):
-    if not message.photo:
-        return await message.reply("⚠️ Kripya photo ke sath caption me `/setstart` likh kar bhejiye!")
+async def setstart_universal_cmd(client, message):
+    target_msg = message.reply_to_message if message.reply_to_message else message
     
-    file_id = message.photo.file_id
-    full_caption = message.caption or ""
+    if not target_msg.photo:
+        return await message.reply("⚠️ Kripya photo ke sath caption me `/setstart` likhein YA photo par reply karke `/setstart` likhein!")
     
-    # Remove '/setstart' keyword from the caption text
+    file_id = target_msg.photo.file_id
+    full_caption = target_msg.caption or ""
+    
     clean_text = full_caption.replace("/setstart", "").strip()
     
-    # Extract buttons if formatted as [Button Text - URL] or similar at the end, or keep simple
     buttons = []
-    lines = clean_text.split("\n")
     final_lines = []
     
-    for line in lines:
-        if " - " in line and (line.strip().startswith("http") or "http" in line.split(" - ")[1]):
-            parts = line.split(" - ", 1)
-            buttons.append({"text": parts[0].strip(), "url": parts[1].strip()})
+    for line in clean_text.split("\n"):
+        line_clean = line.strip()
+        if " - " in line_clean:
+            parts = line_clean.split(" - ", 1)
+            btn_title = parts[0].strip()
+            btn_link = parts[1].strip()
+            
+            if btn_link.startswith("@"):
+                btn_link = f"https://t.me/{btn_link[1:]}"
+            elif not btn_link.startswith(("http://", "https://", "t.me/")):
+                btn_link = f"https://{btn_link}"
+            elif btn_link.startswith("t.me/"):
+                btn_link = f"https://{btn_link}"
+                
+            buttons.append({"text": btn_title, "url": btn_link})
         else:
             final_lines.append(line)
             
@@ -326,7 +338,7 @@ async def setstart_caption_cmd(client, message):
             "has_photo": True, 
             "file_id": file_id, 
             "text": text_content, 
-            "buttons": buttons[:5] # Max 5 buttons
+            "buttons": buttons[:5]
         }}, 
         upsert=True
     )
@@ -502,13 +514,17 @@ async def send_uno_table(chat_id, action_user_id=None):
     
     uid = action_user_id if action_user_id else game["creator"]
     current_player = game["players"][game["turn_index"]]
-    players_text = "\n> ".join([f"{'👉' if p['id'] == current_player['id'] else '👤'} {p['name']} - {len(p['cards'])} ᴄᴀʀᴅꜱ" for p in game["players"]])
     
-    text = await _t(uid, "table_text", color=game['current_color'], card=game['top_card'], turn_name=current_player['name'], players=players_text)
+    clickable_turn_name = f"[{current_player['name']}](tg://user?id={current_player['id']})"
+    
+    # Text updated to NOT include the players list directly
+    text = await _t(uid, "table_text", color=game['current_color'], card=game['top_card'], turn_name=clickable_turn_name)
             
+    # Added "👥 Players" button
     kb = InlineKeyboardMarkup([
         [InlineKeyboardButton("🃏 Play Card", switch_inline_query_current_chat="")],
-        [InlineKeyboardButton("👀 Show Cards", callback_data="show_uno_cards"), InlineKeyboardButton("📥 Draw", callback_data="uno_draw")]
+        [InlineKeyboardButton("👀 Show Cards", callback_data="show_uno_cards"), InlineKeyboardButton("📥 Draw", callback_data="uno_draw")],
+        [InlineKeyboardButton("👥 Players", callback_data="show_uno_players")]
     ])
     
     if "table_msg" in game:
@@ -771,8 +787,30 @@ async def skip_player_cmd(client, message):
         await send_uno_table(chat_id, uid)
 
 # ==========================================
-# 🃏 INLINE PLAYING MECHANICS
+# 🃏 INLINE PLAYING MECHANICS & POPUPS
 # ==========================================
+@app.on_callback_query(filters.regex("^show_uno_players$"))
+async def show_uno_players_cb(client, cb):
+    chat_id = cb.message.chat.id
+    uid = cb.from_user.id
+    if chat_id not in uno_games or uno_games[chat_id]["status"] != "playing": 
+        return await cb.answer(await _t(uid, "not_active"), show_alert=True)
+    
+    game = uno_games[chat_id]
+    current_player = game["players"][game["turn_index"]]
+    
+    # Generate the players list for pop-up
+    players_text = "\n".join([f"{'👉' if p['id'] == current_player['id'] else '👤'} {p['name']} - {len(p['cards'])} Cards" for p in game["players"]])
+    
+    # Translate and format the final text
+    final_text = await _t(uid, "players_list", players=players_text)
+    
+    # Anti-Crash: Telegram pop-up limit is ~200 characters, truncate if limit exceeds
+    if len(final_text) > 195:
+        final_text = final_text[:192] + "..."
+        
+    await cb.answer(final_text, show_alert=True)
+
 @app.on_callback_query(filters.regex("^show_uno_cards$"))
 async def show_uno_cards_cb(client, cb):
     chat_id = cb.message.chat.id; uid = cb.from_user.id
@@ -955,7 +993,7 @@ async def main():
     except Exception as e: print("Could not set commands:", e)
     
     print("=========================================")
-    print("✅ PRO UNO BOT (CAPTION /setstart EDITION) IS LIVE!")
+    print("✅ PRO UNO BOT (PLAYERS BUTTON EDITION) IS LIVE!")
     print("=========================================")
     await idle()
 
