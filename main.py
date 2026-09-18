@@ -19,7 +19,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "<h1>🤖 PRO UNO Bot is Alive with Multi-Lang! 🚀</h1>"
+    return "<h1>🤖 PRO UNO Bot is Alive with Multi-Lang & Rules! 🚀</h1>"
 
 def run_web():
     port = int(os.environ.get("PORT", 8080))
@@ -41,7 +41,7 @@ if MONGO_URL:
     db = mongo_client["UnoBotDB"]
     uno_stats_col = db["uno_stats"]  
     uno_cards_col = db["uno_cards"] 
-    user_settings_col = db["user_settings"] # Naya DB collection language ke liye
+    user_settings_col = db["user_settings"] 
     print("✅ MongoDB Connected Successfully!")
 else: 
     print("⚠️ MONGO_URL not found!")
@@ -49,7 +49,7 @@ else:
 app = Client("UnoBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 uno_games = {} 
 cards_cache = {} 
-user_langs_cache = {} # Cache for fast translations
+user_langs_cache = {} 
 BOT_USERNAME = ""
 
 # ==========================================
@@ -57,7 +57,8 @@ BOT_USERNAME = ""
 # ==========================================
 TRANSLATIONS = {
     "en_US": {
-        "help": "Follow these steps:\n\n1. Add this bot to a group\n2. In the group, start a new game with /new or join an already running game with /join\n3. After at least two players have joined, start the game with /start\n4. Type @{bot} into your chat box and hit **space**. You will see your cards (greyed out = invalid).\nPlayers can join at any time. To leave, use /leave. If a player takes too long, use /skip.\n\n**Language and other settings**: /settings",
+        "help": "Follow these steps:\n\n1. Add this bot to a group\n2. In the group, start a new game with /new or join an already running game with /join\n3. After at least two players have joined, start the game with /start\n4. Type @{bot} into your chat box and hit **space**. You will see your cards (greyed out = invalid).\nPlayers can join at any time. To leave, use /leave. If a player takes too long, use /skip.\n\n**Explanation of game modes**: /modes\n**Language and other settings**: /settings",
+        "modes_text": "🃏 **UNO Game Rules & Modes:**\n\n**Classic UNO:**\n- Match the top card by color or number.\n- Play special cards (Skip, Reverse, Draw 2) to disrupt opponents.\n- Wild cards can change the current color.\n- Wild +4 changes the color AND forces the next player to draw 4 cards.\n- If you can't play any card, you must click 'Draw' to pick a card.\n- The first player to get rid of all their cards wins!\n\n*(More custom modes coming soon!)*",
         "settings": "⚙️ **Settings:**\nChoose an option below to update your preferences.",
         "stats_disabled": "You did not enable statistics. Use /settings in a private chat with the bot to enable them.",
         "stats_msg": "**{name}'s UNO Stats:**\n\n{wins} games won\n{wins} first places ({percent}%)\n{cards} cards played",
@@ -95,7 +96,8 @@ TRANSLATIONS = {
         "table_text": "🃏 **UNO TABLE**\n\n🎨 **Current Color:** {color}\n🎯 **Top Card:** {card}\n\n👥 **Players:**\n{players}\n\n⏳ *You have 90 seconds to play!*"
     },
     "hi_IN": {
-        "help": "Bot ko use karne ke steps:\n\n1. Is bot ko kisi group me add karein.\n2. Group me naya game banane ke liye /new bhejein, ya chalte game me /join karein.\n3. Jab 2 ya zyada log aa jayein, toh game shuru karne ke liye /start bhejein.\n4. Apne chat box me @{bot} likh kar **space** dabayein. Aapko apne cards dikh jayenge (jo card grey hai wo aap abhi nahi khel sakte).\nKoi bhi kabhi bhi join kar sakta hai. Game chhodne ke liye /leave use karein. Agar koi der lagaye, toh /skip use karein.\n\n**Language aur settings ke liye**: /settings",
+        "help": "Bot ko use karne ke steps:\n\n1. Is bot ko kisi group me add karein.\n2. Group me naya game banane ke liye /new bhejein, ya chalte game me /join karein.\n3. Jab 2 ya zyada log aa jayein, toh game shuru karne ke liye /start bhejein.\n4. Apne chat box me @{bot} likh kar **space** dabayein. Aapko apne cards dikh jayenge (jo card grey hai wo aap abhi nahi khel sakte).\nKoi bhi kabhi bhi join kar sakta hai. Game chhodne ke liye /leave use karein. Agar koi der lagaye, toh /skip use karein.\n\n**Rules padhne ke liye**: /modes\n**Language aur settings ke liye**: /settings",
+        "modes_text": "🃏 **UNO Game Rules & Modes (Niyam):**\n\n**Classic UNO:**\n- Top card ke color ya number se match karta hua card khelein.\n- Opponents ko rokne ke liye special cards (Skip, Reverse, Draw 2) ka use karein.\n- Wild card khel kar aap color change kar sakte hain.\n- Wild +4 color bhi change karta hai aur agle player ko 4 cards nikalne padte hain.\n- Agar aapke paas khelne ke liye koi valid card nahi hai, toh aapko 'Draw' par click karke naya card nikalna padega.\n- Jo player sabse pehle apne saare cards khatam kar dega, wo jeetega!\n\n*(Aur custom modes jaldi add honge!)*",
         "settings": "⚙️ **Settings (सेटिंग्स):**\nNiche diye gaye options se apni pasand chunein.",
         "stats_disabled": "Aapne statistics on nahi kiya hai. Bot ki private chat me /settings bhej kar on karein.",
         "stats_msg": "**{name} ke UNO Stats:**\n\n{wins} games jeete\n{wins} first places ({percent}%)\n{cards} cards khele gaye",
@@ -189,7 +191,7 @@ def card_to_filename(card):
     return f"{color}_{parts[2]}"
 
 # ==========================================
-# 👑 HIDDEN OWNER COMMANDS (PERFECT GCAST FIX)
+# 👑 HIDDEN OWNER COMMANDS 
 # ==========================================
 @app.on_message(filters.command("users") & filters.user(OWNER_ID))
 async def users_cmd(client, message):
@@ -223,7 +225,6 @@ async def gcast_cmd(client, message):
     success, failed = 0, 0
     for chat in chats:
         try:
-            # 🔥 THE GCAST FIX: Ab seedha copy hoga (Links, Bold, Images sab original jayega)
             await replied.copy(int(chat)) 
             success += 1
             await asyncio.sleep(0.2)
@@ -245,12 +246,18 @@ async def set_position_cmd(client, message):
 
 
 # ==========================================
-# ⚙️ SETTINGS, STATS & HELP (MULTI-LANG)
+# ⚙️ SETTINGS, STATS, HELP & MODES (RULES)
 # ==========================================
 @app.on_message(filters.command("help"))
 async def help_cmd(client, message):
     add_chat(message.chat.id)
     text = await _t(message.from_user.id, "help", bot=BOT_USERNAME)
+    await message.reply(text)
+
+@app.on_message(filters.command(["modes", "rules"]))
+async def modes_cmd(client, message):
+    add_chat(message.chat.id)
+    text = await _t(message.from_user.id, "modes_text")
     await message.reply(text)
 
 @app.on_message(filters.command("settings") & filters.private)
@@ -658,7 +665,6 @@ async def main():
     
     await load_cards_to_cache()
     
-    # ❌ NOTICE: OWNER COMMANDS ARE HIDDEN FROM THIS LIST!
     try:
         await app.set_bot_commands([
             BotCommand("new", "Start a new game"),
@@ -671,6 +677,7 @@ async def main():
             BotCommand("kick", "Kick players out of the game"),
             BotCommand("skip", "Skip the current player"),
             BotCommand("help", "How to use this bot?"),
+            BotCommand("modes", "Explanation of game modes"),
             BotCommand("settings", "Language and other settings"),
             BotCommand("stats", "Show statistics"),
             BotCommand("topplayers", "Global Leaderboard")
@@ -678,7 +685,7 @@ async def main():
     except Exception as e: print("Could not set commands:", e)
     
     print("=========================================")
-    print("✅ PRO UNO BOT ENGINE (MULTI-LANG + GCAST FIXED) IS LIVE!")
+    print("✅ PRO UNO BOT ENGINE IS LIVE!")
     print("=========================================")
     await idle()
 
