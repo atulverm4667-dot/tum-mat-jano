@@ -18,7 +18,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "<h1>🤖 PRO UNO Bot is Alive (Mention Username in Start Edition)! 🚀</h1>"
+    return "<h1>🤖 PRO UNO Bot is Alive (Caption /setstart Edition)! 🚀</h1>"
 
 def run_web():
     port = int(os.environ.get("PORT", 8080))
@@ -49,7 +49,6 @@ app = Client("UnoBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 uno_games = {} 
 cards_cache = {} 
 user_langs_cache = {} 
-setstart_sessions = {} 
 BOT_USERNAME = ""
 
 # ==========================================
@@ -57,7 +56,7 @@ BOT_USERNAME = ""
 # ==========================================
 TRANSLATIONS = {
     "en_US": {
-        "help": "> 💡 **ᴜɴᴏ ʙᴏᴛ ɢᴜɪᴅᴇ:**\n>\n> 1️⃣ ᴀᴅᴅ ᴛʜɪꜱ ʙᴏᴛ ᴛᴏ ᴀ ɢʀᴏᴜᴘ.\n> 2️⃣ ꜱᴛᴀʀᴛ ᴀ ɴᴇᴡ ɢᴀᴍᴇ ᴡɪᴛ🇭 /startgame ᴏʀ /new.\n> 3️⃣ ᴄʟɪᴄᴋ ᴛʜᴇ 'ᴊᴏɪɴ ɢᴀᴍᴇ' ʙᴜᴛᴛᴏɴ. ɢᴀᴍᴇ ꜱᴛᴀʀᴛꜱ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴀꜰᴛᴇʀ 45ꜱ!\n> 4️⃣ ᴛʏᴘᴇ @{bot} ɪɴᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ ʙᴏx ᴀɴᴅ ʜɪᴛ ꜱᴘᴀᴄᴇ. ʏᴏᴜ ᴡɪʟʟ ꜱᴇᴇ ʏᴏᴜʀ ᴄᴀʀᴅꜱ. (ɢʀᴇʏᴇᴅ ᴏᴜᴛ = ᴄᴀɴɴᴏᴛ ᴘʟᴀʏ).\n>\n> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ ᴀɴᴅ ʀᴜʟᴇꜱ:**\n> ➥ /rules : ᴇxᴘʟᴀɴᴀᴛɪᴏɴ ᴏꜰ ɢᴀᴍᴇ ʀᴜʟᴇꜱ\n> ➥ /settings : ʟᴀɴɢᴜᴀɢᴇ ᴀɴᴅ ꜱᴛᴀᴛꜱ ꜱᴇᴛᴛɪɴɢꜱ",
+        "help": "> 💡 **ᴜɴᴏ ʙᴏᴛ ɢᴜɪᴅᴇ:**\n>\n> 1️⃣ ᴀᴅᴅ ᴛʜɪꜱ ʙᴏᴛ ᴛᴏ ᴀ ɢʀᴏᴜᴘ.\n> 2️⃣ ꜱᴛᴀʀᴛ ᴀ ɴᴇᴡ ɢᴀᴍᴇ ᴡɪᴛʜ /startgame ᴏʀ /new.\n> 3️⃣ ᴄʟɪᴄᴋ ᴛʜᴇ 'ᴊᴏɪɴ ɢᴀᴍᴇ' ʙᴜᴛᴛᴏɴ. ɢᴀᴍᴇ ꜱᴛᴀʀᴛꜱ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴀꜰᴛᴇʀ 45ꜱ!\n> 4️⃣ ᴛʏᴘᴇ @{bot} ɪɴᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ ʙᴏx ᴀɴᴅ ʜɪᴛ ꜱᴘᴀᴄᴇ. ʏᴏᴜ ᴡɪʟʟ ꜱᴇᴇ ʏᴏᴜʀ ᴄᴀʀᴅꜱ. (ɢʀᴇʏᴇᴅ ᴏᴜᴛ = ᴄᴀɴɴᴏᴛ ᴘʟᴀʏ).\n>\n> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ ᴀɴᴅ ʀᴜʟᴇꜱ:**\n> ➥ /rules : ᴇxᴘʟᴀɴᴀᴛɪᴏɴ ᴏꜰ ɢᴀᴍᴇ ʀᴜʟᴇꜱ\n> ➥ /settings : ʟᴀɴɢᴜᴀɢᴇ ᴀɴᴅ ꜱᴛᴀᴛꜱ ꜱᴇᴛᴛɪɴɢꜱ",
         "rules_text": "> 🃏 **ᴜɴᴏ ɢᴀᴍᴇ ʀᴜʟᴇꜱ & ᴍᴏᴅᴇꜱ:**\n>\n> 🔴 **ᴄʟᴀꜱꜱɪᴄ ᴜɴᴏ:**\n> ➥ ᴍᴀᴛᴄʜ ᴛʜᴇ ᴛᴏᴘ ᴄᴀʀᴅ ʙʏ ᴄᴏʟᴏʀ ᴏʀ ɴᴜᴍʙᴇʀ.\n> ➥ ᴘʟᴀʏ ꜱᴘᴇᴄɪᴀʟ ᴄᴀʀᴅꜱ (ꜱᴋɪᴘ, ʀᴇᴠᴇʀꜱᴇ, ᴅʀᴀᴡ 2) ᴛᴏ ᴅɪꜱʀᴜᴘᴛ ᴏᴘᴘᴏɴᴇɴᴛꜱ.\n> 🌈 ᴡɪʟᴅ ᴄᴀʀᴅꜱ ᴄᴀɴ ᴄʜᴀɴɢᴇ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ.\n> 💥 ᴡɪʟᴅ +4 ᴄʜᴀɴɢᴇꜱ ᴛʜᴇ ᴄᴏʟᴏʀ ᴀɴᴅ ꜰᴏʀᴄᴇꜱ ᴛʜᴇ ɴᴇxᴛ ᴘʟᴀʏᴇʀ ᴛᴏ ᴅʀᴀᴡ 4 ᴄᴀʀᴅꜱ.\n> 📥 ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ᴘʟᴀʏ ᴀɴʏ ᴄᴀʀᴅ, ʏᴏᴜ ᴍᴜꜱᴛ ᴄʟɪᴄᴋ 'ᴅʀᴀᴡ' ᴛᴏ ᴘɪᴄᴋ ᴀ ᴄᴀʀᴅ.\n> 🏆 ᴛʜᴇ ꜰɪʀꜱᴛ ᴘʟᴀʏᴇʀ ᴛᴏ ɢᴇᴛ ʀɪᴅ ᴏꜰ ᴀʟʟ ᴛʜᴇɪʀ ᴄᴀʀᴅꜱ ᴡɪɴꜱ!\n>\n> ⏳ **ᴀꜰᴋ ʀᴜʟᴇ (ᴀᴜᴛᴏ-ᴋɪᴄᴋ):**\n> ɪꜰ ʏᴏᴜ ᴛᴀᴋᴇ ᴍᴏʀᴇ ᴛʜᴀɴ 60 ꜱᴇᴄᴏɴᴅꜱ, ʏᴏᴜ ᴀʀᴇ ꜱᴋɪᴘᴘᴇᴅ ᴀɴᴅ ᴅʀᴀᴡ ᴀ ᴄᴀʀᴅ (1ꜱᴛ ᴛɪᴍᴇ). ɪꜰ ʏᴏᴜ ᴅᴏ ɪᴛ ᴀɢᴀɪɴ, ʏᴏᴜ ᴀʀᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴋɪᴄᴋᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ɢᴀᴍᴇ!",
         "settings": "> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ:**\n> ᴄʜᴏᴏꜱᴇ ᴀɴ ᴏᴘᴛɪᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ᴜᴘᴅᴀᴛᴇ ʏᴏᴜʀ ᴘʀᴇꜰᴇʀᴇɴᴄᴇꜱ.",
         "stats_disabled": "> ⚠️ ʏᴏᴜ ᴅɪᴅ ɴᴏᴛ ᴇɴᴀʙʟᴇ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ. ᴜꜱᴇ /settings ᴛᴏ ᴇɴᴀʙʟᴇ ᴛʜᴇᴍ.",
@@ -217,7 +216,7 @@ def card_to_filename(card):
     return f"{color}_{parts[2]}"
 
 # ==========================================
-# 👑 HIDDEN OWNER COMMANDS & SMART /setstart
+# 👑 HIDDEN OWNER COMMANDS & DIRECT CAPTION /setstart
 # ==========================================
 @app.on_message(filters.command("users") & filters.user(OWNER_ID))
 async def users_cmd(client, message):
@@ -295,66 +294,43 @@ async def upload_cards_cmd(client, message):
                 except Exception: pass
     await m.edit(f"✅ **Upload Complete!** Total: `{uploaded}` cards.")
 
-# 🧙‍♂️ ONE-BY-ONE /setstart WIZARD
+# 🔥 DIRECT CAPTION /setstart HANDLER
 @app.on_message(filters.command("setstart") & filters.user(OWNER_ID) & filters.private)
-async def setstart_wizard_cmd(client, message):
-    setstart_sessions[message.from_user.id] = {"step": "waiting_photo", "file_id": None, "text": None, "buttons": []}
-    await message.reply("🖼️ **Step 1:** Ab aap us **Image** ko bhejo jise start message me rakhna hai.")
-
-@app.on_message(filters.user(OWNER_ID) & filters.private & ~filters.command(["users", "groups", "gcast", "setposition", "uploadcards", "setstart", "done"]))
-async def setstart_wizard_listener(client, message):
-    uid = message.from_user.id
-    if uid not in setstart_sessions: return
+async def setstart_caption_cmd(client, message):
+    if not message.photo:
+        return await message.reply("⚠️ Kripya photo ke sath caption me `/setstart` likh kar bhejiye!")
     
-    session = setstart_sessions[uid]
-    step = session["step"]
+    file_id = message.photo.file_id
+    full_caption = message.caption or ""
     
-    if step == "waiting_photo":
-        if message.photo:
-            session["file_id"] = message.photo.file_id
-            session["step"] = "waiting_text"
-            await message.reply("✍️ **Step 2:** Ab aap **Text Message (Caption)** bhejo.\n💡 *(Tip: Aap `{name}` ya `{username}` likh sakte ho, jo user ke naam se replace ho jayega)*.")
+    # Remove '/setstart' keyword from the caption text
+    clean_text = full_caption.replace("/setstart", "").strip()
+    
+    # Extract buttons if formatted as [Button Text - URL] or similar at the end, or keep simple
+    buttons = []
+    lines = clean_text.split("\n")
+    final_lines = []
+    
+    for line in lines:
+        if " - " in line and (line.strip().startswith("http") or "http" in line.split(" - ")[1]):
+            parts = line.split(" - ", 1)
+            buttons.append({"text": parts[0].strip(), "url": parts[1].strip()})
         else:
-            await message.reply("⚠️ Kripya ek valid photo bhejiye!")
+            final_lines.append(line)
             
-    elif step == "waiting_text":
-        if message.text:
-            session["text"] = message.text
-            session["step"] = "waiting_buttons"
-            await message.reply("🔘 **Step 3:** Ab aap **Buttons ek-ek karke** bhejiye (Max 5).\nFormat: `Text - URL`\nHar message me ek hi button bhejna. Jab saare buttons ho jayein, tab `/done` likhein.")
-        else:
-            await message.reply("⚠️ Kripya text message bhejiye!")
-            
-    elif step == "waiting_buttons":
-        if message.text:
-            line = message.text.strip()
-            if " - " in line and len(session["buttons"]) < 5:
-                parts = line.split(" - ", 1)
-                session["buttons"].append({"text": parts[0].strip(), "url": parts[1].strip()})
-                count = len(session["buttons"])
-                await message.reply(f"✅ Button {count} add ho gaya! Agla button bhejo, ya `/done` likho save karne ke liye.")
-            else:
-                await message.reply("⚠️ Galat format! Format: `Text - URL` (Ya max 5 buttons ki limit poori ho gayi hai. Ab `/done` likhein).")
-
-@app.on_message(filters.command("done") & filters.user(OWNER_ID) & filters.private)
-async def setstart_done_cmd(client, message):
-    uid = message.from_user.id
-    if uid in setstart_sessions:
-        session = setstart_sessions[uid]
-        if session["file_id"] and session["text"]:
-            await user_settings_col.update_one(
-                {"type": "start_msg"}, 
-                {"$set": {
-                    "has_photo": True, 
-                    "file_id": session["file_id"], 
-                    "text": session["text"], 
-                    "buttons": session["buttons"]
-                }}, 
-                upsert=True
-            )
-            setstart_sessions.pop(uid, None)
-            return await message.reply("✅ **Naya `/start` message successfully save ho gaya hai!**")
-    await message.reply("⚠️ Koi active setup session nahi mila ya photo/text missing hai.")
+    text_content = "\n".join(final_lines).strip()
+    
+    await user_settings_col.update_one(
+        {"type": "start_msg"}, 
+        {"$set": {
+            "has_photo": True, 
+            "file_id": file_id, 
+            "text": text_content, 
+            "buttons": buttons[:5] # Max 5 buttons
+        }}, 
+        upsert=True
+    )
+    await message.reply("✅ **Naya `/start` message (Photo + Caption + Buttons) successfully set ho gaya hai!**")
 
 
 # ==========================================
@@ -367,15 +343,14 @@ async def start_cmd(client, message):
     fname = user.first_name if user else "User"
     uname = f"@{user.username}" if user and user.username else fname
     
-    default_text = (f"> 🃏 **ʜᴇʏ {uname}, ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴘʀᴏ ᴜɴᴏ ʙᴏᴛ!**\n>\n"
-                    f"> ᴍᴀɪɴ ᴇᴋ ᴀᴅᴠᴀɴᴄᴇᴅ ᴜɴᴏ ɢᴀᴍᴇ ʙᴏᴛ ʜᴏᴏɴ.\n"
-                    f"> ᴍᴜᴊʜᴇ ᴀᴘɴᴇ ɢʀᴏᴜᴘ ᴍᴇɪɴ ᴀᴅᴅ ᴋᴀʀᴏ ᴀᴜʀ `/startgame` ʟɪᴋʜ ᴋᴀʀ ᴋʜᴇʟɴᴀ ꜱʜᴜʀᴜ ᴋᴀʀᴏ!\n>\n"
-                    f"> 📚 ʀᴜʟᴇꜱ ᴊᴀᴀɴɴᴇ ᴋᴇ ʟɪʏᴇ `/rules` ᴅᴀʙᴀʏᴇɪɴ.")
+    default_text = (f"> 🃏 **ᴡᴇʟᴄᴏᴍᴇ ᴛᴏ ᴘʀᴏ ᴜɴᴏ ʙᴏᴛ, {uname}!**\n>\n"
+                    f"> ɪ ᴀᴍ ᴀɴ ᴀᴅᴠᴀɴᴄᴇᴅ ᴜɴᴏ ɢᴀᴍᴇ ʙᴏᴛ.\n"
+                    f"> ᴀᴅᴅ ᴍᴇ ᴛᴏ ʏᴏᴜʀ ɢʀᴏᴜᴘ ᴀɴᴅ ᴛʏᴘᴇ `/startgame` ᴛᴏ ꜱᴛᴀʀᴛ ᴘʟᴀʏɪɴɢ!\n>\n"
+                    f"> 📚 ᴘʀᴇꜱꜱ `/rules` ᴛᴏ ᴋɴᴏᴡ ᴛʜᴇ ɢᴀᴍᴇ ʀᴜʟᴇꜱ.")
     
     if MONGO_URL:
         config = await user_settings_col.find_one({"type": "start_msg"})
         if config:
-            # Format text replacing placeholders
             raw_text = config.get("text", "")
             formatted_text = raw_text.replace("{name}", fname).replace("{username}", uname)
             
@@ -391,7 +366,6 @@ async def start_cmd(client, message):
             else:
                 return await message.reply(formatted_text, reply_markup=kb)
                 
-    # Fallback to default if not set in DB
     formatted_default = default_text.replace("{name}", fname).replace("{username}", uname)
     await message.reply(formatted_default)
 
@@ -981,7 +955,7 @@ async def main():
     except Exception as e: print("Could not set commands:", e)
     
     print("=========================================")
-    print("✅ PRO UNO BOT (ONE-BY-ONE BUTTONS & USERNAME EDITION) IS LIVE!")
+    print("✅ PRO UNO BOT (CAPTION /setstart EDITION) IS LIVE!")
     print("=========================================")
     await idle()
 
