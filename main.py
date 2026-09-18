@@ -18,7 +18,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "<h1>🤖 PRO UNO Bot is Alive (Players Button Edition)! 🚀</h1>"
+    return "<h1>🤖 PRO UNO Bot is Alive (Auto-Delete Commands Edition)! 🚀</h1>"
 
 def run_web():
     port = int(os.environ.get("PORT", 8080))
@@ -350,6 +350,7 @@ async def setstart_universal_cmd(client, message):
 # ==========================================
 @app.on_message(filters.command("start") & filters.private)
 async def start_cmd(client, message):
+    asyncio.create_task(delayed_delete(message, 5))
     add_chat(message.chat.id)
     user = message.from_user
     fname = user.first_name if user else "User"
@@ -383,6 +384,7 @@ async def start_cmd(client, message):
 
 @app.on_message(filters.command("help"))
 async def help_cmd(client, message):
+    asyncio.create_task(delayed_delete(message, 5))
     add_chat(message.chat.id)
     uid = message.from_user.id if message.from_user else message.chat.id
     text = await _t(uid, "help", bot=BOT_USERNAME)
@@ -390,6 +392,7 @@ async def help_cmd(client, message):
 
 @app.on_message(filters.command("rules"))
 async def rules_cmd(client, message):
+    asyncio.create_task(delayed_delete(message, 5))
     add_chat(message.chat.id)
     uid = message.from_user.id if message.from_user else message.chat.id
     text = await _t(uid, "rules_text")
@@ -397,6 +400,7 @@ async def rules_cmd(client, message):
 
 @app.on_message(filters.command("settings"))
 async def settings_cmd(client, message):
+    asyncio.create_task(delayed_delete(message, 5))
     add_chat(message.chat.id)
     uid = message.from_user.id if message.from_user else message.chat.id
     text = await _t(uid, "settings")
@@ -408,6 +412,7 @@ async def settings_cmd(client, message):
 
 @app.on_message(filters.command("stats"))
 async def stats_cmd(client, message):
+    asyncio.create_task(delayed_delete(message, 5))
     add_chat(message.chat.id)
     uid = message.from_user.id if message.from_user else message.chat.id
     fname = message.from_user.first_name if message.from_user else "Admin"
@@ -421,6 +426,7 @@ async def stats_cmd(client, message):
 
 @app.on_message(filters.command("rank"))
 async def rank_cmd(client, message):
+    asyncio.create_task(delayed_delete(message, 5))
     add_chat(message.chat.id)
     uid = message.from_user.id if message.from_user else message.chat.id
     fname = message.from_user.first_name if message.from_user else "User"
@@ -439,6 +445,7 @@ async def rank_cmd(client, message):
 
 @app.on_message(filters.command("topplayers"))
 async def top_players_cmd(client, message):
+    asyncio.create_task(delayed_delete(message, 5))
     add_chat(message.chat.id)
     if not MONGO_URL: return await message.reply("⚠️ Database is not connected!")
     m = await message.reply("🏆 Fetching Leaderboard...")
@@ -517,10 +524,8 @@ async def send_uno_table(chat_id, action_user_id=None):
     
     clickable_turn_name = f"[{current_player['name']}](tg://user?id={current_player['id']})"
     
-    # Text updated to NOT include the players list directly
     text = await _t(uid, "table_text", color=game['current_color'], card=game['top_card'], turn_name=clickable_turn_name)
             
-    # Added "👥 Players" button
     kb = InlineKeyboardMarkup([
         [InlineKeyboardButton("🃏 Play Card", switch_inline_query_current_chat="")],
         [InlineKeyboardButton("👀 Show Cards", callback_data="show_uno_cards"), InlineKeyboardButton("📥 Draw", callback_data="uno_draw")],
@@ -650,6 +655,7 @@ async def uno_turn_timer(chat_id, turn_id):
 # ==========================================
 @app.on_message(filters.command(["startgame", "new"]) & filters.group)
 async def new_game_cmd(client, message):
+    asyncio.create_task(delayed_delete(message, 5))
     chat_id = message.chat.id
     uid = message.from_user.id if message.from_user else message.chat.id
     fname = message.from_user.first_name if message.from_user else "Admin"
@@ -700,6 +706,7 @@ async def join_uno_cb(client, cb):
 
 @app.on_message(filters.command("leave") & filters.group)
 async def leave_game_cmd(client, message):
+    asyncio.create_task(delayed_delete(message, 5))
     chat_id = message.chat.id
     uid = message.from_user.id if message.from_user else message.chat.id
     if chat_id not in uno_games: return
@@ -720,6 +727,7 @@ async def leave_game_cmd(client, message):
 
 @app.on_message(filters.command(["kill", "end"]) & filters.group)
 async def kill_game_cmd(client, message):
+    asyncio.create_task(delayed_delete(message, 5))
     chat_id = message.chat.id
     uid = message.from_user.id if message.from_user else message.chat.id
     if chat_id in uno_games:
@@ -729,6 +737,7 @@ async def kill_game_cmd(client, message):
 
 @app.on_message(filters.command("kick") & filters.group)
 async def kick_player_cmd(client, message):
+    asyncio.create_task(delayed_delete(message, 5))
     chat_id = message.chat.id
     uid = message.from_user.id if message.from_user else message.chat.id
     if chat_id not in uno_games: return
@@ -753,6 +762,7 @@ async def kick_player_cmd(client, message):
 
 @app.on_message(filters.command("skip") & filters.group)
 async def skip_player_cmd(client, message):
+    asyncio.create_task(delayed_delete(message, 5))
     chat_id = message.chat.id
     uid = message.from_user.id if message.from_user else message.chat.id
     if chat_id not in uno_games or uno_games[chat_id]["status"] != "playing": return
@@ -799,13 +809,9 @@ async def show_uno_players_cb(client, cb):
     game = uno_games[chat_id]
     current_player = game["players"][game["turn_index"]]
     
-    # Generate the players list for pop-up
     players_text = "\n".join([f"{'👉' if p['id'] == current_player['id'] else '👤'} {p['name']} - {len(p['cards'])} Cards" for p in game["players"]])
-    
-    # Translate and format the final text
     final_text = await _t(uid, "players_list", players=players_text)
     
-    # Anti-Crash: Telegram pop-up limit is ~200 characters, truncate if limit exceeds
     if len(final_text) > 195:
         final_text = final_text[:192] + "..."
         
@@ -993,7 +999,7 @@ async def main():
     except Exception as e: print("Could not set commands:", e)
     
     print("=========================================")
-    print("✅ PRO UNO BOT (PLAYERS BUTTON EDITION) IS LIVE!")
+    print("✅ PRO UNO BOT (AUTO-DELETE CMDS EDITION) IS LIVE!")
     print("=========================================")
     await idle()
 
