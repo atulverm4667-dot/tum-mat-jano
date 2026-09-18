@@ -18,7 +18,7 @@ web_app = Flask(__name__)
 
 @web_app.route('/')
 def home():
-    return "<h1>🤖 PRO UNO Bot is Alive (With Turn Highlight Update)! 🚀</h1>"
+    return "<h1>🤖 PRO UNO Bot is Alive (Multi-Step /setstart Edition)! 🚀</h1>"
 
 def run_web():
     port = int(os.environ.get("PORT", 8080))
@@ -49,18 +49,21 @@ app = Client("UnoBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 uno_games = {} 
 cards_cache = {} 
 user_langs_cache = {} 
+setstart_sessions = {} # 🔥 Track ongoing /setstart wizard states for owner
 BOT_USERNAME = ""
 
 # ==========================================
-# 🌍 TRANSLATION ENGINE (WITH TURN HIGHLIGHT)
+# 🌍 TRANSLATION ENGINE
 # ==========================================
 TRANSLATIONS = {
     "en_US": {
-        "help": "> 💡 **ᴜɴᴏ ʙᴏᴛ ɢᴜɪᴅᴇ:**\n>\n> 1️⃣ ᴀᴅᴅ ᴛʜɪꜱ ʙᴏᴛ ᴛᴏ ᴀ ɢʀᴏᴜᴘ.\n> 2️⃣ ꜱᴛᴀʀᴛ ᴀ ɴᴇᴡ ɢᴀᴍᴇ ᴡɪᴛ🇭 /startgame ᴏʀ /new.\n> 3️⃣ ᴄʟɪᴄᴋ ᴛʜᴇ 'ᴊᴏɪɴ ɢᴀᴍᴇ' ʙᴜᴛᴛᴏɴ. ɢᴀᴍᴇ ꜱᴛᴀʀᴛꜱ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴀꜰᴛᴇʀ 45ꜱ!\n> 4️⃣ ᴛʏᴘᴇ @{bot} ɪɴᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ ʙᴏx ᴀɴᴅ ʜɪᴛ ꜱᴘᴀᴄᴇ. ʏᴏᴜ ᴡɪʟʟ ꜱᴇᴇ ʏᴏᴜʀ ᴄᴀʀᴅꜱ. (ɢʀᴇʏᴇᴅ ᴏᴜᴛ = ᴄᴀɴɴᴏᴛ ᴘʟᴀʏ).\n>\n> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ ᴀɴᴅ ʀᴜʟᴇꜱ:**\n> ➥ /rules : ᴇxᴘʟᴀɴᴀᴛɪᴏɴ ᴏꜰ ɢᴀᴍᴇ ʀᴜʟᴇꜱ\n> ➥ /settings : ʟᴀɴɢᴜᴀɢᴇ ᴀɴᴅ ꜱᴛᴀᴛꜱ ꜱᴇᴛᴛɪɴɢꜱ",
+        "help": "> 💡 **ᴜɴᴏ ʙᴏᴛ ɢᴜɪᴅᴇ:**\n>\n> 1️⃣ ᴀᴅᴅ ᴛʜɪꜱ ʙᴏᴛ ᴛᴏ ᴀ ɢʀᴏᴜᴘ.\n> 2️⃣ ꜱᴛᴀʀᴛ ᴀ ɴᴇᴡ ɢᴀᴍᴇ ᴡɪᴛʜ /startgame ᴏʀ /new.\n> 3️⃣ ᴄʟɪᴄᴋ ᴛʜᴇ 'ᴊᴏɪɴ ɢᴀᴍᴇ' ʙᴜᴛᴛᴏɴ. ɢᴀᴍᴇ ꜱᴛᴀʀᴛꜱ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴀꜰᴛᴇʀ 45ꜱ!\n> 4️⃣ ᴛʏᴘᴇ @{bot} ɪɴᴛᴏ ʏᴏᴜʀ ᴄʜᴀᴛ ʙᴏx ᴀɴᴅ ʜɪᴛ ꜱᴘᴀᴄᴇ. ʏᴏᴜ ᴡɪʟʟ ꜱᴇᴇ ʏᴏᴜʀ ᴄᴀʀᴅꜱ. (ɢʀᴇʏᴇᴅ ᴏᴜᴛ = ᴄᴀɴɴᴏᴛ ᴘʟᴀʏ).\n>\n> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ ᴀɴᴅ ʀᴜʟᴇꜱ:**\n> ➥ /rules : ᴇxᴘʟᴀɴᴀᴛɪᴏɴ ᴏꜰ ɢᴀᴍᴇ ʀᴜʟᴇꜱ\n> ➥ /settings : ʟᴀɴɢᴜᴀɢᴇ ᴀɴᴅ ꜱᴛᴀᴛꜱ ꜱᴇᴛᴛɪɴɢꜱ",
         "rules_text": "> 🃏 **ᴜɴᴏ ɢᴀᴍᴇ ʀᴜʟᴇꜱ & ᴍᴏᴅᴇꜱ:**\n>\n> 🔴 **ᴄʟᴀꜱꜱɪᴄ ᴜɴᴏ:**\n> ➥ ᴍᴀᴛᴄʜ ᴛʜᴇ ᴛᴏᴘ ᴄᴀʀᴅ ʙʏ ᴄᴏʟᴏʀ ᴏʀ ɴᴜᴍʙᴇʀ.\n> ➥ ᴘʟᴀʏ ꜱᴘᴇᴄɪᴀʟ ᴄᴀʀᴅꜱ (ꜱᴋɪᴘ, ʀᴇᴠᴇʀꜱᴇ, ᴅʀᴀᴡ 2) ᴛᴏ ᴅɪꜱʀᴜᴘᴛ ᴏᴘᴘᴏɴᴇɴᴛꜱ.\n> 🌈 ᴡɪʟᴅ ᴄᴀʀᴅꜱ ᴄᴀɴ ᴄʜᴀɴɢᴇ ᴛʜᴇ ᴄᴜʀʀᴇɴᴛ ᴄᴏʟᴏʀ.\n> 💥 ᴡɪʟᴅ +4 ᴄʜᴀɴɢᴇꜱ ᴛʜᴇ ᴄᴏʟᴏʀ ᴀɴᴅ ꜰᴏʀᴄᴇꜱ ᴛʜᴇ ɴᴇxᴛ ᴘʟᴀʏᴇʀ ᴛᴏ ᴅʀᴀᴡ 4 ᴄᴀʀᴅꜱ.\n> 📥 ɪꜰ ʏᴏᴜ ᴄᴀɴ'ᴛ ᴘʟᴀʏ ᴀɴʏ ᴄᴀʀᴅ, ʏᴏᴜ ᴍᴜꜱᴛ ᴄʟɪᴄᴋ 'ᴅʀᴀᴡ' ᴛᴏ ᴘɪᴄᴋ ᴀ ᴄᴀʀᴅ.\n> 🏆 ᴛʜᴇ ꜰɪʀꜱᴛ ᴘʟᴀʏᴇʀ ᴛᴏ ɢᴇᴛ ʀɪᴅ ᴏꜰ ᴀʟʟ ᴛʜᴇɪʀ ᴄᴀʀᴅꜱ ᴡɪɴꜱ!\n>\n> ⏳ **ᴀꜰᴋ ʀᴜʟᴇ (ᴀᴜᴛᴏ-ᴋɪᴄᴋ):**\n> ɪꜰ ʏᴏᴜ ᴛᴀᴋᴇ ᴍᴏʀᴇ ᴛʜᴀɴ 60 ꜱᴇᴄᴏɴᴅꜱ, ʏᴏᴜ ᴀʀᴇ ꜱᴋɪᴘᴘᴇᴅ ᴀɴᴅ ᴅʀᴀᴡ ᴀ ᴄᴀʀᴅ (1ꜱᴛ ᴛɪᴍᴇ). ɪꜰ ʏᴏᴜ ᴅᴏ ɪᴛ ᴀɢᴀɪɴ, ʏᴏᴜ ᴀʀᴇ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ᴋɪᴄᴋᴇᴅ ꜰʀᴏᴍ ᴛʜᴇ ɢᴀᴍᴇ!",
         "settings": "> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ:**\n> ᴄʜᴏᴏꜱᴇ ᴀɴ ᴏᴘᴛɪᴏɴ ʙᴇʟᴏᴡ ᴛᴏ ᴜᴘᴅᴀᴛᴇ ʏᴏᴜʀ ᴘʀᴇꜰᴇʀᴇɴᴄᴇꜱ.",
         "stats_disabled": "> ⚠️ ʏᴏᴜ ᴅɪᴅ ɴᴏᴛ ᴇɴᴀʙʟᴇ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ. ᴜꜱᴇ /settings ᴛᴏ ᴇɴᴀʙʟᴇ ᴛʜᴇᴍ.",
         "stats_msg": "> 📊 **{name}'ꜱ ᴜɴᴏ ꜱᴛᴀᴛꜱ:**\n>\n> 🏆 ɢᴀᴍᴇꜱ ᴡᴏɴ : `{wins}`\n> 🥇 ꜰɪʀꜱᴛ ᴘʟᴀᴄᴇꜱ : `{percent}%`\n> 🃏 ᴄᴀʀᴅꜱ ᴘʟᴀʏᴇᴅ : `{cards}`",
+        "rank_msg": "> 🎖️ **{name}'ꜱ ᴜɴᴏ ʀᴀɴᴋ:**\n>\n> 🌐 **ɢʟᴏʙᴀʟ ʀᴀɴᴋ:** `#{rank}`\n> 🏆 **ᴛᴏᴛᴀʟ ᴡɪɴꜱ:** `{wins}`",
+        "no_rank": "> 😔 {name}, ʏᴏᴜ ʜᴀᴠᴇ ɴᴏᴛ ᴡᴏɴ ᴀɴʏ ɢᴀᴍᴇꜱ ʏᴇᴛ ᴏʀ ꜱᴛᴀᴛꜱ ᴀʀᴇ ᴅɪꜱᴀʙʟᴇᴅ! ᴘʟᴀʏ ᴀ ɢᴀᴍᴇ ᴛᴏ ɢᴇᴛ ᴀ ʀᴀɴᴋ.",
         "db_error": "> ⚠️ ᴅᴀᴛᴀʙᴀꜱᴇ ɴᴏᴛ ᴄᴏɴɴᴇᴄᴛᴇᴅ.",
         "enabled_stats": "> ✅ ᴇɴᴀʙʟᴇᴅ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ!",
         "lang_saved": "> ✅ ʟᴀɴɢᴜᴀɢᴇ ᴘʀᴇꜰᴇʀᴇɴᴄᴇꜱ ꜱᴀᴠᴇᴅ ᴛᴏ ᴇɴɢʟɪꜱʜ.",
@@ -103,6 +106,8 @@ TRANSLATIONS = {
         "settings": "> ⚙️ **ꜱᴇᴛᴛɪɴɢꜱ (ꜱᴇᴛɪɴɢꜱ):**\n> ɴɪᴄʜᴇ ᴅɪʏᴇ ɢᴀʏᴇ ᴏᴘᴛɪᴏɴꜱ ꜱᴇ ᴀᴘɴɪ ᴘᴀꜱᴀɴᴅ ᴄʜᴜɴᴇɪɴ.",
         "stats_disabled": "> ⚠️ ᴀᴀᴘɴᴇ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ ᴏɴ ɴᴀʜɪ ᴋɪʏᴀ ʜᴀɪ. /settings ʙʜᴇᴊ ᴋᴀʀ ᴏɴ ᴋᴀʀᴇɪɴ.",
         "stats_msg": "> 📊 **{name} ᴋᴇ ᴜɴᴏ ꜱᴛᴀᴛꜱ:**\n>\n> 🏆 ɢᴀᴍᴇꜱ ᴊᴇᴇᴛᴇ : `{wins}`\n> 🥇 ꜰɪʀꜱᴛ ᴘʟᴀᴄᴇꜱ : `{percent}%`\n> 🃏 ᴄᴀʀᴅꜱ ᴋʜᴇʟᴇ : `{cards}`",
+        "rank_msg": "> 🎖️ **{name} ᴋɪ ᴜɴᴏ ʀᴀɴᴋ:**\n>\n> 🌐 **ɢʟᴏʙᴀʟ ʀᴀɴᴋ:** `#{rank}`\n> 🏆 **ᴛᴏᴛᴀʟ ᴡɪɴꜱ:** `{wins}`",
+        "no_rank": "> 😔 {name}, ᴀᴀᴘɴᴇ ᴀᴀʙɪ ᴛᴀᴋ ᴋᴏɪ ɢᴀᴍᴇ ɴᴀʜɪ ᴊᴇᴇᴛᴀ ʜᴀɪ ʏᴀ ꜱᴛᴀᴛꜱ ᴏɴ ɴᴀʜɪ ʜᴀɪɴ! ᴘᴇʜʟᴇ ᴇᴋ ɢᴀᴍᴇ ᴋʜᴇʟᴇɪɴ.",
         "db_error": "> ⚠️ ᴅᴀᴛᴀʙᴀꜱᴇ ᴄᴏɴɴᴇᴄᴛᴇᴅ ɴᴀʜɪ ʜᴀɪ.",
         "enabled_stats": "> ✅ ꜱᴛᴀᴛɪꜱᴛɪᴄꜱ ᴏɴ ᴋᴀʀ ᴅɪʏᴇ ɢᴀʏᴇ ʜᴀɪɴ!",
         "lang_saved": "> ✅ ɪꜱ ɢʀᴏᴜᴘ/ᴄʜᴀᴛ ᴋɪ ʙʜᴀꜱʜᴀ ʜɪɴᴅɪ ᴍᴇ ꜱᴇᴛ ᴋᴀʀ ᴅɪ ɢᴀʏɪ ʜᴀɪ.",
@@ -212,7 +217,7 @@ def card_to_filename(card):
     return f"{color}_{parts[2]}"
 
 # ==========================================
-# 👑 HIDDEN OWNER COMMANDS
+# 👑 HIDDEN OWNER COMMANDS & MULTI-STEP /setstart
 # ==========================================
 @app.on_message(filters.command("users") & filters.user(OWNER_ID))
 async def users_cmd(client, message):
@@ -290,22 +295,79 @@ async def upload_cards_cmd(client, message):
                 except Exception: pass
     await m.edit(f"✅ **Upload Complete!** Total: `{uploaded}` cards.")
 
-@app.on_message(filters.command("setstart") & filters.user(OWNER_ID))
-async def set_start_cmd(client, message):
-    if not MONGO_URL: 
-        return await message.reply("⚠️ Database connected nahi hai!")
-    if not message.reply_to_message:
-        return await message.reply("⚠️ Puraane kisi message (Text ya Photo) par reply karke `/setstart` likho!")
+# 🧙‍♂️ MULTI-STEP /setstart WIZARD
+@app.on_message(filters.command("setstart") & filters.user(OWNER_ID) & filters.private)
+async def setstart_wizard_cmd(client, message):
+    setstart_sessions[message.from_user.id] = {"step": "waiting_photo", "file_id": None, "text": None, "buttons": []}
+    await message.reply("🖼️ **Step 1:** Ab aap us **Image** ko bhejo jise start message me rakhna hai.")
+
+@app.on_message(filters.user(OWNER_ID) & filters.private & ~filters.command(["users", "groups", "gcast", "setposition", "uploadcards", "setstart", "done"]))
+async def setstart_wizard_listener(client, message):
+    uid = message.from_user.id
+    if uid not in setstart_sessions: return
     
-    msg = message.reply_to_message
-    if msg.photo:
-        file_id = msg.photo.file_id
-        caption = msg.caption or ""
-        await user_settings_col.update_one({"type": "start_msg"}, {"$set": {"has_photo": True, "file_id": file_id, "text": caption}}, upsert=True)
-    else:
-        text = msg.text or ""
-        await user_settings_col.update_one({"type": "start_msg"}, {"$set": {"has_photo": False, "text": text}}, upsert=True)
-    await message.reply("✅ **Naya `/start` message successfully set ho gaya hai!**")
+    session = setstart_sessions[uid]
+    step = session["step"]
+    
+    if step == "waiting_photo":
+        if message.photo:
+            session["file_id"] = message.photo.file_id
+            session["step"] = "waiting_text"
+            await message.reply("✍️ **Step 2:** Ab aap **Text Message (Caption)** bhejo jo image ke sath dikhega.")
+        else:
+            await message.reply("⚠️ Kripya ek valid photo bhejiye!")
+            
+    elif step == "waiting_text":
+        if message.text:
+            session["text"] = message.text
+            session["step"] = "waiting_buttons"
+            await message.reply("🔘 **Step 3:** Ab aap **Buttons** bhejiye (Max 5 buttons).\nFormat: `Text - URL` (Har line me ek button).\nAap chahein toh `/done` likh kar skip bhi kar sakte hain.")
+        else:
+            await message.reply("⚠️ Kripya text message bhejiye!")
+            
+    elif step == "waiting_buttons":
+        if message.text:
+            lines = message.text.split("\n")
+            btns = []
+            for line in lines[:5]: # Max 5 buttons limit
+                if " - " in line:
+                    parts = line.split(" - ", 1)
+                    btns.append({"text": parts[0].strip(), "url": parts[1].strip()})
+            session["buttons"] = btns
+            
+        # Finish & Save to DB
+        await user_settings_col.update_one(
+            {"type": "start_msg"}, 
+            {"$set": {
+                "has_photo": True, 
+                "file_id": session["file_id"], 
+                "text": session["text"], 
+                "buttons": session["buttons"]
+            }}, 
+            upsert=True
+        )
+        setstart_sessions.pop(uid, None)
+        await message.reply("✅ **Naya `/start` message successfully set ho gaya hai!**")
+
+@app.on_message(filters.command("done") & filters.user(OWNER_ID) & filters.private)
+async def setstart_done_cmd(client, message):
+    uid = message.from_user.id
+    if uid in setstart_sessions:
+        session = setstart_sessions[uid]
+        if session["file_id"] and session["text"]:
+            await user_settings_col.update_one(
+                {"type": "start_msg"}, 
+                {"$set": {
+                    "has_photo": True, 
+                    "file_id": session["file_id"], 
+                    "text": session["text"], 
+                    "buttons": session["buttons"]
+                }}, 
+                upsert=True
+            )
+            setstart_sessions.pop(uid, None)
+            return await message.reply("✅ **`/start` message successfully save ho gaya!**")
+    await message.reply("⚠️ Koi active setup session nahi mila ya photo/text missing hai.")
 
 
 # ==========================================
@@ -323,10 +385,17 @@ async def start_cmd(client, message):
     if MONGO_URL:
         config = await user_settings_col.find_one({"type": "start_msg"})
         if config:
+            kb = None
+            if config.get("buttons"):
+                keyboard = []
+                for b in config["buttons"][:5]:
+                    keyboard.append([InlineKeyboardButton(b["text"], url=b["url"])])
+                kb = InlineKeyboardMarkup(keyboard)
+                
             if config.get("has_photo"):
-                return await message.reply_photo(photo=config["file_id"], caption=config["text"])
+                return await message.reply_photo(photo=config["file_id"], caption=config["text"], reply_markup=kb)
             else:
-                return await message.reply(config["text"])
+                return await message.reply(config["text"], reply_markup=kb)
     await message.reply(default_text)
 
 @app.on_message(filters.command("help"))
@@ -365,6 +434,24 @@ async def stats_cmd(client, message):
     
     wins = stats.get("wins", 0)
     text = await _t(uid, "stats_msg", name=fname, wins=wins, percent='100' if wins>0 else '0', cards=(wins*15)+random.randint(10,50) if wins>0 else 0)
+    await message.reply(text)
+
+@app.on_message(filters.command("rank"))
+async def rank_cmd(client, message):
+    add_chat(message.chat.id)
+    uid = message.from_user.id if message.from_user else message.chat.id
+    fname = message.from_user.first_name if message.from_user else "User"
+    if not MONGO_URL: return await message.reply(await _t(uid, "db_error"))
+    
+    stats = await uno_stats_col.find_one({"user_id": uid})
+    if not stats or stats.get("wins", 0) == 0:
+        return await message.reply(await _t(uid, "no_rank", name=fname))
+        
+    user_wins = stats.get("wins", 0)
+    higher_ranks_count = await uno_stats_col.count_documents({"wins": {"$gt": user_wins}})
+    rank = higher_ranks_count + 1
+    
+    text = await _t(uid, "rank_msg", name=fname, rank=rank, wins=user_wins)
     await message.reply(text)
 
 @app.on_message(filters.command("topplayers"))
@@ -463,7 +550,6 @@ async def send_uno_table(chat_id, action_user_id=None):
         else: game["table_msg"] = await app.send_message(chat_id, text, reply_markup=kb)
     except: game["table_msg"] = await app.send_message(chat_id, text, reply_markup=kb)
 
-# 🔥 LOBBY TIMER: 45 SECONDS WITH SMART NOTIFICATIONS (USER-LANG)
 async def uno_lobby_timer(chat_id):
     game = uno_games.get(chat_id)
     if not game or game["status"] != "lobby": return
@@ -888,6 +974,7 @@ async def main():
             BotCommand("end", "Terminate the game (Same as kill)"),
             BotCommand("kick", "Kick players out of the game"),
             BotCommand("skip", "Skip the current player"),
+            BotCommand("rank", "Check your global rank and wins"),
             BotCommand("help", "How to use this bot?"),
             BotCommand("rules", "Explanation of game rules"),
             BotCommand("settings", "Language and other settings"),
@@ -897,7 +984,7 @@ async def main():
     except Exception as e: print("Could not set commands:", e)
     
     print("=========================================")
-    print("✅ PRO UNO BOT (TURN HIGHLIGHT EDITION) IS LIVE!")
+    print("✅ PRO UNO BOT (MULTI-STEP /setstart EDITION) IS LIVE!")
     print("=========================================")
     await idle()
 
